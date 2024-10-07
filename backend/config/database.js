@@ -1,11 +1,18 @@
-import mysql from "mysql";
+import mysql from "mysql2/promise";
 
-//connection till databas.
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "123",
-    database: "beautydb",
-})
+// Database configuration
+const dbConfig = {
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "beautydb",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+};
 
-export default db;
+// Create a connection pool
+const pool = mysql.createPool(dbConfig);
+
+// Export the pool for use in other modules
+export default pool;
