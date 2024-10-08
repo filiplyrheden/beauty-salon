@@ -1,15 +1,20 @@
 <template>
   <div id="app">
-      <router-view></router-view> <!-- This will display the routed components -->
+    <router-view></router-view>
+    <!-- This will display the routed components -->
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: "App",
 };
 </script>
 
 <style>
-/* Add styles here */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 </style>

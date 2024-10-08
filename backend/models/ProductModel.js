@@ -6,7 +6,7 @@ import db from "../config/database.js";
  */
 export const getProducts = async () => {
   try {
-    const [rows] = await db.query("SELECT * FROM products"); // Adjust the SQL query as needed
+    const [rows] = await db.query("SELECT * FROM Products");
     return rows;
   } catch (err) {
     console.error("Error fetching products:", err);

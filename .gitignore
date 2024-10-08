@@ -48,6 +48,7 @@ backend/dist/
 backend/build/
 backend/.env
 backend/.env.local
+backend/uploads
 
 # Frontend folder
 frontend/node_modules/
