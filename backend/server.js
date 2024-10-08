@@ -5,7 +5,12 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import upload from "./config/uploadConfig.js";
-import { showProducts } from "./controllers/product.js";
+import {
+  showProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from "./controllers/product.js";
 import {
   showCourses,
   createNewCourse,
@@ -30,6 +35,10 @@ app.use("/uploads", express.static(path.join(__dirnameFull, "uploads")));
 
 // Routes
 app.get("/products", showProducts);
+app.get("/admin/products", showProducts);
+app.post("/admin/createproducts", createProduct);
+app.put("/admin/createproducts", updateProduct);
+app.delete("/admin/createproducts/:id", deleteProduct);
 app.get("/courses", showCourses);
 
 // CRUD Routes for Courses with Image Upload
