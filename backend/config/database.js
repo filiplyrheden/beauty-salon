@@ -4,7 +4,7 @@ import mysql from "mysql2/promise";
 const dbConfig = {
   host: "localhost",
   user: "root",
-  password: "",
+  password: "123",
   database: "beautydb",
   waitForConnections: true,
   connectionLimit: 10,
