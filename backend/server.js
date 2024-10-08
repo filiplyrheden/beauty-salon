@@ -1,25 +1,25 @@
+// server.js
 import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import upload from "./config/uploadConfig.js"; // Import multer configuration
+import upload from "./config/uploadConfig.js";
+import { showProducts } from "./controllers/product.js";
 import {
   showCourses,
   createNewCourse,
   updateCourseById,
   deleteCourseById,
-} from "./controllers/course.js"; // Import additional controller functions
-
-import { showProducts, createProduct, updateProduct, deleteProduct } from "./controllers/product.js";
-
-
+} from "./controllers/course.js";
+import dotenv from "dotenv";
+dotenv.config();
 const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors()); // Enable CORS for all routes
+app.use(express.json()); // Parse JSON bodies
 
 // Handle __dirname in ES6 modules
 const __filename = fileURLToPath(import.meta.url);
@@ -37,12 +37,6 @@ app.post("/courses", upload.single("image"), createNewCourse); // Create
 app.put("/courses/:id", upload.single("image"), updateCourseById); // Update
 app.delete("/courses/:id", deleteCourseById); // Delete
 
-app.get("/admin/products", showProducts);
-app.post("/admin/createproducts", createProduct);
-app.put("/admin/createproducts", updateProduct);
-app.delete("/admin/createproducts/:id", deleteProduct);
-
-
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);
@@ -59,6 +53,8 @@ app.use((err, req, res, next) => {
 // Handle Unhandled Rejections
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  // Optionally, exit the process or perform other cleanup
+  // process.exit(1);
 });
 
 // Start the Server
