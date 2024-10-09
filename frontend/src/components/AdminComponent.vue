@@ -14,6 +14,9 @@
     <button>
       <a href="/admin/courses">Manage courses</a>
     </button>
+    <button>
+      <a href="/admin/services">Manage services</a>
+    </button>
   </div>
 </template>
 
