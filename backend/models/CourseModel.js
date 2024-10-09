@@ -64,7 +64,7 @@ export const updateCourse = async (id, courseData) => {
     if (result.affectedRows === 0) {
       return null; // No course was found with the provided ID
     }
-
+    courseData.course_id = id; // Include the course ID in the returned data
     return { id, ...courseData }; // Return the updated course data
   } catch (err) {
     console.error("Error updating course:", err);

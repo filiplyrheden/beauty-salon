@@ -105,6 +105,7 @@
       <table>
         <thead>
           <tr>
+            <th><input type="password" name="" id="" /></th>
             <th>Kursnamn</th>
             <th>Beskrivning</th>
             <th>Pris</th>
@@ -116,6 +117,7 @@
         </thead>
         <tbody>
           <tr v-for="course in courses" :key="course.course_id">
+            <td>{{ course.course_id }}</td>
             <td>{{ course.name }}</td>
             <td>{{ course.description }}</td>
             <td>{{ formatPrice(course.price) }}</td>
@@ -306,16 +308,16 @@ export default {
      * Update an existing course with optional image upload.
      */
     async updateCourse() {
-      // Create FormData object
       const formData = new FormData();
 
-      // If a new image is selected, include it
+      // Always append the course_id to the FormData
       if (this.selectedImage) {
         formData.append("image", this.selectedImage);
       } else {
         formData.append("image_url", this.imagePreview);
       }
 
+      // Append other form fields
       formData.append("name", this.form.name);
       formData.append("description", this.form.description);
       formData.append("price", this.form.price);
@@ -325,7 +327,7 @@ export default {
       try {
         this.isLoading = true;
         const response = await axios.put(
-          `${this.API_BASE_URL}/courses/${this.form.course_id}`,
+          `${this.API_BASE_URL}/courses/${this.form.course_id}`, // Make sure course_id is correctly referenced
           formData,
           {
             headers: {
@@ -338,8 +340,8 @@ export default {
           ...response.data,
           price: Number(response.data.price), // Ensure 'price' is a number
         };
-        console.log("Updated course:", updatedCourseData);
 
+        // Update courses array with the new data
         const index = this.courses.findIndex(
           (c) => c.course_id === this.form.course_id
         );
@@ -408,14 +410,18 @@ export default {
      * Reset the form fields and clear image selections.
      */
     resetForm() {
+      // Maintain course_id if editing
+      const previousCourseId = this.isEditing ? this.form.course_id : null;
+
       this.form = {
-        course_id: null,
+        course_id: previousCourseId, // Keep the previous course ID
         name: "",
         description: "",
         price: 0,
         schedule: "",
         booking_link: "",
       };
+
       this.selectedImage = null;
       this.imagePreview = null;
 
@@ -425,7 +431,6 @@ export default {
         fileInput.value = "";
       }
     },
-
     /**
      * Cancel editing and reset the form.
      */
