@@ -105,7 +105,6 @@
       <table>
         <thead>
           <tr>
-            <th><input type="password" name="" id="" /></th>
             <th>Kursnamn</th>
             <th>Beskrivning</th>
             <th>Pris</th>
@@ -117,7 +116,6 @@
         </thead>
         <tbody>
           <tr v-for="course in courses" :key="course.course_id">
-            <td>{{ course.course_id }}</td>
             <td>{{ course.name }}</td>
             <td>{{ course.description }}</td>
             <td>{{ formatPrice(course.price) }}</td>
