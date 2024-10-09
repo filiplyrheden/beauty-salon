@@ -167,7 +167,6 @@ export default {
   computed: {
     API_BASE_URL() {
       const url = process.env.VUE_APP_API_BASE_URL || "http://localhost:3000";
-      console.log("API_BASE_URL:", url);
       return url;
     },
   },
@@ -182,12 +181,10 @@ export default {
       this.isLoading = true;
       try {
         const response = await axios.get(`${this.API_BASE_URL}/courses`);
-        console.log("Fetched courses:", response.data);
         this.courses = response.data.map((course) => ({
           ...course,
           price: Number(course.price), // Ensure 'price' is a number
         }));
-        console.log("Processed courses:", this.courses);
       } catch (error) {
         console.error(
           "Error fetching courses:",
@@ -266,7 +263,6 @@ export default {
           ...response.data,
           price: Number(response.data.price), // Ensure 'price' is a number
         };
-        console.log("Added course:", addedCourse);
         this.courses.push(addedCourse);
         this.resetForm();
         Swal.fire("Success", "Course added successfully!", "success");
@@ -404,6 +400,7 @@ export default {
         this.isLoading = false;
       }
     },
+
     /**
      * Reset the form fields and clear image selections.
      */
@@ -429,6 +426,7 @@ export default {
         fileInput.value = "";
       }
     },
+
     /**
      * Cancel editing and reset the form.
      */
@@ -451,10 +449,12 @@ export default {
       };
       return new Date(datetime).toLocaleDateString(undefined, options);
     },
-    methods: {
-      showDatePicker() {
-        this.$refs.scheduleInput.showPicker(); // showPicker explicitly calls the datepicker
-      },
+
+    /**
+     * Show the date picker for the schedule input.
+     */
+    showDatePicker() {
+      this.$refs.scheduleInput.showPicker(); // showPicker explicitly calls the datepicker
     },
 
     /**
@@ -487,6 +487,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .course-container {
   max-width: 1200px;
