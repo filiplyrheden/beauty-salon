@@ -18,6 +18,8 @@ import {
   deleteCourseById,
 } from "./controllers/course.js";
 import dotenv from "dotenv";
+import multer from "multer"; // <-- Import multer
+
 dotenv.config();
 const app = express();
 const PORT = 3000;
@@ -50,6 +52,7 @@ app.delete("/courses/:id", deleteCourseById); // Delete
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);
   if (err instanceof multer.MulterError) {
+    // Now multer is defined
     // Handle Multer-specific errors
     return res.status(400).json({ error: err.message });
   } else if (err) {
