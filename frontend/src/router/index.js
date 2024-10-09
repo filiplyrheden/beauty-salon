@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue"; // Make sure you have this view created
+import HomeView from "../views/HomeView.vue";
 import CreateProduct from "@/views/CreateProductView.vue";
 import CourseView from "../views/CourseView.vue";
 import AdminPage from "@/views/AdminPage.vue";
+import ServicePage from "../views/ServiceView.vue";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/admin",
     name: "Admin Page",
     component: AdminPage,
+  },
+  {
+    path: "/admin/services",
+    name: "Service Page",
+    component: ServicePage,
   },
   // Additional routes can be added here
 ];

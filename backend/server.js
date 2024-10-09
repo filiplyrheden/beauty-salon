@@ -17,6 +17,13 @@ import {
   updateCourseById,
   deleteCourseById,
 } from "./controllers/course.js";
+import {
+  showServices,
+  createNewService,
+  updateServiceById,
+  deleteServiceById,
+} from "./controllers/service.js";
+import { showServicesCategories } from "./controllers/servicescategories.js";
 import dotenv from "dotenv";
 import multer from "multer"; // <-- Import multer
 
@@ -48,6 +55,28 @@ app.post("/courses", upload.single("image"), createNewCourse); // Create a new c
 app.put("/courses/:id", upload.single("image"), updateCourseById); // Update a course with image upload
 app.delete("/courses/:id", deleteCourseById); // Delete a course
 
+// Routes for Services
+app.get("/services", showServices); // Get all courses
+app.post(
+  "/services",
+  upload.fields([
+    { name: "beforeImage", maxCount: 1 },
+    { name: "afterImage", maxCount: 1 },
+  ]),
+  createNewService
+);
+app.put(
+  "/services/:id",
+  upload.fields([
+    { name: "beforeImage", maxCount: 1 },
+    { name: "afterImage", maxCount: 1 },
+  ]),
+  updateServiceById
+);
+app.delete("/services/:id", deleteServiceById); // Delete a service
+
+//Routes for ServicesCategories
+app.get("/services-categories", showServicesCategories); // Get all Servicescategories
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);
