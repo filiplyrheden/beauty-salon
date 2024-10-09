@@ -35,30 +35,29 @@ const __dirnameFull = dirname(__filename);
 // Serve static files from the uploads directory
 app.use("/uploads", express.static(path.join(__dirnameFull, "uploads")));
 
-// Routes
-app.get("/products", showProducts);
-app.get("/admin/products", showProducts);
-app.post("/admin/createproducts", createProduct);
-app.put("/admin/createproducts", updateProduct);
-app.delete("/admin/createproducts/:id", deleteProduct);
-app.get("/courses", showCourses);
+// Routes for Products
+app.get("/products", showProducts); // Get all products
+app.get("/admin/products", showProducts); // Get all products for admin
+app.post("/admin/products", createProduct); // Create a new product
+app.put("/admin/products", updateProduct); // Update a product
+app.delete("/admin/products/:id", deleteProduct); // Delete a product
 
-// CRUD Routes for Courses with Image Upload
-app.post("/courses", upload.single("image"), createNewCourse); // Create
-app.put("/courses/:id", upload.single("image"), updateCourseById); // Update
-app.delete("/courses/:id", deleteCourseById); // Delete
+// Routes for Courses
+app.get("/courses", showCourses); // Get all courses
+app.post("/courses", upload.single("image"), createNewCourse); // Create a new course with image upload
+app.put("/courses/:id", upload.single("image"), updateCourseById); // Update a course with image upload
+app.delete("/courses/:id", deleteCourseById); // Delete a course
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);
+
   if (err instanceof multer.MulterError) {
-    // Now multer is defined
-    // Handle Multer-specific errors
     return res.status(400).json({ error: err.message });
   } else if (err) {
-    // Handle general errors
     return res.status(500).json({ error: err.message });
   }
+
   next();
 });
 

@@ -167,7 +167,6 @@ export default {
   computed: {
     API_BASE_URL() {
       const url = process.env.VUE_APP_API_BASE_URL || "http://localhost:3000";
-      console.log("API_BASE_URL:", url);
       return url;
     },
   },
@@ -182,12 +181,10 @@ export default {
       this.isLoading = true;
       try {
         const response = await axios.get(`${this.API_BASE_URL}/courses`);
-        console.log("Fetched courses:", response.data);
         this.courses = response.data.map((course) => ({
           ...course,
           price: Number(course.price), // Ensure 'price' is a number
         }));
-        console.log("Processed courses:", this.courses);
       } catch (error) {
         console.error(
           "Error fetching courses:",
@@ -266,7 +263,6 @@ export default {
           ...response.data,
           price: Number(response.data.price), // Ensure 'price' is a number
         };
-        console.log("Added course:", addedCourse);
         this.courses.push(addedCourse);
         this.resetForm();
         Swal.fire("Success", "Course added successfully!", "success");
@@ -306,16 +302,16 @@ export default {
      * Update an existing course with optional image upload.
      */
     async updateCourse() {
-      // Create FormData object
       const formData = new FormData();
 
-      // If a new image is selected, include it
+      // Always append the course_id to the FormData
       if (this.selectedImage) {
         formData.append("image", this.selectedImage);
       } else {
         formData.append("image_url", this.imagePreview);
       }
 
+      // Append other form fields
       formData.append("name", this.form.name);
       formData.append("description", this.form.description);
       formData.append("price", this.form.price);
@@ -325,7 +321,7 @@ export default {
       try {
         this.isLoading = true;
         const response = await axios.put(
-          `${this.API_BASE_URL}/courses/${this.form.course_id}`,
+          `${this.API_BASE_URL}/courses/${this.form.course_id}`, // Make sure course_id is correctly referenced
           formData,
           {
             headers: {
@@ -338,8 +334,8 @@ export default {
           ...response.data,
           price: Number(response.data.price), // Ensure 'price' is a number
         };
-        console.log("Updated course:", updatedCourseData);
 
+        // Update courses array with the new data
         const index = this.courses.findIndex(
           (c) => c.course_id === this.form.course_id
         );
@@ -404,18 +400,23 @@ export default {
         this.isLoading = false;
       }
     },
+
     /**
      * Reset the form fields and clear image selections.
      */
     resetForm() {
+      // Maintain course_id if editing
+      const previousCourseId = this.isEditing ? this.form.course_id : null;
+
       this.form = {
-        course_id: null,
+        course_id: previousCourseId, // Keep the previous course ID
         name: "",
         description: "",
         price: 0,
         schedule: "",
         booking_link: "",
       };
+
       this.selectedImage = null;
       this.imagePreview = null;
 
@@ -448,10 +449,12 @@ export default {
       };
       return new Date(datetime).toLocaleDateString(undefined, options);
     },
-    methods: {
-      showDatePicker() {
-        this.$refs.scheduleInput.showPicker(); // showPicker explicitly calls the datepicker
-      },
+
+    /**
+     * Show the date picker for the schedule input.
+     */
+    showDatePicker() {
+      this.$refs.scheduleInput.showPicker(); // showPicker explicitly calls the datepicker
     },
 
     /**
@@ -484,6 +487,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .course-container {
   max-width: 1200px;
