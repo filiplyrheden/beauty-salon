@@ -17,6 +17,9 @@
     <button>
       <a href="/admin/services">Manage services</a>
     </button>
+    <button>
+      <a href="/admin/service-categories">Manage service categories</a>
+    </button>
   </div>
 </template>
 

@@ -543,7 +543,7 @@ export default {
         name: "",
         description: "",
         price: 0,
-        time: 0, // Changed from "schedule" to "time" to match your form
+        time: 0,
         booking_link: "",
         category: "",
       };

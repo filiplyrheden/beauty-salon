@@ -23,7 +23,12 @@ import {
   updateServiceById,
   deleteServiceById,
 } from "./controllers/service.js";
-import { showServicesCategories } from "./controllers/servicescategories.js";
+import {
+  showServicesCategories,
+  createNewServicesCategories,
+  updateServicesCategoriesById,
+  deleteServicesCategoriesById,
+} from "./controllers/servicescategories.js";
 import dotenv from "dotenv";
 import multer from "multer"; // <-- Import multer
 
@@ -77,6 +82,10 @@ app.delete("/services/:id", deleteServiceById); // Delete a service
 
 //Routes for ServicesCategories
 app.get("/services-categories", showServicesCategories); // Get all Servicescategories
+app.post("/services-categories", createNewServicesCategories); // Create
+app.put("/services-categories/:id", updateServicesCategoriesById); // Update
+app.delete("/services-categories/:id", deleteServicesCategoriesById); // Delete
+
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);

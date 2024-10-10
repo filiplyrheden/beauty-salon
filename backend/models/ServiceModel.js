@@ -32,7 +32,6 @@ export const getServiceById = async (id) => {
     throw err;
   }
 };
-
 export const createService = async (serviceData) => {
   const {
     name,
