@@ -35,6 +35,12 @@ import {
   updateServicesCategoriesById,
   deleteServicesCategoriesById,
 } from "./controllers/servicescategories.js";
+import {
+  showPageReviews,
+  createNewPageReviews,
+  updatePageReviewsById,
+  deletePageReviewsById,
+} from "./controllers/pagereview.js";
 import dotenv from "dotenv";
 import multer from "multer"; // <-- Import multer
 
@@ -102,6 +108,12 @@ app.get("/services-categories", showServicesCategories); // Get all Servicescate
 app.post("/services-categories", createNewServicesCategories); // Create
 app.put("/services-categories/:id", updateServicesCategoriesById); // Update
 app.delete("/services-categories/:id", deleteServicesCategoriesById); // Delete
+
+//Routes for PageReviews
+app.get("/page-reviews", showPageReviews); // Get all PageReviews
+app.post("/page-reviews", createNewPageReviews); // Create
+app.put("/page-reviews/:id", updatePageReviewsById); // Update
+app.delete("/page-reviews/:id", deletePageReviewsById); // Delete
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {

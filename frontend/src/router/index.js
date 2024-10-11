@@ -5,6 +5,9 @@ import CourseView from "../views/CourseView.vue";
 import AdminPage from "@/views/AdminPage.vue";
 import EventsView from "@/views/EventsView.vue";
 import ServicePage from "../views/ServiceView.vue";
+import ServiceCategoriesPage from "../views/ServiceCategoriesView.vue";
+import PageReviewsPage from "../views/PageReviewsView.vue";
+
 
 const routes = [
   {
@@ -40,6 +43,11 @@ const routes = [
     path: "/admin/service-categories",
     name: "Service Categories Page",
     component: ServiceCategoriesPage,
+  },
+  {
+    path: "/admin/page-reviews",
+    name: "Page Reviews Page",
+    component: PageReviewsPage,
   },
   // Additional routes can be added here
 ];
