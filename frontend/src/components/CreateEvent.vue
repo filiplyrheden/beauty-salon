@@ -120,7 +120,87 @@
   };
   </script>
   
-  <style>
-  /* Add your styles here */
-  </style>
+  <style scoped>
+  /* General form layout */
+  form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Headings */
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    color: #333;
+  }
+
+  /* Input fields and labels */
+  div {
+    margin-bottom: 15px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+  }
+
+  /* Textarea styling */
+  textarea {
+    height: 100px;
+    resize: vertical;
+  }
+
+  /* File input */
+  input[type="file"] {
+    padding: 5px;
+  }
+
+  /* Buttons */
+  button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+  }
+
+  button[type="submit"]:hover {
+    opacity: 0.9;
+  }
+
+  /* Success or error messages */
+  p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: green;
+  }
+
+  p.error {
+    color: red;
+  }
+</style>
+
   
