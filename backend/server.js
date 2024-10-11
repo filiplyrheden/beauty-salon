@@ -6,6 +6,12 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import upload from "./config/uploadConfig.js";
 import {
+  showEvents,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+} from "./controllers/event.js";
+import {
   showProducts,
   createProduct,
   updateProduct,
@@ -65,6 +71,17 @@ app.get("/courses", showCourses); // Get all courses
 app.post("/courses", upload.single("image"), createNewCourse); // Create a new course with image upload
 app.put("/courses/:id", upload.single("image"), updateCourseById); // Update a course with image upload
 app.delete("/courses/:id", deleteCourseById); // Delete a course
+
+// Routes for events with image upload
+app.get("/admin/events", showEvents);
+app.post("/admin/events", upload.single("image"), createEvent); // Added image upload to events
+app.put("/admin/events/:id", upload.single("image"), updateEvent); // Added image upload to events
+app.delete("/admin/events/:id", deleteEvent);
+
+// CRUD Routes for Courses with Image Upload
+app.post("/courses", upload.single("image"), createNewCourse); // Create
+app.put("/courses/:id", upload.single("image"), updateCourseById); // Update
+app.delete("/courses/:id", deleteCourseById); // Delete
 
 // Routes for Services
 app.get("/services", showServices); // Get all courses
