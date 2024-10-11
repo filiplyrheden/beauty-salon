@@ -6,6 +6,12 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import upload from "./config/uploadConfig.js";
 import {
+  showEvents,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+} from "./controllers/event.js";
+import {
   showProducts,
   createProduct,
   updateProduct,
@@ -18,6 +24,8 @@ import {
   deleteCourseById,
 } from "./controllers/course.js";
 import dotenv from "dotenv";
+import multer from "multer"; // <-- Import multer
+
 dotenv.config();
 const app = express();
 const PORT = 3000;
@@ -41,6 +49,11 @@ app.put("/admin/createproducts", updateProduct);
 app.delete("/admin/createproducts/:id", deleteProduct);
 app.get("/courses", showCourses);
 
+app.get("/admin/events", showEvents);
+app.post("/admin/events", upload.single("image"), createEvent); // Added image upload to events
+app.put("/admin/events/:id", upload.single("image"), updateEvent); // Added image upload to events
+app.delete("/admin/events/:id", deleteEvent);
+
 // CRUD Routes for Courses with Image Upload
 app.post("/courses", upload.single("image"), createNewCourse); // Create
 app.put("/courses/:id", upload.single("image"), updateCourseById); // Update
@@ -50,6 +63,7 @@ app.delete("/courses/:id", deleteCourseById); // Delete
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);
   if (err instanceof multer.MulterError) {
+    // Now multer is defined
     // Handle Multer-specific errors
     return res.status(400).json({ error: err.message });
   } else if (err) {

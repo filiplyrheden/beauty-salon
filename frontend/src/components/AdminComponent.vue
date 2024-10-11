@@ -6,7 +6,7 @@
       <a href="/admin/createproduct">Manage products</a>
     </button>
     <button>
-      <a href="#">Manage events</a>
+      <a href="/admin/events">Manage events</a>
     </button>
     <button>
       <a href="#">Manage ???</a>
