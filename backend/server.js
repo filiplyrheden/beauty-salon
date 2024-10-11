@@ -37,6 +37,12 @@ import {
 } from "./controllers/pagereview.js";
 import dotenv from "dotenv";
 import multer from "multer"; // <-- Import multer
+import {
+  showUserById,
+  updateUserById,
+  createNewUser,
+  deleteUserById,
+} from "./controllers/user.js";
 
 dotenv.config();
 const app = express();
@@ -98,6 +104,12 @@ app.post("/page-reviews", createNewPageReviews); // Create
 app.put("/page-reviews/:id", updatePageReviewsById); // Update
 app.delete("/page-reviews/:id", deletePageReviewsById); // Delete
 
+//Routes for User
+
+app.get("/user/:id", showUserById); // Get all User
+app.post("/user", createNewUser); // Create
+app.put("/user/:id", updateUserById); // Update
+app.delete("/user/:id", deleteUserById); // Delete
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);
