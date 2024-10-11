@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue"; // Make sure you have this view created
+import HomeView from "../views/HomeView.vue";
 import CreateProduct from "@/views/CreateProductView.vue";
 import CourseView from "../views/CourseView.vue";
 import AdminPage from "@/views/AdminPage.vue";
 import EventsView from "@/views/EventsView.vue";
+import ServicePage from "../views/ServiceView.vue";
 
 const routes = [
   {
@@ -31,6 +32,15 @@ const routes = [
     name: "EventsView",
     component: EventsView,
   }
+    path: "/admin/services",
+    name: "Service Page",
+    component: ServicePage,
+  },
+  {
+    path: "/admin/service-categories",
+    name: "Service Categories Page",
+    component: ServiceCategoriesPage,
+  },
   // Additional routes can be added here
 ];
 
