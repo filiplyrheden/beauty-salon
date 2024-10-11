@@ -20,6 +20,9 @@
     <button>
       <a href="/admin/service-categories">Manage service categories</a>
     </button>
+    <button>
+      <a href="/admin/page-reviews">Manage page reviews</a>
+    </button>
   </div>
 </template>
 
