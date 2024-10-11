@@ -49,6 +49,10 @@ import {
   createNewUser,
   deleteUserById,
 } from "./controllers/user.js";
+import {
+  loginUser,
+  registerUser,
+} from "./controllers/authentication.js";
 
 dotenv.config();
 const app = express();
@@ -88,6 +92,10 @@ app.delete("/admin/events/:id", deleteEvent);
 app.post("/courses", upload.single("image"), createNewCourse); // Create
 app.put("/courses/:id", upload.single("image"), updateCourseById); // Update
 app.delete("/courses/:id", deleteCourseById); // Delete
+
+// Auth Routes
+app.post("/login", loginUser);
+app.post("/register", registerUser);
 
 // Routes for Services
 app.get("/services", showServices); // Get all courses

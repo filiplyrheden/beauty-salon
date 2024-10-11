@@ -5,6 +5,22 @@ import db from "../config/database.js";
  * @returns {Promise<Array>} An array of products.
  */
 
+export const getUserByEmail = async (email) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM Users WHERE email = ?", [
+      email,
+    ]);
+    
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows[0];
+  } catch (error) {
+    console,error("Error fethcing user by Email:", error);
+  }
+}
+
 export const getUserById = async (id) => {
   try {
     const [rows] = await db.query("SELECT * FROM Users WHERE user_id = ?", [
