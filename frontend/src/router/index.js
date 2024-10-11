@@ -7,6 +7,8 @@ import EventsView from "@/views/EventsView.vue";
 import ServicePage from "../views/ServiceView.vue";
 import ServiceCategoriesPage from "../views/ServiceCategoriesView.vue";
 import PageReviewsPage from "../views/PageReviewsView.vue";
+import LoginPage from "../views/LoginPage.vue";
+import RegisterPage from "@/views/RegisterPage.vue";
 
 
 const routes = [
@@ -14,6 +16,16 @@ const routes = [
     path: "/",
     name: "HomeView",
     component: HomeView,
+  },
+  {
+    path: "/register",
+    name: "RegisterPage",
+    component: RegisterPage,
+  },
+  {
+    path: "/login",
+    name: "LoginPage",
+    component: LoginPage,
   },
   {
     path: "/admin/createproduct",
@@ -34,7 +46,8 @@ const routes = [
     path: "/admin/events",
     name: "EventsView",
     component: EventsView,
-  }
+  },
+  {
     path: "/admin/services",
     name: "Service Page",
     component: ServicePage,
