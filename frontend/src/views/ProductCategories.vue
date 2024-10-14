@@ -25,7 +25,6 @@
             v-model.number="form.parent_category_id"
             name="parent_categoryId"
             id="parent_categoryId"
-            required
           >
             <option value="">Ingen Huvudkategori</option>
             <option
