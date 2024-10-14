@@ -8,12 +8,25 @@ import ServicePage from "../views/ServiceView.vue";
 import ServiceCategoriesPage from "../views/ServiceCategoriesView.vue";
 import PageReviewsPage from "../views/PageReviewsView.vue";
 import ProductCategoriesPage from "../views/ProductCategories.vue";
+import LoginPage from "../views/LoginPage.vue";
+import RegisterPage from "@/views/RegisterPage.vue";
+
 
 const routes = [
   {
     path: "/",
     name: "HomeView",
     component: HomeView,
+  },
+  {
+    path: "/register",
+    name: "RegisterPage",
+    component: RegisterPage,
+  },
+  {
+    path: "/login",
+    name: "LoginPage",
+    component: LoginPage,
   },
   {
     path: "/admin/createproduct",
