@@ -105,6 +105,7 @@ export default {
       form: {
         category_id: null, // Used for editing
         name: "", // This field will be populated with category name during edit
+        parent_category_id: "",
       },
       isEditing: false,
       isLoading: false, // For loading indicator
