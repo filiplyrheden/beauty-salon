@@ -23,6 +23,9 @@
     <button>
       <a href="/admin/page-reviews">Manage page reviews</a>
     </button>
+    <button>
+      <a href="/admin/product-categories">Manage product Categories</a>
+    </button>
   </div>
 </template>
 

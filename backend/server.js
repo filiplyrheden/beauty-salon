@@ -49,6 +49,12 @@ import {
   createNewUser,
   deleteUserById,
 } from "./controllers/user.js";
+import {
+  showCategories,
+  deleteCategoriesById,
+  updateCategoriesById,
+  createNewCategories,
+} from "./controllers/categories.js";
 
 dotenv.config();
 const app = express();
@@ -71,6 +77,11 @@ app.get("/admin/products", showProducts); // Get all products for admin
 app.post("/admin/products", createProduct); // Create a new product
 app.put("/admin/products", updateProduct); // Update a product
 app.delete("/admin/products/:id", deleteProduct); // Delete a product
+
+app.get("/categories", showCategories); // Get all product Categories
+app.post("/categories", createNewCategories); // Create
+app.put("/categories/:id", updateCategoriesById); // Update
+app.delete("/categories/:id", deleteCategoriesById); // Delete
 
 // Routes for Courses
 app.get("/courses", showCourses); // Get all courses
