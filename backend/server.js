@@ -41,6 +41,12 @@ import {
   updatePageReviewsById,
   deletePageReviewsById,
 } from "./controllers/pagereview.js";
+import {
+  showProductReviews,
+  showProductReviewsById,
+  deleteProductReviewsById,
+  updateProductReviewById,
+} from "./controllers/productreview.js";
 import dotenv from "dotenv";
 import multer from "multer"; // <-- Import multer
 import {
@@ -142,8 +148,12 @@ app.post("/page-reviews", createNewPageReviews); // Create
 app.put("/page-reviews/:id", updatePageReviewsById); // Update
 app.delete("/page-reviews/:id", deletePageReviewsById); // Delete
 
-//Routes for User
+//Routes for ProductReviews
+app.get("/product-reviews", showProductReviews); // Get all ProductReviews
+app.put("/product-reviews/:id", updateProductReviewById);
+app.delete("/product-reviews/:id", deleteProductReviewsById);
 
+//Routes for User
 app.get("/user/:id", showUserById); // Get all User
 app.post("/user", createNewUser); // Create
 app.put("/user/:id", updateUserById); // Update
