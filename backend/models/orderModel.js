@@ -40,7 +40,7 @@ export const createOrder = async (
 ) => {
   const query = `
       INSERT INTO Orders (user_id, order_status, total_amount, order_date)
-      VALUES ($1, $2, $3, $4)
+      VALUES (?, ?, ?, ?)
       RETURNING id
     `;
   const values = [user_id, order_status, total_amount, order_date];
@@ -102,8 +102,8 @@ export const deleteOrder = async (id) => {
 export const updateOrderTotalAmount = async (order_id, total_amount) => {
   const query = `
       UPDATE orders 
-      SET total_amount = $1 
-      WHERE id = $2
+      SET total_amount = ?
+      WHERE id = ?
     `;
   await pool.query(query, [total_amount, order_id]);
 };

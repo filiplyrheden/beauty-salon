@@ -7,7 +7,6 @@ export const fetchOrderDetails = async (order_id) => {
 };
 
 export const fetchSpecificOrderDetails = async (orderId) => {
-  console.log(orderId);
   const [rows] = await db.query(
     `SELECT od.product_id, p.product_name, od.quantity, od.unit_price
     FROM OrderDetails od
@@ -15,9 +14,6 @@ export const fetchSpecificOrderDetails = async (orderId) => {
     WHERE od.order_id = ?`,
     [orderId]
   );
-
-  // Log the rows returned
-  console.log("Rows Returned:", rows);
 
   return rows;
 };
@@ -31,7 +27,7 @@ export const createOrderDetail = async (
 ) => {
   const query = `
         INSERT INTO order_details (order_id, product_id, quantity, price, total_price)
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES (?, ?, ?, ?, ?)
       `;
   const values = [order_id, product_id, quantity, price, total_price];
   await db.query(query, values);
@@ -46,8 +42,8 @@ export const updateOrderDetail = async (
 ) => {
   const query = `
         UPDATE order_details 
-        SET quantity = $1, total_price = $2 
-        WHERE order_id = $3 AND product_id = $4
+        SET quantity = ?, total_price = ?
+        WHERE order_id = ? AND product_id = ?
       `;
   const values = [quantity, total_price, order_id, product_id];
   await pool.query(query, values);
@@ -55,7 +51,7 @@ export const updateOrderDetail = async (
 
 // Remove an item from order details
 export const removeOrderDetail = async (order_id, product_id) => {
-  const query = `DELETE FROM order_details WHERE order_id = $1 AND product_id = $2`;
+  const query = `DELETE FROM order_details WHERE order_id = ? AND product_id = ?`;
   await pool.query(query, [order_id, product_id]);
 };
 
@@ -69,7 +65,7 @@ export const addOrderDetail = async (
 ) => {
   const query = `
         INSERT INTO order_details (order_id, product_id, quantity, price, total_price)
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES (?, ?, ?, ?, ?)
       `;
   const values = [order_id, product_id, quantity, price, total_price];
   await pool.query(query, values);
