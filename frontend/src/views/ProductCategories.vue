@@ -288,7 +288,6 @@ export default {
       const filteredCategories = this.categories.filter(
         (category) => category.parent_category_id === category_id
       );
-      console.log(filteredProducts);
 
       const result = await Swal.fire({
         title: "Are you sure?",

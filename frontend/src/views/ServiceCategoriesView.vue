@@ -240,7 +240,6 @@ export default {
       const filteredServices = this.services.filter(
         (service) => service.category_id === category_id
       );
-      console.log(filteredServices);
 
       const result = await Swal.fire({
         title: "Are you sure?",

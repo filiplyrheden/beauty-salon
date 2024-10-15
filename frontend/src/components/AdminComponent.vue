@@ -26,6 +26,9 @@
     <button>
       <a href="/admin/product-categories">Manage product Categories</a>
     </button>
+    <button>
+      <a href="/admin/orders">Manage Orders</a>
+    </button>
   </div>
 </template>
 
