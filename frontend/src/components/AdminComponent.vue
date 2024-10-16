@@ -9,7 +9,7 @@
       <a href="/admin/events">Manage events</a>
     </button>
     <button>
-      <a href="#">Manage ???</a>
+      <a href="/admin/product-reviews">Manage product reviews</a>
     </button>
     <button>
       <a href="/admin/courses">Manage courses</a>
