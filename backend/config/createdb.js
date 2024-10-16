@@ -28,6 +28,7 @@ const tableCreationQueries = [
     address_line2 VARCHAR(255),
     postal_code VARCHAR(20),
     country VARCHAR(100),
+    city VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );`,
 
@@ -40,7 +41,7 @@ const tableCreationQueries = [
   );`,
 
   // Table: Service_categories
-  `CREATE TABLE Service_categories (
+  `CREATE TABLE serviceCategories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(100),
     parent_category_id INT,

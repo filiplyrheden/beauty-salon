@@ -54,6 +54,10 @@
           const response = await axios.post("http://localhost:3000/login", loginData);
           this.message = "Login successful: " + response.data;
           this.isError = false;
+          // Store token (consider using Vuex or another state management)
+          localStorage.setItem('token', response.data.token);
+          this.message = 'Login successful.';
+          // Redirect to protected route
         } catch (error) {
             console.error("Error logging in:", error);
             this.message = "Error logging in. Please try again.";

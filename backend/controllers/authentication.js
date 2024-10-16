@@ -9,7 +9,7 @@ export const loginUser = async (req, res) => {
     try {
       console.log("hej");
       const user = await getUserByEmail(req.body.email);
-      console.log(user);
+      console.log("sfsdf" + user);
       // compare hashed password with input password (hashed)
     const passwordHash = await bcrypt.hash(user.password, 10);
       console.log(passwordHash);
@@ -18,7 +18,10 @@ export const loginUser = async (req, res) => {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
           // Generate JWT token
-      const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
+      const token = jwt.sign({ email: user.email, userid: user.user_id }, 
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN }
+      );
         res.status(200).json({ token });
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });

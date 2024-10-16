@@ -5,6 +5,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import upload from "./config/uploadConfig.js";
+import adminMiddleware from "./middleware/adminMiddleware.js";
+import authMiddleware from "./middleware/authMiddleware.js";
 import {
   showEvents,
   createEvent,
@@ -75,8 +77,11 @@ const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(cors()); // Enable CORS for all routes
-app.use(express.json()); // Parse JSON bodies
+app.use(cors({
+  origin: 'http://localhost:8080',
+  credentials: true
+}));
+app.use(express.json());
 
 // Handle __dirname in ES6 modules
 const __filename = fileURLToPath(import.meta.url);
@@ -104,7 +109,7 @@ app.put("/courses/:id", upload.single("image"), updateCourseById); // Update a c
 app.delete("/courses/:id", deleteCourseById); // Delete a course
 
 // Routes for events with image upload
-app.get("/admin/events", showEvents);
+app.get("/admin/events", authMiddleware, adminMiddleware, showEvents);
 app.post("/admin/events", upload.single("image"), createEvent); // Added image upload to events
 app.put("/admin/events/:id", upload.single("image"), updateEvent); // Added image upload to events
 app.delete("/admin/events/:id", deleteEvent);
@@ -165,6 +170,9 @@ app.get("/user/:id", showUserById); // Get all User
 app.post("/user", createNewUser); // Create
 app.put("/user/:id", updateUserById); // Update
 app.delete("/user/:id", deleteUserById); // Delete
+
+
+
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);
