@@ -62,11 +62,13 @@ import {
   createNewCategories,
 } from "./controllers/categories.js";
 
-  import {
-  loginUser,
-  registerUser,
-} from "./controllers/authentication.js";
-
+import { loginUser, registerUser } from "./controllers/authentication.js";
+import {
+  createNewOrder,
+  deleteOrderById,
+  showOrders,
+  updateOrderById,
+} from "./controllers/order.js";
 
 dotenv.config();
 const app = express();
@@ -106,6 +108,11 @@ app.get("/admin/events", showEvents);
 app.post("/admin/events", upload.single("image"), createEvent); // Added image upload to events
 app.put("/admin/events/:id", upload.single("image"), updateEvent); // Added image upload to events
 app.delete("/admin/events/:id", deleteEvent);
+
+app.get("/orders", showOrders); // Get all the orders
+app.post("/orders", createNewOrder); // Create orders
+app.put("/orders/:id", updateOrderById); // update a specific order
+app.delete("/orders/:id", deleteOrderById); // delete a specific order
 
 // CRUD Routes for Courses with Image Upload
 app.post("/courses", upload.single("image"), createNewCourse); // Create

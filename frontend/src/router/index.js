@@ -11,7 +11,7 @@ import ProductReviewsPage from "../views/ProductReviewsView.vue";
 import ProductCategoriesPage from "../views/ProductCategories.vue";
 import LoginPage from "../views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
-
+import OrderPage from "../views/orderView.vue";
 
 const routes = [
   {
@@ -68,6 +68,12 @@ const routes = [
     path: "/admin/product-categories",
     name: "Product Categories Page",
     component: ProductCategoriesPage,
+  },
+  {
+
+    path: "/admin/orders",
+    name: "Order Page",
+    component: OrderPage,
   },
   {
     path: "/admin/product-reviews",

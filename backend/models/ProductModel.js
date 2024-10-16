@@ -25,20 +25,26 @@ export const getProducts = async () => {
  * @returns {Promise<Object>} The result of the insert operation.
  */
 export const insertProduct = async (product) => {
-  const { product_name, description, price, stock_quantity, category_id } = product;
+  const { product_name, description, price, stock_quantity, category_id } =
+    product;
   try {
     const query = `
       INSERT INTO Products (product_name, description, price, stock_quantity, category_id)
       VALUES (?, ?, ?, ?, ?)
     `;
-    const [result] = await db.query(query, [product_name, description, price, stock_quantity, category_id]);
+    const [result] = await db.query(query, [
+      product_name,
+      description,
+      price,
+      stock_quantity,
+      category_id,
+    ]);
     return result;
   } catch (err) {
     console.error("Error inserting product:", err);
     throw err; // Propagate the error to be handled by the controller
   }
 };
-
 
 /**
  * Update an existing product in the database.
@@ -52,14 +58,28 @@ export const insertProduct = async (product) => {
  * @returns {Promise<Object>} The result of the update operation.
  */
 export const editProduct = async (product) => {
-  const { product_id, product_name, description, price, stock_quantity, category_id } = product;
+  const {
+    product_id,
+    product_name,
+    description,
+    price,
+    stock_quantity,
+    category_id,
+  } = product;
   try {
     const query = `
       UPDATE Products
       SET product_name = ?, description = ?, price = ?, stock_quantity = ?, category_id = ?
       WHERE product_id = ?
     `;
-    const [result] = await db.query(query, [product_name, description, price, stock_quantity, category_id, product_id]);
+    const [result] = await db.query(query, [
+      product_name,
+      description,
+      price,
+      stock_quantity,
+      category_id,
+      product_id,
+    ]);
     return result;
   } catch (err) {
     console.error("Error updating product:", err);
@@ -83,3 +103,9 @@ export const trashProduct = async (productId) => {
   }
 };
 
+// Fetch products and their prices by product IDs
+export const fetchProductsByIds = async (productIds) => {
+  const query = `SELECT id, price FROM Products WHERE id = ANY(?)`;
+  const { rows } = await db.query(query, [productIds]);
+  return rows;
+};
