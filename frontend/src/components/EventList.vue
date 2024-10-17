@@ -1,424 +1,366 @@
 <template>
-    <div class="event-list-container">
-      <h2 class="event-list-title">Event List</h2>
-      <ul class="event-list">
-        <li v-for="event in items" :key="event.event_id" class="event-item">
-          <table class="event-details">
-            <tr>
-              <th>Name:</th>
-              <td>{{ event.name }}</td>
-            </tr>
-            <tr>
-              <th>ID:</th>
-              <td>{{ event.event_id }}</td>
-            </tr>
-            <tr>
-              <th>Description:</th>
-              <td>{{ event.description }}</td>
-            </tr>
-            <tr>
-              <th>Price:</th>
-              <td>${{ event.price }}</td>
-            </tr>
-            <tr>
-              <th>Image:</th>
-              <td>
-                <img :src="getImageUrl(event.image_url)" alt="Event Image" class="event-image" />
-              </td>
-            </tr>
-            <tr>
-              <th>Booking Link:</th>
-              <td>
-                <a :href="event.booking_link" target="_blank">{{ event.booking_link }}</a>
-              </td>
-            </tr>
-            <tr>
-              <th>Created At:</th>
-              <td>{{ event.created_at }}</td>
-            </tr>
-          </table>
+  <div class="event-list-container">
+    <h2 class="event-list-title">Event List</h2>
+    <ul class="event-list">
+      <li v-for="event in items" :key="event.event_id" class="event-item">
+        <!-- Event Header -->
+        <div class="event-header">
+          <h3 class="event-name">{{ event.name }}</h3>
           <div class="event-actions">
-            <!-- Delete Button -->
-            <button @click="deleteEvent(event.event_id)" class="delete-btn">
-              <font-awesome-icon :icon="['fas', 'trash']" />
-            </button>
-  
-            <!-- Edit Button -->
-            <button @click="editEvent(event)" class="edit-btn">
+            <button @click="editEvent(event)" class="action-btn edit-btn">
               <font-awesome-icon :icon="['fas', 'edit']" />
             </button>
+            <button @click="deleteEvent(event.event_id)" class="action-btn delete-btn">
+              <font-awesome-icon :icon="['fas', 'trash']" />
+            </button>
           </div>
-          <br>
-          <!-- Edit Form -->
-          <div v-if="editingEvent && editingEvent.event_id === event.event_id" class="edit-form">
-            <h3>Edit Event</h3>
+        </div>
+
+        <!-- Event Content -->
+        <div class="event-content">
+          <div class="event-details">
+            <div class="detail-group">
+              <label>Description:</label>
+              <p>{{ event.description }}</p>
+            </div>
+            <div class="detail-group">
+              <label>Price:</label>
+              <p>${{ event.price }}</p>
+            </div>
+            <div class="detail-group">
+              <label>Created At:</label>
+              <p>{{ event.created_at }}</p>
+            </div>
+            <div class="detail-group">
+              <label>Booking:</label>
+              <a :href="event.booking_link" target="_blank" class="booking-link">
+                <font-awesome-icon :icon="['fas', 'external-link-alt']" />
+                Booking link
+              </a>
+            </div>
+          </div>
+          <div class="event-image-container">
+            <img :src="getImageUrl(event.image_url)" :alt="event.name" class="event-image" />
+          </div>
+        </div>
+
+        <!-- Edit Form -->
+        <div v-if="editingEvent && editingEvent.event_id === event.event_id" class="edit-form">
+          <h4 class="edit-form-title">Edit Event</h4>
+          <div class="form-group">
             <label for="editName">Name:</label>
-            <input v-model="editingEvent.name" id="editName" type="text" class="input-field" />
-            <br />
-            <label for="editDescription">Description:</label>
-            <input v-model="editingEvent.description" id="editDescription" type="text" class="input-field" />
-            <br />
-            <label for="editPrice">Price:</label>
-            <input v-model="editingEvent.price" id="editPrice" type="number" class="input-field" />
-            <br />
-            <label for="editImage">New Image:</label>
-            <input type="file" @change="onFileChange" id="editImage" accept="image/*" class="input-file" />
-            <br />
-            <label for="editBookingLink">Booking Link:</label>
-            <input v-model="editingEvent.booking_link" id="editBookingLink" type="text" class="input-field" />
-            <br />
-            <button @click="saveEvent(editingEvent)" class="save-btn">Save Changes</button>
-            <button @click="cancelEdit" class="cancel-btn">Cancel</button>
+            <input v-model="editingEvent.name" id="editName" type="text" />
           </div>
-  
-        </li>
-      </ul>
-    </div>
-  </template>
-  
-  
-  <script>
-  import axiosInstance from '@/services/axiosConfig';
-  
-  export default {
-    name: "EventList",
-    props: {
-      items: {
-        type: Array,
-        required: true,
-      },
+          <div class="form-group">
+            <label for="editDescription">Description:</label>
+            <input v-model="editingEvent.description" id="editDescription" type="text" />
+          </div>
+          <div class="form-group">
+            <label for="editPrice">Price:</label>
+            <input v-model="editingEvent.price" id="editPrice" type="number" />
+          </div>
+          <div class="form-group">
+            <label for="editImage">New Image:</label>
+            <input type="file" @change="onFileChange" id="editImage" accept="image/*" />
+          </div>
+          <div class="form-group">
+            <label for="editBookingLink">Booking Link:</label>
+            <input v-model="editingEvent.booking_link" id="editBookingLink" type="text" />
+          </div>
+          <div class="form-actions">
+            <button @click="saveEvent(editingEvent)" class="save-btn">
+              <font-awesome-icon :icon="['fas', 'save']" />
+              Save Changes
+            </button>
+            <button @click="cancelEdit" class="cancel-btn">
+              <font-awesome-icon :icon="['fas', 'times']" />
+              Cancel
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import axiosInstance from '@/services/axiosConfig';
+
+export default {
+  name: "EventList",
+  props: {
+    items: {
+      type: Array,
+      required: true,
     },
-    data() {
-      return {
-        editingEvent: null,
-        selectedFile: null, // To store the selected file
-      };
+  },
+  data() {
+    return {
+      editingEvent: null,
+      selectedFile: null,
+    };
+  },
+  methods: {
+    getImageUrl(imageName) {
+      return `http://localhost:3000${imageName}`;
     },
-    methods: {
-      getImageUrl(imageName) {
-        return `http://localhost:3000${imageName}`;
-      },
-      deleteEvent(eventId) {
-        console.log("Deleting event with ID:", eventId);
+    deleteEvent(eventId) {
+      if (confirm('Are you sure you want to delete this event?')) {
         axiosInstance.delete(`/admin/events/${eventId}`)
           .then(response => {
             console.log("Event deleted successfully:", response.data);
             this.$emit('event-deleted', eventId);
           })
           .catch(error => {
-            console.error("Error deleting event:", error.response ? error.response.data : error.message);
+            console.error("Error deleting event:", error);
           });
-      },
-      editEvent(event) {
-        this.editingEvent = { ...event };
-      },
-      onFileChange(event) {
-        this.selectedFile = event.target.files[0]; // Store the selected file
-      },
-      saveEvent(event) {
-        console.log("Saving event:", event);
-        const eventId = event.event_id;
-        const formData = new FormData();
-        formData.append('name', event.name);
-        formData.append('description', event.description);
-        formData.append('price', event.price);
-        formData.append('booking_link', event.booking_link);
-        if (this.selectedFile) {
-          formData.append('image', this.selectedFile);
-        }
-  
-        axiosInstance.put(`/admin/events/${eventId}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(response => {
-          console.log("Event saved successfully:", response.data);
-          alert(event.name + " saved successfully!");
-          this.selectedFile = null;
-        })
-        .catch(error => {
-          console.error("Error saving event:", error.response ? error.response.data : error.message);
-        });
-        this.editingEvent = null;
-      },
-      cancelEdit() {
-        this.editingEvent = null;
-        this.selectedFile = null;
       }
     },
-    mounted() {
-      console.log("Event items:", this.items);
+    editEvent(event) {
+      this.editingEvent = { ...event };
+    },
+    onFileChange(event) {
+      this.selectedFile = event.target.files[0];
+    },
+    saveEvent(event) {
+      const formData = new FormData();
+      formData.append('name', event.name);
+      formData.append('description', event.description);
+      formData.append('price', event.price);
+      formData.append('booking_link', event.booking_link);
+      
+      if (this.selectedFile) {
+        formData.append('image', this.selectedFile);
+      }
+
+      axiosInstance.put(`/admin/events/${event.event_id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        console.log("Event saved successfully:", response.data);
+        alert(event.name + " saved successfully!");
+        this.selectedFile = null;
+        this.editingEvent = null;
+      })
+      .catch(error => {
+        console.error("Error saving event:", error);
+      });
+    },
+    cancelEdit() {
+      this.editingEvent = null;
+      this.selectedFile = null;
     }
-  };
-  </script>
-  
-  <style scoped>
-  .course-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  }
+};
+</script>
+
+<style scoped>
+.event-list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.event-list-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.event-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.event-item {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.event-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #2c3e50;
+}
+
+.event-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detail-group label {
+  font-weight: 600;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.detail-group p {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.event-image-container {
+  position: relative;
+  height: 200px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.event-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.event-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.booking-link {
+  color: #4a90e2;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.booking-link:hover {
+  text-decoration: underline;
+}
+
+/* Edit Form Styles */
+.edit-form {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.edit-form-title {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group input[type="file"] {
+  border: none;
+  padding: 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.save-btn, .cancel-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.save-btn {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+/* Hover states */
+.action-btn:hover,
+.save-btn:hover,
+.cancel-btn:hover {
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .event-content {
+    grid-template-columns: 1fr;
   }
 
-  .event-image{
-    width: 100px;
+  .event-image-container {
+    height: 250px;
   }
 
-  li{
-    list-style-type: none;
+  .form-actions {
+    flex-direction: column;
   }
-
-  .event-actions{
-    margin-top: 8px;
-  }
-  
-  h1,
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .form-container,
-  .list-container {
-    background-color: #fff;
-    padding: 20px;
-    margin-bottom: 40px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .form-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    width: 150px;
-    font-weight: bold;
-  }
-  
-  .form-group input,
-  .form-group textarea {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: flex-start;
-  }
-  
-  .button-group button {
-    margin-right: 10px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .button-group button[type="submit"] {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .button-group button[type="button"] {
-    background-color: #6c757d;
-    color: #fff;
-  }
-  
-  .button-group button:hover {
-    opacity: 0.9;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-  
-  thead {
-    background-color: #f8f9fa;
-  }
-  
-  th,
-  td {
-    padding: 12px;
-    border: 1px solid #dee2e6;
-    text-align: left;
-    word-wrap: break-word;
-  }
-  
-  th {
-    font-weight: bold;
-  }
-  
-  #schedule {
-    flex: 0;
-  }
-  
-  .course-image {
-    width: 100px;
-    height: auto;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  
-  a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
-  
-  button {
-    padding: 6px 12px;
-    margin-right: 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  button:first-of-type {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  button:last-of-type {
-    background-color: #dc3545;
-    color: #fff;
-  }
-  
-  button:hover {
-    opacity: 0.8;
-  }
-  
-  /* Loading Indicator Styles */
-  .loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-  
-  .spinner {
-    border: 8px solid #f3f3f3;
-    border-top: 8px solid #007bff;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
-  /* Image Preview Styles */
-  .image-preview {
-    width: 150px;
-    height: auto;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  tr:nth-child(2n) {
-    background-color: #f8f8f8; /* Light gray background for every second td */
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .form-group {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-    }
-    #schedule {
-      width: fit-content;
-    }
-    .form-group label {
-      width: 100%;
-      margin-bottom: 5px;
-    }
-  
-    table,
-    thead,
-    tbody,
-    th,
-    td,
-    tr {
-      display: block;
-    }
-  
-    th {
-      position: absolute;
-      top: -9999px;
-      left: -9999px;
-    }
-  
-    tr {
-      margin-bottom: 15px;
-    }
-  
-    td {
-      position: relative;
-      padding-left: 50%;
-      border: none;
-      border-bottom: 1px solid #dee2e6;
-    }
-  
-    td::before {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      width: 45%;
-      padding-right: 10px;
-      white-space: nowrap;
-      font-weight: bold;
-    }
-  
-    td:nth-of-type(1)::before {
-      content: "ID";
-    }
-    td:nth-of-type(2)::before {
-      content: "Name";
-    }
-    td:nth-of-type(3)::before {
-      content: "Description";
-    }
-    td:nth-of-type(4)::before {
-      content: "Price ($)";
-    }
-    td:nth-of-type(5)::before {
-      content: "Schedule";
-    }
-    td:nth-of-type(6)::before {
-      content: "Image";
-    }
-    td:nth-of-type(7)::before {
-      content: "Booking Link";
-    }
-    td:nth-of-type(8)::before {
-      content: "Actions";
-    }
-  }
-  </style>
-  
+}
+</style>
