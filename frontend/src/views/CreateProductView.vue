@@ -1,7 +1,7 @@
 <template>
     <div>
-      <ProductList :items="productItems" @product-deleted="handleProductDelete" />
       <CreateProduct />
+      <ProductList :items="productItems" @product-deleted="handleProductDelete" />
     </div>
   </template>
   

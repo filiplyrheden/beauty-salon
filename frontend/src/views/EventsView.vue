@@ -1,7 +1,7 @@
 <template>
     <div>
-        <EventList :items="eventItems" @event-deleted="handleEventDelete" />
         <CreateEvent />
+        <EventList :items="eventItems" @event-deleted="handleEventDelete" />
     </div>
 </template>
 

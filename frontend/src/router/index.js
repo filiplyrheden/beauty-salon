@@ -30,7 +30,7 @@ const routes = [
     component: LoginPage,
   },
   {
-    path: "/admin/product",
+    path: "/admin/products",
     name: "Product View",
     component: CreateProduct,
     meta: { requiresAuth: true, requiresAdmin: true },

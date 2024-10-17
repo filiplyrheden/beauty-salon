@@ -3,7 +3,7 @@
     <h1>Admin Page</h1>
 
     <button>
-      <a href="/admin/createproduct">Manage products</a>
+      <a href="/admin/products">Manage products</a>
     </button>
     <button>
       <a href="/admin/events">Manage events</a>
