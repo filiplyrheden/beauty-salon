@@ -75,12 +75,6 @@ export default {
       isLoading: false, // For loading indicator
     };
   },
-  computed: {
-    API_BASE_URL() {
-      const url = process.env.VUE_APP_API_BASE_URL || "http://localhost:3000";
-      return url;
-    },
-  },
   created() {
     this.fetchCategories();
     this.fetchServices();
