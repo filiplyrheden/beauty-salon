@@ -33,6 +33,7 @@
 
 <script>
 import axios from "axios";
+import { mapMutations } from "vuex"; // Import mapMutations from Vuex
 
 export default {
   data() {
@@ -44,6 +45,8 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["login"]), // Map the login mutation
+
     async handleLogin() {
       const loginData = {
         email: this.email,
@@ -56,23 +59,26 @@ export default {
           loginData
         );
 
-        this.message = "Login successful: " + response.data;
+        this.message = "Login successful!";
         this.isError = false;
 
-        // Store token and role in localStorage
+        // Store token in localStorage
         localStorage.setItem("token", response.data.token);
-        // Redirect based on user role
 
+        // Commit the login mutation to Vuex store
+        this.login(); // Call the login mutation to update the state
+
+        // Redirect based on user role
         const decodedToken = JSON.parse(
           atob(response.data.token.split(".")[1])
         );
         console.log(decodedToken.role);
         if (decodedToken.role === "admin") {
           console.log("Redirecting to admin panel");
-          this.$router.push("/admin"); // Use this.$router.push instead
+          this.$router.push("/admin");
         } else {
           console.log("Redirecting to main page");
-          this.$router.push("/"); // Redirect to main page for normal users
+          this.$router.push("/");
         }
       } catch (error) {
         console.error("Error logging in:", error);
