@@ -28,6 +28,7 @@ const routes = [
     path: "/login",
     name: "LoginPage",
     component: LoginPage,
+    meta: { requiresAuth: false },
   },
   {
     path: "/admin/createproduct",
@@ -103,20 +104,27 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = !!localStorage.getItem("token"); // JWT for auth
   const token = localStorage.getItem("token");
 
-  if (requiresAuth && !isAuthenticated) {
-    next("/login");
-  } else if (requiresAdmin) {
-    // Decode JWT to get role (frontend can decode without verifying signature)
-    const decodedToken = JSON.parse(atob(token.split(".")[1]));
-    console.log(decodedToken);
-    if (decodedToken.role !== "admin") {
-      next("/403"); // Redirect to forbidden page if not admin
-    } else {
-      next(); // Proceed if user is admin
-    }
-  } else {
-    next();
+  if (to.path === "/login" && isAuthenticated) {
+    // Redirect authenticated users away from /login
+    return next("/"); // Return immediately after redirection
   }
+
+  if (requiresAuth && !isAuthenticated) {
+    return next("/login"); // Return immediately if authentication is required but user is not authenticated
+  }
+
+  if (requiresAdmin) {
+    if (!token) {
+      return next("/login"); // Return immediately if there's no token
+    }
+    // Decode JWT to get role
+    const decodedToken = JSON.parse(atob(token.split(".")[1]));
+    if (decodedToken.role !== "admin") {
+      return next("/403"); // Return immediately if user is not an admin
+    }
+  }
+
+  return next(); // Only proceed after all checks are passed
 });
 
 export default router;
