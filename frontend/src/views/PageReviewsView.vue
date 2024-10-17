@@ -78,7 +78,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import axiosInstance from "@/services/axiosConfig";
 import Swal from "sweetalert2";
 
 export default {
@@ -95,12 +95,6 @@ export default {
       isLoading: false, // For loading indicator
     };
   },
-  computed: {
-    API_BASE_URL() {
-      const url = process.env.VUE_APP_API_BASE_URL || "http://localhost:3000";
-      return url;
-    },
-  },
   created() {
     this.fetchPageReviews();
   },
@@ -111,7 +105,7 @@ export default {
     async fetchPageReviews() {
       this.isLoading = true;
       try {
-        const response = await axios.get(`${this.API_BASE_URL}/page-reviews`);
+        const response = await axiosInstance.get(`/page-reviews`);
         this.reviews = response.data.map((review) => ({
           ...review,
         }));
@@ -135,14 +129,9 @@ export default {
     async addReview() {
       try {
         this.isLoading = true;
-        const response = await axios.post(
+        const response = await axiosInstance.post(
           `${this.API_BASE_URL}/page-reviews`,
-          { rating: this.form.rating, review_text: this.form.review_text },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          { rating: this.form.rating, review_text: this.form.review_text }
         );
 
         const addedReview = { ...response.data };
@@ -182,16 +171,11 @@ export default {
         this.isLoading = true;
 
         // Send the data as JSON
-        const response = await axios.put(
-          `${this.API_BASE_URL}/page-reviews/${this.form.id}`,
+        const response = await axiosInstance.put(
+          `/page-reviews/${this.form.id}`,
           {
             rating: this.form.rating,
             review_text: this.form.review_text,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json", // Set JSON content type
-            },
           }
         );
 
@@ -241,7 +225,7 @@ export default {
 
       try {
         this.isLoading = true;
-        await axios.delete(`${this.API_BASE_URL}/page-reviews/${id}`);
+        await axiosInstance.delete(`/page-reviews/${id}`);
         this.reviews = this.reviews.filter((review) => review.id !== id);
         Swal.fire("Deleted!", "REVIEW deleted successfully!", "success");
       } catch (error) {
