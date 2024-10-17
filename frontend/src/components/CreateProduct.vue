@@ -60,7 +60,7 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import axiosInstance from '@/services/axiosConfig';
   
   export default {
     data() {
@@ -85,7 +85,7 @@
     };
 
     try {
-      const response = await axios.post("http://localhost:3000/admin/createproducts", newProduct);
+      const response = await axiosInstance.post(`/products`, newProduct);
       console.log("Response:", response);
       this.message = "Product added successfully! Product ID: " + response.data.product_id; // Ensure correct property access
       this.resetForm(); // Clear form fields after successful submission

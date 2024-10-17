@@ -6,7 +6,7 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import axiosInstance from "@/services/axiosConfig";
   import ProductList from '@/components/ProductList.vue';
   import CreateProduct from '@/components/CreateProduct.vue';
   
@@ -27,7 +27,7 @@
     methods: {
       async getProducts() {
         try {
-          const response = await axios.get("http://localhost:3000/products");
+          const response = await axiosInstance.get(`/admin/products`);
           this.productItems = response.data; // Assign API response to items
         } catch (error) {
           console.error("Error fetching products:", error); // Log error for debugging

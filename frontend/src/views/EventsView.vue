@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axiosInstance from '@/services/axiosConfig';
 import EventList from '@/components/EventList.vue';
 import CreateEvent from '@/components/CreateEvent.vue';
 
@@ -28,7 +28,7 @@ export default {
         async getEvents() {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get("http://localhost:3000/admin/events", {
+                const response = await axiosInstance.get("/admin/events", {
                     headers: {
                 Authorization: `Bearer ${token}`
                 }
