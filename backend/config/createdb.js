@@ -4,14 +4,14 @@ import mysql from "mysql2/promise";
 
 // Replace these with your actual MySQL credentials
 const dbConfig = {
-  host: 'localhost',
-  user: 'root',              // MySQL username
-  password: '123', // MySQL password
+  host: "localhost",
+  user: "root", // MySQL username
+  password: "", // MySQL password
   // database will be specified later
 };
 
 // Name of the database to create
-const databaseName = 'beautytestdb'; //(OOPS!!) IF YOU TAKE beauty.db as name or the same name as you already have it will reset it with new tables and info.
+const databaseName = "beautytestdb"; //(OOPS!!) IF YOU TAKE beauty.db as name or the same name as you already have it will reset it with new tables and info.
 
 // SQL Statements for Table Creation
 const tableCreationQueries = [
@@ -28,6 +28,7 @@ const tableCreationQueries = [
     address_line2 VARCHAR(255),
     postal_code VARCHAR(20),
     country VARCHAR(100),
+    city VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );`,
 
@@ -39,12 +40,12 @@ const tableCreationQueries = [
     FOREIGN KEY (parent_category_id) REFERENCES Categories(category_id) ON DELETE SET NULL
   );`,
 
-  // Table: Service_categories
-  `CREATE TABLE Service_categories (
+  // Table: serviceCategories
+  `CREATE TABLE serviceCategories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(100),
     parent_category_id INT,
-    FOREIGN KEY (parent_category_id) REFERENCES Service_categories(category_id) ON DELETE SET NULL
+    FOREIGN KEY (parent_category_id) REFERENCES serviceCategories(category_id) ON DELETE SET NULL
   );`,
 
   // Table: Products
@@ -102,7 +103,7 @@ const tableCreationQueries = [
     booking_link VARCHAR(255),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES Service_categories(category_id) ON DELETE SET NULL
+    FOREIGN KEY (category_id) REFERENCES serviceCategories(category_id) ON DELETE SET NULL
   );`,
 
   // Table: Events
@@ -169,8 +170,8 @@ const insertDataQueries = [
   ('Massages', NULL),
   ('Manicures & Pedicures', NULL);`,
 
-  // Insert into Service_categories
-  `INSERT INTO Service_categories (category_name, parent_category_id) VALUES
+  // Insert into serviceCategories
+  `INSERT INTO serviceCategories (category_name, parent_category_id) VALUES
   ('Facial Treatments', NULL),
   ('Massage Therapies', NULL),
   ('Nail Services', NULL),
@@ -251,14 +252,16 @@ async function createDatabase() {
       multipleStatements: true, // To allow executing multiple SQL statements at once
     });
 
-    console.log('Connected to MySQL server.');
+    console.log("Connected to MySQL server.");
 
     // 2. Drop the existing database if it exists
     await connection.query(`DROP DATABASE IF EXISTS \`${databaseName}\`;`);
     console.log(`Dropped database if it existed: ${databaseName}`);
 
     // 3. Create the new database
-    await connection.query(`CREATE DATABASE \`${databaseName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`);
+    await connection.query(
+      `CREATE DATABASE \`${databaseName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+    );
     console.log(`Created new database: ${databaseName}`);
 
     // 4. Connect to the newly created database
@@ -270,23 +273,22 @@ async function createDatabase() {
       await connection.query(query);
       console.log(`Executed table creation query.`);
     }
-    console.log('All tables created successfully.');
+    console.log("All tables created successfully.");
 
     // 6. Insert Dummy Data
     for (const query of insertDataQueries) {
       await connection.query(query);
       console.log(`Inserted data into tables.`);
     }
-    console.log('Dummy data inserted successfully.');
+    console.log("Dummy data inserted successfully.");
 
-    console.log('Database setup completed successfully.');
-
+    console.log("Database setup completed successfully.");
   } catch (error) {
-    console.error('Error during database setup:', error);
+    console.error("Error during database setup:", error);
   } finally {
     if (connection) {
       await connection.end();
-      console.log('MySQL connection closed.');
+      console.log("MySQL connection closed.");
     }
   }
 }

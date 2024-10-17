@@ -142,7 +142,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import axiosInstance from "@/services/axiosConfig";
 import Swal from "sweetalert2";
 
 export default {
@@ -164,12 +164,6 @@ export default {
       isLoading: false, // For loading indicator
     };
   },
-  computed: {
-    API_BASE_URL() {
-      const url = process.env.VUE_APP_API_BASE_URL || "http://localhost:3000";
-      return url;
-    },
-  },
   created() {
     this.fetchCourses();
   },
@@ -180,7 +174,7 @@ export default {
     async fetchCourses() {
       this.isLoading = true;
       try {
-        const response = await axios.get(`${this.API_BASE_URL}/courses`);
+        const response = await axiosInstance.get(`/courses`);
         this.courses = response.data.map((course) => ({
           ...course,
           price: Number(course.price), // Ensure 'price' is a number
@@ -249,15 +243,11 @@ export default {
 
       try {
         this.isLoading = true;
-        const response = await axios.post(
-          `${this.API_BASE_URL}/courses`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        const response = await axiosInstance.post(`/courses`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
         const addedCourse = {
           ...response.data,
@@ -320,8 +310,8 @@ export default {
 
       try {
         this.isLoading = true;
-        const response = await axios.put(
-          `${this.API_BASE_URL}/courses/${this.form.course_id}`, // Make sure course_id is correctly referenced
+        const response = await axiosInstance.put(
+          `/courses/${this.form.course_id}`, // Make sure course_id is correctly referenced
           formData,
           {
             headers: {
@@ -381,7 +371,7 @@ export default {
 
       try {
         this.isLoading = true;
-        await axios.delete(`${this.API_BASE_URL}/courses/${course_id}`);
+        await axiosInstance.delete(`/courses/${course_id}`);
         this.courses = this.courses.filter(
           (course) => course.course_id !== course_id
         );

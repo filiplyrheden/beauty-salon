@@ -6,7 +6,7 @@ import db from "../config/database.js";
  */
 export const getServicesCategories = async () => {
   try {
-    const [rows] = await db.query("SELECT * FROM Services_category");
+    const [rows] = await db.query("SELECT * FROM serviceCategories");
     return rows;
   } catch (err) {
     console.error("Error fetching services:", err);
@@ -17,7 +17,7 @@ export const getServicesCategories = async () => {
 export const getServicesCategoriesById = async (id) => {
   try {
     const [rows] = await db.query(
-      "SELECT * FROM Services_category WHERE category_id = ?",
+      "SELECT * FROM serviceCategories WHERE category_id = ?",
       [id]
     );
 
@@ -36,7 +36,7 @@ export const createServicesCategories = async (categoryData) => {
   const { category_name } = categoryData;
   try {
     const [result] = await db.query(
-      "INSERT INTO Services_category (category_name) VALUES (?)",
+      "INSERT INTO serviceCategories (category_name) VALUES (?)",
       [category_name]
     );
 
@@ -52,7 +52,7 @@ export const updateServicesCategories = async (id, categoryData) => {
   const { category_name } = categoryData;
   try {
     const [result] = await db.query(
-      "UPDATE Services_category SET category_name = ? WHERE category_id = ?",
+      "UPDATE serviceCategories SET category_name = ? WHERE category_id = ?",
       [category_name, id]
     );
 
@@ -78,7 +78,7 @@ export const deleteServicesCategories = async (id) => {
     await connection.query("DELETE FROM Services WHERE category_id = ?", [id]);
     // Delete the category
     const [result] = await connection.query(
-      "DELETE FROM Services_category WHERE category_id = ?",
+      "DELETE FROM serviceCategories WHERE category_id = ?",
       [id]
     );
     if (result.affectedRows === 0) {

@@ -192,7 +192,8 @@
 </template>
 
 <script>
-import axios from "axios";
+import axiosInstance from "@/services/axiosConfig";
+
 import Swal from "sweetalert2";
 
 export default {
@@ -235,7 +236,7 @@ export default {
     async fetchServices() {
       this.isLoading = true;
       try {
-        const response = await axios.get(`${this.API_BASE_URL}/services`);
+        const response = await axiosInstance.get(`/services`);
         this.services = response.data.map((service) => ({
           ...service,
           price: Number(service.price), // Ensure 'price' is a number
@@ -261,9 +262,7 @@ export default {
     async fetchCategories() {
       this.isLoading = true;
       try {
-        const response = await axios.get(
-          `${this.API_BASE_URL}/services-categories`
-        );
+        const response = await axiosInstance.get(`/services-categories`);
         this.categories = response.data;
       } catch (error) {
         console.error(
@@ -354,7 +353,7 @@ export default {
       formData.append("description", this.form.description);
       formData.append("price", this.form.price);
       formData.append("time", this.form.time);
-      formData.append("categoryId", this.form.category);
+      formData.append("category_id", this.form.category);
       formData.append(
         "booking_link",
         this.form.booking_link || "https://www.snbeauty.se/kontakt"
@@ -362,15 +361,11 @@ export default {
 
       try {
         this.isLoading = true;
-        const response = await axios.post(
-          `${this.API_BASE_URL}/services`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        const response = await axiosInstance.post(`/services`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
         const addedService = {
           ...response.data,
@@ -439,12 +434,12 @@ export default {
       formData.append("price", this.form.price);
       formData.append("time", this.form.time);
       formData.append("booking_link", this.form.booking_link);
-      formData.append("categoryId", this.form.category);
+      formData.append("category_id", this.form.category);
 
       try {
         this.isLoading = true;
-        const response = await axios.put(
-          `${this.API_BASE_URL}/services/${this.form.service_id}`,
+        const response = await axiosInstance.put(
+          `/services/${this.form.service_id}`,
           formData,
           {
             headers: {
@@ -507,7 +502,7 @@ export default {
 
       try {
         this.isLoading = true;
-        await axios.delete(`${this.API_BASE_URL}/services/${service_id}`);
+        await axiosInstance.delete(`/services/${service_id}`);
         this.services = this.services.filter(
           (service) => service.service_id !== service_id
         );

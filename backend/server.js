@@ -5,6 +5,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import upload from "./config/uploadConfig.js";
+import adminMiddleware from "./middleware/adminMiddleware.js";
+import authMiddleware from "./middleware/authMiddleware.js";
 import {
   showEvents,
   createEvent,
@@ -75,8 +77,13 @@ const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(cors()); // Enable CORS for all routes
-app.use(express.json()); // Parse JSON bodies
+app.use(
+  cors({
+    origin: "http://localhost:8080",
+    credentials: true,
+  })
+);
+app.use(express.json());
 
 // Handle __dirname in ES6 modules
 const __filename = fileURLToPath(import.meta.url);
@@ -87,46 +94,82 @@ app.use("/uploads", express.static(path.join(__dirnameFull, "uploads")));
 
 // Routes for Products
 app.get("/products", showProducts); // Get all products
-app.get("/admin/products", showProducts); // Get all products for admin
-app.post("/admin/products", createProduct); // Create a new product
-app.put("/admin/products", updateProduct); // Update a product
-app.delete("/admin/products/:id", deleteProduct); // Delete a product
+app.get("/admin/products", authMiddleware, adminMiddleware, showProducts); // Get all products for admin
+app.post("/admin/products", authMiddleware, adminMiddleware, createProduct); // Create a new product
+app.put("/admin/products", authMiddleware, adminMiddleware, updateProduct); // Update a product
+app.delete(
+  "/admin/products/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteProduct
+); // Delete a product
 
-app.get("/categories", showCategories); // Get all product Categories
-app.post("/categories", createNewCategories); // Create
-app.put("/categories/:id", updateCategoriesById); // Update
-app.delete("/categories/:id", deleteCategoriesById); // Delete
+app.get("/categories", authMiddleware, adminMiddleware, showCategories); // Get all product Categories
+app.post("/categories", authMiddleware, adminMiddleware, createNewCategories); // Create
+app.put(
+  "/categories/:id",
+  authMiddleware,
+  adminMiddleware,
+  updateCategoriesById
+); // Update
+app.delete(
+  "/categories/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteCategoriesById
+); // Delete
 
 // Routes for Courses
 app.get("/courses", showCourses); // Get all courses
-app.post("/courses", upload.single("image"), createNewCourse); // Create a new course with image upload
-app.put("/courses/:id", upload.single("image"), updateCourseById); // Update a course with image upload
-app.delete("/courses/:id", deleteCourseById); // Delete a course
+app.post(
+  "/courses",
+  authMiddleware,
+  adminMiddleware,
+  upload.single("image"),
+  createNewCourse
+); // Create a new course with image upload
+app.put(
+  "/courses/:id",
+  authMiddleware,
+  adminMiddleware,
+  upload.single("image"),
+  updateCourseById
+); // Update a course with image upload
+app.delete("/courses/:id", authMiddleware, adminMiddleware, deleteCourseById); // Delete a course
 
 // Routes for events with image upload
-app.get("/admin/events", showEvents);
-app.post("/admin/events", upload.single("image"), createEvent); // Added image upload to events
-app.put("/admin/events/:id", upload.single("image"), updateEvent); // Added image upload to events
-app.delete("/admin/events/:id", deleteEvent);
+app.get("/admin/events", authMiddleware, adminMiddleware, showEvents);
+app.post(
+  "/admin/events",
+  authMiddleware,
+  adminMiddleware,
+  upload.single("image"),
+  createEvent
+); // Added image upload to events
+app.put(
+  "/admin/events/:id",
+  authMiddleware,
+  adminMiddleware,
+  upload.single("image"),
+  updateEvent
+); // Added image upload to events
+app.delete("/admin/events/:id", authMiddleware, adminMiddleware, deleteEvent);
 
-app.get("/orders", showOrders); // Get all the orders
-app.post("/orders", createNewOrder); // Create orders
-app.put("/orders/:id", updateOrderById); // update a specific order
-app.delete("/orders/:id", deleteOrderById); // delete a specific order
-
-// CRUD Routes for Courses with Image Upload
-app.post("/courses", upload.single("image"), createNewCourse); // Create
-app.put("/courses/:id", upload.single("image"), updateCourseById); // Update
-app.delete("/courses/:id", deleteCourseById); // Delete
+app.get("/orders", authMiddleware, adminMiddleware, showOrders); // Get all the orders
+app.post("/orders", authMiddleware, adminMiddleware, createNewOrder); // Create orders
+app.put("/orders/:id", authMiddleware, adminMiddleware, updateOrderById); // update a specific order
+app.delete("/orders/:id", authMiddleware, adminMiddleware, deleteOrderById); // delete a specific order
 
 // Auth Routes
 app.post("/login", loginUser);
 app.post("/register", registerUser);
 
 // Routes for Services
-app.get("/services", showServices); // Get all courses
+app.get("/services", authMiddleware, adminMiddleware, showServices); // Get all courses
 app.post(
   "/services",
+  authMiddleware,
+  adminMiddleware,
   upload.fields([
     { name: "beforeImage", maxCount: 1 },
     { name: "afterImage", maxCount: 1 },
@@ -135,36 +178,89 @@ app.post(
 );
 app.put(
   "/services/:id",
+  authMiddleware,
+  adminMiddleware,
   upload.fields([
     { name: "beforeImage", maxCount: 1 },
     { name: "afterImage", maxCount: 1 },
   ]),
   updateServiceById
 );
-app.delete("/services/:id", deleteServiceById); // Delete a service
+app.delete("/services/:id", authMiddleware, adminMiddleware, deleteServiceById); // Delete a service
 
 //Routes for ServicesCategories
-app.get("/services-categories", showServicesCategories); // Get all Servicescategories
-app.post("/services-categories", createNewServicesCategories); // Create
-app.put("/services-categories/:id", updateServicesCategoriesById); // Update
-app.delete("/services-categories/:id", deleteServicesCategoriesById); // Delete
+app.get(
+  "/services-categories",
+  authMiddleware,
+  adminMiddleware,
+  showServicesCategories
+); // Get all Servicescategories
+app.post(
+  "/services-categories",
+  authMiddleware,
+  adminMiddleware,
+  createNewServicesCategories
+); // Create
+app.put(
+  "/services-categories/:id",
+  authMiddleware,
+  adminMiddleware,
+  updateServicesCategoriesById
+); // Update
+app.delete(
+  "/services-categories/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteServicesCategoriesById
+); // Delete
 
 //Routes for PageReviews
-app.get("/page-reviews", showPageReviews); // Get all PageReviews
-app.post("/page-reviews", createNewPageReviews); // Create
-app.put("/page-reviews/:id", updatePageReviewsById); // Update
-app.delete("/page-reviews/:id", deletePageReviewsById); // Delete
+app.get("/page-reviews", authMiddleware, adminMiddleware, showPageReviews); // Get all PageReviews
+app.post(
+  "/page-reviews",
+  authMiddleware,
+  adminMiddleware,
+  createNewPageReviews
+); // Create
+app.put(
+  "/page-reviews/:id",
+  authMiddleware,
+  adminMiddleware,
+  updatePageReviewsById
+); // Update
+app.delete(
+  "/page-reviews/:id",
+  authMiddleware,
+  adminMiddleware,
+  deletePageReviewsById
+); // Delete
 
 //Routes for ProductReviews
-app.get("/product-reviews", showProductReviews); // Get all ProductReviews
-app.put("/product-reviews/:id", updateProductReviewById);
-app.delete("/product-reviews/:id", deleteProductReviewsById);
+app.get(
+  "/product-reviews",
+  authMiddleware,
+  adminMiddleware,
+  showProductReviews
+); // Get all ProductReviews
+app.put(
+  "/product-reviews/:id",
+  authMiddleware,
+  adminMiddleware,
+  updateProductReviewById
+);
+app.delete(
+  "/product-reviews/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteProductReviewsById
+);
 
 //Routes for User
 app.get("/user/:id", showUserById); // Get all User
 app.post("/user", createNewUser); // Create
-app.put("/user/:id", updateUserById); // Update
-app.delete("/user/:id", deleteUserById); // Delete
+app.put("/user/:id", authMiddleware, adminMiddleware, updateUserById); // Update
+app.delete("/user/:id", authMiddleware, adminMiddleware, deleteUserById); // Delete
+
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);

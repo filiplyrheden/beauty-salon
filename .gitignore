@@ -50,6 +50,7 @@ backend/.env
 backend/.env.local
 backend/uploads
 backend/config/database.js
+backend/config/createdblucas.js
 
 
 # Frontend folder

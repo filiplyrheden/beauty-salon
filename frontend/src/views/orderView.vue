@@ -110,7 +110,8 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import axiosInstance from "@/services/axiosConfig";
+
 import Swal from "sweetalert2";
 
 export default {
@@ -126,12 +127,6 @@ export default {
       isLoading: false, // For loading indicator
     };
   },
-  computed: {
-    API_BASE_URL() {
-      const url = process.env.VUE_APP_API_BASE_URL || "http://localhost:3000";
-      return url;
-    },
-  },
   created() {
     this.fetchOrders();
   },
@@ -142,7 +137,7 @@ export default {
     async fetchOrders() {
       this.isLoading = true;
       try {
-        const response = await axios.get(`${this.API_BASE_URL}/orders`);
+        const response = await axiosInstance.get("/orders");
         this.orders = response.data.map((order) => ({
           ...order,
         }));
@@ -163,16 +158,10 @@ export default {
     async updateOrder() {
       try {
         this.isLoading = true;
-
-        const response = await axios.put(
-          `${this.API_BASE_URL}/orders/${this.form.order_id}`,
+        const response = await axiosInstance.put(
+          `/orders/${this.form.order_id}`,
           {
             order_status: this.form.order_status,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
           }
         );
 
@@ -235,7 +224,7 @@ export default {
 
       try {
         this.isLoading = true;
-        await axios.delete(`${this.API_BASE_URL}/orders/${order_id}`);
+        await axiosInstance.delete(`/orders/${order_id}`);
         this.orders = this.orders.filter(
           (order) => order.order_id !== order_id
         );
