@@ -93,7 +93,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import axiosInstance from "@/services/axiosConfig";
 import Swal from "sweetalert2";
 
 export default {
@@ -128,7 +128,7 @@ export default {
     async fetchCategories() {
       this.isLoading = true;
       try {
-        const response = await axios.get(`${this.API_BASE_URL}/categories`);
+        const response = await axiosInstance.get(`/categories`);
         this.categories = response.data.map((category) => ({
           ...category,
         }));
@@ -149,7 +149,7 @@ export default {
     async fetchProducts() {
       this.isLoading = true;
       try {
-        const response = await axios.get(`${this.API_BASE_URL}/products`);
+        const response = await axiosInstance.get(`/products`);
         this.products = response.data.map((product) => ({
           ...product,
         }));
@@ -180,18 +180,10 @@ export default {
             ? null
             : this.form.parent_category_id;
 
-        const response = await axios.post(
-          `${this.API_BASE_URL}/categories`,
-          {
-            category_name: this.form.name,
-            parent_category_id: parentCategoryId, // Send null or valid id
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axiosInstance.post(`/categories`, {
+          category_name: this.form.name,
+          parent_category_id: parentCategoryId, // Send null or valid id
+        });
 
         const addedCategory = { ...response.data };
         this.categories.push(addedCategory);
@@ -239,16 +231,11 @@ export default {
             ? null
             : this.form.parent_category_id;
 
-        const response = await axios.put(
-          `${this.API_BASE_URL}/categories/${this.form.category_id}`,
+        const response = await axiosInstance.put(
+          `/categories/${this.form.category_id}`,
           {
             category_name: this.form.name,
             parent_category_id: parentCategoryId, // Send null or valid id
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
           }
         );
 
@@ -315,7 +302,7 @@ export default {
 
       try {
         this.isLoading = true;
-        await axios.delete(`${this.API_BASE_URL}/categories/${category_id}`);
+        await axiosInstance.delete(`/categories/${category_id}`);
         this.categories = this.categories.filter(
           (category) => category.category_id !== category_id
         );
