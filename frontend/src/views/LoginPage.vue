@@ -55,13 +55,25 @@ export default {
           "http://localhost:3000/login",
           loginData
         );
+
         this.message = "Login successful: " + response.data;
         this.isError = false;
-        // Store token (consider using Vuex or another state management)
+
+        // Store token and role in localStorage
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("role", response.data.role);
-        this.message = "Login successful.";
-        // Redirect to protected route
+        // Redirect based on user role
+
+        const decodedToken = JSON.parse(
+          atob(response.data.token.split(".")[1])
+        );
+        console.log(decodedToken.role);
+        if (decodedToken.role === "admin") {
+          console.log("Redirecting to admin panel");
+          this.$router.push("/admin"); // Use this.$router.push instead
+        } else {
+          console.log("Redirecting to main page");
+          this.$router.push("/"); // Redirect to main page for normal users
+        }
       } catch (error) {
         console.error("Error logging in:", error);
         this.message = "Error logging in. Please try again.";
@@ -141,6 +153,6 @@ export default {
 }
 
 .error {
-  color: red; /* Style for error messages */
+  color: red;
 }
 </style>
