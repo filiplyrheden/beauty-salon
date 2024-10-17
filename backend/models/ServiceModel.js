@@ -41,7 +41,7 @@ export const createService = async (serviceData) => {
     after_image_url,
     before_image_url,
     booking_link,
-    categoryId,
+    category_id,
   } = serviceData;
 
   try {
@@ -55,7 +55,7 @@ export const createService = async (serviceData) => {
         after_image_url,
         before_image_url,
         booking_link,
-        categoryId,
+        category_id,
       ]
     );
 
@@ -76,7 +76,7 @@ export const updateService = async (id, serviceData) => {
     after_image_url,
     before_image_url,
     booking_link,
-    categoryId,
+    category_id,
   } = serviceData;
 
   try {
@@ -90,7 +90,7 @@ export const updateService = async (id, serviceData) => {
         after_image_url,
         before_image_url,
         booking_link,
-        categoryId,
+        category_id,
         id,
       ]
     );

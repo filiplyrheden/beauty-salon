@@ -42,10 +42,17 @@ export const deleteUserById = async (req, res) => {
 export const updateUserById = async (req, res) => {
   try {
     const id = req.params.id;
+    const loggedInUserId = req.user.id;
+    const isAdmin = req.user.role === "admin";
 
+    //added check so that users can only update their own profile
+    if (userId !== loggedInUserId && !isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "You can only update your own profile" });
+    }
     // Validate input
     const {
-      role,
       first_name,
       last_name,
       email,
@@ -74,7 +81,6 @@ export const updateUserById = async (req, res) => {
 export const createNewUser = async (req, res) => {
   try {
     const {
-      role,
       first_name,
       last_name,
       email,
