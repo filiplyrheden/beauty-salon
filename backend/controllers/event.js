@@ -23,7 +23,7 @@ export const showEvents = async (req, res) => {
 export const createEvent = async (req, res) => {
     // Get event details from the request body
     const event = req.body;
-  
+    console.log("testtesttesttt");
     // Check if an image was uploaded
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : null; // Construct the image URL
   
@@ -36,6 +36,7 @@ export const createEvent = async (req, res) => {
     try {
       // Assuming insertEvent function accepts the event object including the image URL
       const result = await insertEvent(newEvent);
+      console.log(result);
       res.status(201).json({ message: "Event created successfully", event: newEvent });
     } catch (err) {
       console.error("Error in createEvent:", err);

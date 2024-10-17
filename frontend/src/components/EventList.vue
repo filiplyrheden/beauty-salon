@@ -78,7 +78,7 @@
   
   
   <script>
-  import axios from 'axios';
+  import axiosInstance from '@/services/axiosConfig';
   
   export default {
     name: "EventList",
@@ -100,7 +100,7 @@
       },
       deleteEvent(eventId) {
         console.log("Deleting event with ID:", eventId);
-        axios.delete(`http://localhost:3000/admin/events/${eventId}`)
+        axiosInstance.delete(`/admin/events/${eventId}`)
           .then(response => {
             console.log("Event deleted successfully:", response.data);
             this.$emit('event-deleted', eventId);
@@ -127,7 +127,7 @@
           formData.append('image', this.selectedFile);
         }
   
-        axios.put(`http://localhost:3000/admin/events/${eventId}`, formData, {
+        axiosInstance.put(`/admin/events/${eventId}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

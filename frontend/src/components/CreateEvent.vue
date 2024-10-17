@@ -60,7 +60,7 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import axiosInstance from '@/services/axiosConfig';
   
   export default {
     data() {
@@ -89,7 +89,7 @@
         formData.append("booking_link", this.bookingLink);
   
         try {
-          const response = await axios.post("http://localhost:3000/admin/events", formData, {
+          const response = await axiosInstance.post("/admin/events", formData, {
             headers: {
               "Content-Type": "multipart/form-data", // Set content type for file upload
             },

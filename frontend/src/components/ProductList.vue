@@ -48,7 +48,7 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import axiosInstance from '@/services/axiosConfig';
   
   export default {
     name: "ProductList",
@@ -66,7 +66,7 @@
     methods: {
       deleteProduct(productId) {
         console.log("Deleting product with ID:", productId);
-        axios.delete(`http://localhost:3000/admin/createproducts/${productId}`)
+        axiosInstance.delete(`admin/products/${productId}`)
           .then(response => {
             console.log("Product deleted successfully:", response.data);
             // Emit an event to the parent component to delete the product
@@ -81,7 +81,7 @@
       },
       saveProduct(product) {
         console.log("Saving product:", product);
-        axios.put('http://localhost:3000/admin/createproducts', product)
+        axiosInstance.put('admin/products', product)
           .then(response => {
             console.log("Product saved successfully:", response.data);
             alert(product.product_name + " saved successfully!");
