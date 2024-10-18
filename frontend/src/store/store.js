@@ -6,10 +6,18 @@ export const store = new Vuex.Store({
     isAdmin: false,
     expirationInterval: null,
     isTokenValid: false,
+    LogoutPopup: false,
   },
   mutations: {
+    showPopup(state) {
+      state.isPopupVisible = true;
+    },
+    hidePopup(state) {
+      state.isPopupVisible = false;
+    },
     login(state) {
       state.isLoggedIn = true;
+      console.log("Inloggad");
     },
     logout(state) {
       state.isLoggedIn = false;
@@ -46,6 +54,7 @@ export const store = new Vuex.Store({
             commit("logout");
             commit("clearExpirationInterval");
             console.log("Token has expired.");
+            commit('showPopup');
             return false;
           }
           console.log("Token is valid");
@@ -59,13 +68,19 @@ export const store = new Vuex.Store({
       return false;
     },
 
+    closePopup({ commit }) {
+      commit('hidePopup');
+    },
+
     startTokenExpirationCheck({ dispatch, commit }) {
+      console.log("Starta räkning");
       const intervalId = setInterval(() => {
         dispatch("checkTokenExpiration");
-      }, 30000);
-
+      }, 31 * 60 * 1000); // 31 minutes in milliseconds
+    
       commit("setExpirationInterval", intervalId);
     },
+    
 
     stopTokenExpirationCheck({ commit }) {
       commit("clearExpirationInterval");
@@ -76,15 +91,15 @@ export const store = new Vuex.Store({
       if (token) {
         try {
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
-          if (dispatch("checkTokenExpiration")) {
             if (decodedToken.role === "admin") {
+              console.log("Starta räkning");
               commit("admin");
               dispatch("startTokenExpirationCheck");
             } else {
               commit("login");
+              console.log("Starta räkning");
               dispatch("startTokenExpirationCheck");
             }
-          }
         } catch (error) {
           console.error("Invalid token:", error);
           commit("logout");

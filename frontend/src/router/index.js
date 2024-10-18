@@ -13,6 +13,8 @@ import LoginPage from "../views/LoginPage.vue";
 import RegisterPage from "../views/RegisterPage.vue";
 import OrderPage from "../views/admin/orderView.vue";
 import ProductsPage from "../views/ecommerce/ProductsView.vue";
+import { store } from "@/store/store";
+
 
 const routes = [
   {
@@ -102,6 +104,11 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  await store.dispatch("checkAuth");
+  next(); // Allow the navigation to continue
 });
 
 router.beforeEach((to, from, next) => {
