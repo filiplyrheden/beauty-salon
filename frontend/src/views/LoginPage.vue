@@ -89,6 +89,7 @@ export default {
   created() {
     // Check authentication status on component creation
     this.$store.dispatch("checkAuth");
+    console.log("checkauth");
   },
 };
 </script>
