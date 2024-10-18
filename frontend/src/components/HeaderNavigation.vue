@@ -31,7 +31,10 @@ import { mapState, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      navLinks: [{ name: "Home", path: "/" }],
+      navLinks: [
+        { name: "Home", path: "/" },
+        { name: "Shop", path: "/shop" },
+      ],
     };
   },
   computed: {

@@ -15,7 +15,6 @@ import OrderPage from "../views/admin/orderView.vue";
 import ProductsPage from "../views/ecommerce/ProductsView.vue";
 import { store } from "@/store/store";
 
-
 const routes = [
   {
     path: "/",
@@ -34,7 +33,7 @@ const routes = [
     meta: { requiresAuth: false },
   },
   {
-    path: "/products",
+    path: "/shop",
     name: "Products Page",
     component: ProductsPage,
   },
