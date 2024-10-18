@@ -33,7 +33,7 @@
 
 <script>
 import axios from "axios";
-import { mapMutations } from "vuex"; // Import mapMutations from Vuex
+import { mapMutations } from "vuex";
 
 export default {
   data() {
@@ -45,7 +45,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["login"]), // Map the login mutation
+    ...mapMutations(["login", "admin", "logout"]), // Map necessary mutations
 
     async handleLogin() {
       const loginData = {
@@ -58,7 +58,6 @@ export default {
           "http://localhost:3000/login",
           loginData
         );
-
         this.message = "Login successful!";
         this.isError = false;
 
@@ -71,14 +70,13 @@ export default {
         );
 
         // Commit the login mutation to Vuex store
-        this.login(); // Mark the user as logged in
+        this.login();
 
         // Check if user is admin and commit the corresponding mutation
         if (decodedToken.role === "admin") {
-          this.$store.commit("admin"); // Set Vuex state for admin
+          this.admin(); // Mark the user as admin
           this.$router.push("/admin"); // Redirect to admin panel
         } else {
-          this.$store.commit("adminLogout"); // Remove admin privileges for normal users
           this.$router.push("/"); // Redirect to home page
         }
       } catch (error) {
@@ -88,78 +86,9 @@ export default {
       }
     },
   },
+  created() {
+    // Check authentication status on component creation
+    this.$store.dispatch("checkAuth");
+  },
 };
 </script>
-
-<style scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f0f0;
-}
-
-.login-wrapper {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 40px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.form-group {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.input-field {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  background: #fff;
-  transition: border-color 0.3s ease;
-}
-
-.input-field:focus {
-  border-color: #007bff;
-}
-
-.label {
-  position: absolute;
-  top: -20px;
-  left: 12px;
-  font-size: 14px;
-  color: #555;
-  transition: all 0.3s ease;
-}
-
-.submit-button {
-  background-color: #007bff;
-  color: white;
-  padding: 12px;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit-button:hover {
-  background-color: #0056b3;
-}
-
-.error {
-  color: red;
-}
-</style>

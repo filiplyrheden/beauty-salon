@@ -13,11 +13,11 @@
         </li>
         <li>
           <router-link v-if="!isLoggedIn" to="/login">Login</router-link>
-          <a v-else @click="logout">Logout</a>
+          <a v-else @click="handleLogout">Logout</a>
         </li>
         <li>
           <router-link v-if="isLoggedIn && isAdmin" to="/admin"
-            >admin</router-link
+            >Admin</router-link
           >
         </li>
       </ul>
@@ -26,36 +26,33 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   data() {
     return {
-      navLinks: [
-        { name: "Home", path: "/" },
-        { name: "Behandlingar", path: "/services" },
-        { name: "Kurser", path: "/courses" },
-        { name: "Events", path: "/events" },
-        { name: "Om mig", path: "/about" },
-        { name: "Kontakt", path: "/contact" },
-        { name: "shop", path: "/shop" },
-      ],
+      navLinks: [{ name: "Home", path: "/" }],
     };
   },
   computed: {
     ...mapState(["isLoggedIn", "isAdmin"]),
   },
   created() {
-    this.$store.dispatch("checkAuth").then(() => {
-      this.$store.dispatch("checkAdmin");
-    });
+    this.checkAuthentication();
   },
   methods: {
-    logout() {
-      localStorage.removeItem("token");
-      this.$store.commit("logout"); // Commit logout mutation
-      this.$store.commit("adminLogout");
+    ...mapMutations(["logout"]), // Map the logout mutation
+
+    handleLogout() {
+      console.log("reee");
+      // Remove token and call logout mutation
+
+      this.logout();
       this.$router.push("/"); // Redirect to home
+    },
+
+    checkAuthentication() {
+      this.$store.dispatch("checkAuth");
     },
   },
 };
