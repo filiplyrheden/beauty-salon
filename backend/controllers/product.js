@@ -1,4 +1,4 @@
-import { getProducts, insertProduct, editProduct, trashProduct } from "../models/ProductModel.js";
+import { getProducts, insertProduct, editProduct, trashProduct, getProductById } from "../models/ProductModel.js";
 
 /**
  * Handler to show all products.
@@ -69,6 +69,28 @@ export const deleteProduct = async (req, res) => {
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (err) {
     console.error("Error in deleteProduct:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+/**
+ * Handler to delete a product from the database.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+export const GetProductById = async (req, res) => {
+  console.log("hej");
+  const productId = req.params.id; // Get product ID from request parameters
+  console.log("productId inside controller: " + productId);
+
+  try {
+    const result = await getProductById(productId);
+    if (result.Rows === 0) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    res.status(200).json({result});
+  } catch (err) {
+    console.error("Error in GetProuctById:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
