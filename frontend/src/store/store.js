@@ -1,4 +1,3 @@
-// store.js
 import Vuex from "vuex";
 
 export const store = new Vuex.Store({
@@ -6,6 +5,7 @@ export const store = new Vuex.Store({
     isLoggedIn: false,
     isAdmin: false,
     expirationInterval: null,
+    isTokenValid: false,
   },
   mutations: {
     login(state) {
@@ -13,12 +13,16 @@ export const store = new Vuex.Store({
     },
     logout(state) {
       state.isLoggedIn = false;
+      state.isAdmin = false;
+      state.isTokenValid = false;
+      localStorage.removeItem("token");
     },
     admin(state) {
       state.isAdmin = true;
+      state.isTokenValid = true;
     },
-    adminLogout(state) {
-      state.isAdmin = false;
+    setTokenValidity(state, isValid) {
+      state.isTokenValid = isValid;
     },
     setExpirationInterval(state, intervalId) {
       state.expirationInterval = intervalId;
@@ -40,7 +44,6 @@ export const store = new Vuex.Store({
 
           if (decodedToken.exp && decodedToken.exp < currentTime) {
             commit("logout");
-            commit("adminLogout");
             commit("clearExpirationInterval");
             console.log("Token has expired.");
             return false;
@@ -50,7 +53,6 @@ export const store = new Vuex.Store({
         } catch (error) {
           console.error("Error decoding token:", error);
           commit("logout");
-          commit("adminLogout");
           return false;
         }
       }
@@ -72,31 +74,23 @@ export const store = new Vuex.Store({
     checkAuth({ commit, dispatch }) {
       const token = localStorage.getItem("token");
       if (token) {
-        if (dispatch("checkTokenExpiration")) {
-          commit("login");
-          dispatch("startTokenExpirationCheck");
-        }
-      }
-    },
-
-    checkAdmin({ commit, dispatch }) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        if (dispatch("checkTokenExpiration")) {
-          try {
-            const decodedToken = JSON.parse(atob(token.split(".")[1]));
+        try {
+          const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          if (dispatch("checkTokenExpiration")) {
             if (decodedToken.role === "admin") {
               commit("admin");
+              dispatch("startTokenExpirationCheck");
             } else {
-              commit("adminLogout");
+              commit("login");
+              dispatch("startTokenExpirationCheck");
             }
-          } catch (error) {
-            console.error("Invalid token:", error);
-            commit("adminLogout");
           }
+        } catch (error) {
+          console.error("Invalid token:", error);
+          commit("logout");
         }
       } else {
-        commit("adminLogout");
+        commit("logout");
       }
     },
   },
