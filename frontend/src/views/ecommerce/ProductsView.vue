@@ -7,6 +7,20 @@
         :key="product.product_id"
         class="product-card"
       >
+        <!-- 
+        Implement this in the URL response from the API.
+        -->
+        <img
+          :src="
+            product.images &&
+            product.images.primary &&
+            product.images.primary.image_url
+              ? product.images.primary.image_url
+              : require('@/assets/noImage.png')
+          "
+          alt="Product Image"
+        />
+
         <router-link :to="'/products/' + product.product_id">
           <h2>{{ product.product_name }}</h2>
           <p>{{ product.description }}</p>
@@ -74,7 +88,9 @@ export default {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
 }
-
+.product-card img {
+  width: 100%;
+}
 .product-card a {
   text-decoration: none;
   color: #333;
