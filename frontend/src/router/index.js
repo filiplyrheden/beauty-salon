@@ -13,6 +13,7 @@ import LoginPage from "../views/LoginPage.vue";
 import RegisterPage from "../views/RegisterPage.vue";
 import OrderPage from "../views/admin/orderView.vue";
 import { store } from "@/store/store";
+import ProductView from "@/views/ecommerce/ProductView.vue";
 
 const routes = [
   {
@@ -90,6 +91,11 @@ const routes = [
     name: "Product Reviews Page",
     component: ProductReviewsPage,
     meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path: "/product/:id",
+    name: "Singular Product Page",
+    component: ProductView,
   },
   // Additional routes can be added here
 ];

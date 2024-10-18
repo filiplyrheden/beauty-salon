@@ -14,6 +14,7 @@ import {
   deleteEvent,
 } from "./controllers/event.js";
 import {
+  GetProductById,
   showProducts,
   createProduct,
   updateProduct,
@@ -261,16 +262,19 @@ app.post("/user", createNewUser); // Create
 app.put("/user/:id", authMiddleware, adminMiddleware, updateUserById); // Update
 app.delete("/user/:id", authMiddleware, adminMiddleware, deleteUserById); // Delete
 
+// Routes for singular Product
+app.get("/product/:id", GetProductById);
+
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);
-
+  
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ error: err.message });
   } else if (err) {
     return res.status(500).json({ error: err.message });
   }
-
+  
   next();
 });
 

@@ -109,3 +109,22 @@ export const fetchProductsByIds = async (productIds) => {
   const { rows } = await db.query(query, [productIds]);
   return rows;
 };
+
+// Fetch a single product and its price by product ID
+export const getProductById = async (productId) => {
+  const query = `
+    SELECT 
+      p.product_id, 
+      p.product_name, 
+      p.description, 
+      p.price, 
+      p.stock_quantity, 
+      c.category_name
+    FROM Products p
+    INNER JOIN Categories c ON p.category_id = c.category_id
+    WHERE p.product_id = ? LIMIT 1
+  `;
+
+  const [rows] = await db.query(query, [productId]);
+  return rows[0]; // Return the first row of the result
+};
