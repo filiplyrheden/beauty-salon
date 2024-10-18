@@ -65,20 +65,21 @@ export default {
         // Store token in localStorage
         localStorage.setItem("token", response.data.token);
 
-        // Commit the login mutation to Vuex store
-        this.login(); // Call the login mutation to update the state
-
-        // Redirect based on user role
+        // Decode token to get user role
         const decodedToken = JSON.parse(
           atob(response.data.token.split(".")[1])
         );
-        console.log(decodedToken.role);
+
+        // Commit the login mutation to Vuex store
+        this.login(); // Mark the user as logged in
+
+        // Check if user is admin and commit the corresponding mutation
         if (decodedToken.role === "admin") {
-          console.log("Redirecting to admin panel");
-          this.$router.push("/admin");
+          this.$store.commit("admin"); // Set Vuex state for admin
+          this.$router.push("/admin"); // Redirect to admin panel
         } else {
-          console.log("Redirecting to main page");
-          this.$router.push("/");
+          this.$store.commit("adminLogout"); // Remove admin privileges for normal users
+          this.$router.push("/"); // Redirect to home page
         }
       } catch (error) {
         console.error("Error logging in:", error);
