@@ -12,6 +12,7 @@ import ProductCategoriesPage from "../views/admin/ProductCategories.vue";
 import LoginPage from "../views/LoginPage.vue";
 import RegisterPage from "../views/RegisterPage.vue";
 import OrderPage from "../views/admin/orderView.vue";
+import ProductsPage from "../views/ecommerce/ProductsView.vue";
 
 const routes = [
   {
@@ -29,6 +30,11 @@ const routes = [
     name: "LoginPage",
     component: LoginPage,
     meta: { requiresAuth: false },
+  },
+  {
+    path: "/products",
+    name: "Products Page",
+    component: ProductsPage,
   },
   {
     path: "/admin/products",
