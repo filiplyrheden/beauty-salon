@@ -15,6 +15,11 @@
           <router-link v-if="!isLoggedIn" to="/login">Login</router-link>
           <a v-else @click="logout">Logout</a>
         </li>
+        <li>
+          <router-link v-if="isLoggedIn && isAdmin" to="/admin"
+            >admin</router-link
+          >
+        </li>
       </ul>
     </nav>
   </header>
@@ -28,22 +33,28 @@ export default {
     return {
       navLinks: [
         { name: "Home", path: "/" },
-        { name: "Om mig", path: "/about" },
         { name: "Behandlingar", path: "/services" },
+        { name: "Kurser", path: "/courses" },
+        { name: "Events", path: "/events" },
+        { name: "Om mig", path: "/about" },
         { name: "Kontakt", path: "/contact" },
+        { name: "shop", path: "/shop" },
       ],
     };
   },
   computed: {
-    ...mapState(["isLoggedIn"]),
+    ...mapState(["isLoggedIn", "isAdmin"]),
   },
   created() {
-    this.$store.dispatch("checkAuth"); // Check auth status when component is created
+    this.$store.dispatch("checkAuth").then(() => {
+      this.$store.dispatch("checkAdmin");
+    });
   },
   methods: {
     logout() {
       localStorage.removeItem("token");
       this.$store.commit("logout"); // Commit logout mutation
+      this.$store.commit("adminLogout");
       this.$router.push("/"); // Redirect to home
     },
   },

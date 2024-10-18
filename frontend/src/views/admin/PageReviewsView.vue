@@ -129,10 +129,10 @@ export default {
     async addReview() {
       try {
         this.isLoading = true;
-        const response = await axiosInstance.post(
-          `${this.API_BASE_URL}/page-reviews`,
-          { rating: this.form.rating, review_text: this.form.review_text }
-        );
+        const response = await axiosInstance.post(`/page-reviews`, {
+          rating: this.form.rating,
+          review_text: this.form.review_text,
+        });
 
         const addedReview = { ...response.data };
         this.reviews.push(addedReview);

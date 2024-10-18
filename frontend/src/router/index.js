@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import CreateProduct from "@/views/CreateProductView.vue";
-import CourseView from "../views/CourseView.vue";
-import AdminPage from "@/views/AdminPage.vue";
-import EventsView from "@/views/EventsView.vue";
-import ServicePage from "../views/ServiceView.vue";
-import ServiceCategoriesPage from "../views/ServiceCategoriesView.vue";
-import PageReviewsPage from "../views/PageReviewsView.vue";
-import ProductReviewsPage from "../views/ProductReviewsView.vue";
-import ProductCategoriesPage from "../views/ProductCategories.vue";
+import CreateProduct from "../views/admin/CreateProductView.vue";
+import CourseView from "../views/admin/CourseView.vue";
+import AdminPage from "../views/admin/AdminPage.vue";
+import EventsView from "../views/admin/EventsView.vue";
+import ServicePage from "../views/admin/ServiceView.vue";
+import ServiceCategoriesPage from "../views/admin/ServiceCategoriesView.vue";
+import PageReviewsPage from "../views/admin/PageReviewsView.vue";
+import ProductReviewsPage from "../views/admin/ProductReviewsView.vue";
+import ProductCategoriesPage from "../views/admin/ProductCategories.vue";
 import LoginPage from "../views/LoginPage.vue";
-import RegisterPage from "@/views/RegisterPage.vue";
-import OrderPage from "../views/orderView.vue";
+import RegisterPage from "../views/RegisterPage.vue";
+import OrderPage from "../views/admin/orderView.vue";
 
 const routes = [
   {
