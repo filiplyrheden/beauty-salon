@@ -12,8 +12,12 @@
           </router-link>
         </li>
         <li>
+          <router-link v-if="!isLoggedIn" to="/register">Register</router-link>
+        </li>
+        <li>
           <router-link v-if="!isLoggedIn" to="/login">Login</router-link>
           <a v-else @click="handleLogout">Logout</a>
+          <router-link v-if="isLoggedIn" to="/user/profile">Profil</router-link>
         </li>
         <li>
           <router-link v-if="isLoggedIn && isAdmin" to="/admin"
@@ -34,6 +38,8 @@ export default {
       navLinks: [
         { name: "Home", path: "/" },
         { name: "Shop", path: "/shop" },
+        { name: "About", path: "/about" },
+        { name: "Contact", path: "/contact" },
       ],
     };
   },
@@ -47,7 +53,6 @@ export default {
     ...mapMutations(["logout"]), // Map the logout mutation
 
     handleLogout() {
-      console.log("reee");
       // Remove token and call logout mutation
 
       this.logout();

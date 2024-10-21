@@ -7,6 +7,7 @@ export const store = new Vuex.Store({
     expirationInterval: null,
     isTokenValid: false,
     LogoutPopup: false,
+    userId: null,
   },
   mutations: {
     showPopup(state) {
@@ -24,6 +25,7 @@ export const store = new Vuex.Store({
       state.isAdmin = false;
       state.isTokenValid = false;
       localStorage.removeItem("token");
+      state.userId = null;
     },
     admin(state) {
       state.isAdmin = true;
@@ -41,6 +43,9 @@ export const store = new Vuex.Store({
         state.expirationInterval = null;
       }
     },
+    setUserId(state, userId) {
+      state.userId = userId;
+    },
   },
   actions: {
     checkTokenExpiration({ commit }) {
@@ -54,7 +59,7 @@ export const store = new Vuex.Store({
             commit("logout");
             commit("clearExpirationInterval");
             console.log("Token has expired.");
-            commit('showPopup');
+            commit("showPopup");
             return false;
           }
           console.log("Token is valid");
@@ -69,7 +74,7 @@ export const store = new Vuex.Store({
     },
 
     closePopup({ commit }) {
-      commit('hidePopup');
+      commit("hidePopup");
     },
 
     startTokenExpirationCheck({ dispatch, commit }) {
@@ -77,10 +82,9 @@ export const store = new Vuex.Store({
       const intervalId = setInterval(() => {
         dispatch("checkTokenExpiration");
       }, 31 * 60 * 1000); // 31 minutes in milliseconds
-    
+
       commit("setExpirationInterval", intervalId);
     },
-    
 
     stopTokenExpirationCheck({ commit }) {
       commit("clearExpirationInterval");
@@ -91,15 +95,17 @@ export const store = new Vuex.Store({
       if (token) {
         try {
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
-            if (decodedToken.role === "admin") {
-              console.log("Starta räkning");
-              commit("admin");
-              dispatch("startTokenExpirationCheck");
-            } else {
-              commit("login");
-              console.log("Starta räkning");
-              dispatch("startTokenExpirationCheck");
-            }
+          commit("setUserId", decodedToken.userid);
+
+          if (decodedToken.role === "admin") {
+            console.log("Starta räkning");
+            commit("admin");
+            dispatch("startTokenExpirationCheck");
+          } else {
+            commit("login");
+            console.log("Starta räkning");
+            dispatch("startTokenExpirationCheck");
+          }
         } catch (error) {
           console.error("Invalid token:", error);
           commit("logout");
