@@ -31,33 +31,28 @@
           <!-- First Name -->
           <div class="form-group">
             <label for="firstName">Förnamn:</label>
-            <input
-              v-model="form.firstName"
-              type="text"
-              id="firstName"
-              required
-            />
+            <input v-model="form.firstName" type="text" id="firstName" />
           </div>
 
           <!-- Last Name -->
           <div class="form-group">
             <label for="lastName">Efternamn:</label>
-            <input v-model="form.lastName" type="text" id="lastName" required />
+            <input v-model="form.lastName" type="text" id="lastName" />
           </div>
 
           <!-- Email -->
           <div class="form-group">
             <label for="email">Email:</label>
-            <input v-model="form.email" type="email" id="email" required />
+            <input v-model="form.email" type="email" id="email" />
           </div>
           <div class="form-group">
             <label for="address">Telefon:</label>
-            <input v-model="form.phone" type="text" id="address" required />
+            <input v-model="form.phone" type="text" id="address" />
           </div>
           <!-- Address -->
           <div class="form-group">
             <label for="address">Adress 1:</label>
-            <input v-model="form.address1" type="text" id="address" required />
+            <input v-model="form.address1" type="text" id="address" />
           </div>
           <div class="form-group">
             <label for="address">Adress 2:</label>
@@ -66,11 +61,11 @@
 
           <div class="form-group">
             <label for="address">Postkod:</label>
-            <input v-model="form.postCode" type="text" id="address" required />
+            <input v-model="form.postCode" type="text" id="address" />
           </div>
           <div class="form-group">
             <label for="address">Land:</label>
-            <input v-model="form.country" type="text" id="address" required />
+            <input v-model="form.country" type="text" id="address" />
           </div>
 
           <!-- Buttons -->

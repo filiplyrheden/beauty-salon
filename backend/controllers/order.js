@@ -257,13 +257,16 @@ export const editOrder = async (req, res) => {
 
 export const showOrdersById = async (req, res) => {
   try {
-    // Get the orders by user ID
-    console.log(req.query.userid);
-    const orders = await getOrdersById(req.query.userid);
+    // Get the user ID from query parameters
+    const userId = req.query.userid;
+    console.log(userId);
 
-    // Check if orders are found
-    if (!orders || orders.length === 0) {
-      return res.status(404).json({ error: "No orders found for this user." });
+    // Get the orders by user ID
+    const orders = await getOrdersById(userId);
+
+    // Check if orders is null, undefined, or an empty array
+    if (!orders || (Array.isArray(orders) && orders.length === 0)) {
+      return res.status(200).json([]); // Return an empty array
     }
 
     // Map over each order and fetch its product details
