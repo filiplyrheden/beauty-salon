@@ -17,7 +17,9 @@
         <li>
           <router-link v-if="!isLoggedIn" to="/login">Login</router-link>
           <a v-else @click="handleLogout">Logout</a>
-          <router-link v-if="isLoggedIn" to="/user/profile">Profil</router-link>
+          <router-link v-if="isLoggedIn && !isAdmin" to="/user/profile"
+            >Profil</router-link
+          >
         </li>
         <li>
           <router-link v-if="isLoggedIn && isAdmin" to="/admin"

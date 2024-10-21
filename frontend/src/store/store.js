@@ -28,6 +28,7 @@ export const store = new Vuex.Store({
       state.userId = null;
     },
     admin(state) {
+      state.isLoggedIn = true;
       state.isAdmin = true;
       state.isTokenValid = true;
     },
