@@ -16,6 +16,8 @@ import ProductsPage from "../views/ecommerce/ProductsView.vue";
 import { store } from "@/store/store";
 import ProductView from "@/views/ecommerce/ProductView.vue";
 import ProfilePage from "@/views/mainpage/ProfilePage.vue";
+import AboutUsPage from "../views/mainpage/AboutUsView.vue";
+import SuccessPage from "../views/mainpage/SuccessView.vue";
 
 const routes = [
   {
@@ -27,6 +29,18 @@ const routes = [
     path: "/register",
     name: "RegisterPage",
     component: RegisterPage,
+  },
+  {
+    path: "/about-us",
+    name: "AboutUsPage",
+    component: AboutUsPage,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: "/success",
+    name: "SuccessPage",
+    component: SuccessPage,
+    meta: { requiresAuth: false },
   },
   {
     path: "/login",
