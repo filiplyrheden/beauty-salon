@@ -4,6 +4,7 @@ import {
   updateOrder,
   deleteOrder,
   createOrder,
+  getOrdersById,
 } from "../models/orderModel.js";
 import db from "../config/database.js";
 import { fetchProductsByIds } from "../models/ProductModel.js";
@@ -251,5 +252,35 @@ export const editOrder = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   } finally {
     client.release(); // Release client back to the pool
+  }
+};
+
+export const showOrdersById = async (req, res) => {
+  try {
+    // Get the user ID from query parameters
+    const userId = req.query.userid;
+    console.log(userId);
+
+    // Get the orders by user ID
+    const orders = await getOrdersById(userId);
+
+    // Check if orders is null, undefined, or an empty array
+    if (!orders || (Array.isArray(orders) && orders.length === 0)) {
+      return res.status(200).json([]); // Return an empty array
+    }
+
+    // Map over each order and fetch its product details
+    const ordersWithProducts = await Promise.all(
+      orders.map(async (order) => {
+        const orderDetails = await fetchSpecificOrderDetails(order.order_id);
+        return { ...order, products: orderDetails };
+      })
+    );
+
+    // Respond with orders and associated products
+    res.status(200).json(ordersWithProducts);
+  } catch (err) {
+    console.error("Error in showOrderById:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };

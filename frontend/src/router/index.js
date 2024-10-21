@@ -17,6 +17,10 @@ import { store } from "@/store/store";
 import ProductView from "@/views/ecommerce/ProductView.vue";
 import ForgotPassword from "@/views/mainpage/ForgotPassword.vue";
 import ResetPassword from "@/views/mainpage/ResetPassword.vue";
+import ProfilePage from "@/views/mainpage/ProfilePage.vue";
+import AboutUsPage from "../views/mainpage/AboutUsView.vue";
+import SuccessPage from "../views/mainpage/SuccessView.vue";
+
 
 const routes = [
   {
@@ -30,10 +34,28 @@ const routes = [
     component: RegisterPage,
   },
   {
+    path: "/about-us",
+    name: "AboutUsPage",
+    component: AboutUsPage,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: "/success",
+    name: "SuccessPage",
+    component: SuccessPage,
+    meta: { requiresAuth: false },
+  },
+  {
     path: "/login",
     name: "LoginPage",
     component: LoginPage,
     meta: { requiresAuth: false },
+  },
+  {
+    path: "/user/profile",
+    name: "ProfilePage",
+    component: ProfilePage,
+    meta: { requiresAuth: true },
   },
   {
     path: "/shop",

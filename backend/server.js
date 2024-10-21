@@ -72,6 +72,7 @@ import {
   deleteOrderById,
   showOrders,
   updateOrderById,
+  showOrdersById,
 } from "./controllers/order.js";
 import { 
   sendCode,
@@ -166,6 +167,7 @@ app.get("/orders", authMiddleware, adminMiddleware, showOrders); // Get all the 
 app.post("/orders", authMiddleware, adminMiddleware, createNewOrder); // Create orders
 app.put("/orders/:id", authMiddleware, adminMiddleware, updateOrderById); // update a specific order
 app.delete("/orders/:id", authMiddleware, adminMiddleware, deleteOrderById); // delete a specific order
+app.get("/ordersByUser/", authMiddleware, showOrdersById); // Get all the orders by user
 
 // Auth Routes
 app.post("/login", loginUser);
@@ -270,7 +272,7 @@ app.post("/reset-password/:token", resetPassword);
 //Routes for User
 app.get("/user/:id", showUserById); // Get all User
 app.post("/user", createNewUser); // Create
-app.put("/user/:id", authMiddleware, adminMiddleware, updateUserById); // Update
+app.put("/user/:id", authMiddleware, updateUserById); // Update
 app.delete("/user/:id", authMiddleware, adminMiddleware, deleteUserById); // Delete
 
 // Routes for singular Product

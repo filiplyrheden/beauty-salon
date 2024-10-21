@@ -13,6 +13,22 @@ export const getOrders = async () => {
     throw err;
   }
 };
+export const getOrdersById = async (id) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM Orders WHERE user_id = ?", [
+      id,
+    ]);
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return rows;
+  } catch (err) {
+    console.error("Error fetching order by ID:", err);
+    throw err;
+  }
+};
 
 export const getOrderById = async (id) => {
   try {
