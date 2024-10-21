@@ -15,6 +15,8 @@ import OrderPage from "../views/admin/orderView.vue";
 import ProductsPage from "../views/ecommerce/ProductsView.vue";
 import { store } from "@/store/store";
 import ProductView from "@/views/ecommerce/ProductView.vue";
+import ForgotPassword from "@/views/mainpage/ForgotPassword.vue";
+import ResetPassword from "@/views/mainpage/ResetPassword.vue";
 
 const routes = [
   {
@@ -103,6 +105,16 @@ const routes = [
     name: "Singular Product Page",
     component: ProductView,
   },
+  {
+    path: "/forgot-password",
+    name: "Forgot Password Page",
+    component: ForgotPassword,
+  },
+  {
+    path: "/reset-password/:token",
+    name: "Reset Password Page",
+    component: ResetPassword,
+  }
   // Additional routes can be added here
 ];
 
