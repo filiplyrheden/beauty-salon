@@ -15,6 +15,7 @@ import OrderPage from "../views/admin/orderView.vue";
 import ProductsPage from "../views/ecommerce/ProductsView.vue";
 import { store } from "@/store/store";
 import ProductView from "@/views/ecommerce/ProductView.vue";
+import ProfilePage from "@/views/mainpage/ProfilePage.vue";
 
 const routes = [
   {
@@ -32,6 +33,12 @@ const routes = [
     name: "LoginPage",
     component: LoginPage,
     meta: { requiresAuth: false },
+  },
+  {
+    path: "/user/profile",
+    name: "ProfilePage",
+    component: ProfilePage,
+    meta: { requiresAuth: true },
   },
   {
     path: "/shop",

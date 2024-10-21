@@ -10,16 +10,16 @@ export const getUserByEmail = async (email) => {
     const [rows] = await db.query("SELECT * FROM Users WHERE email = ?", [
       email,
     ]);
-    
+
     if (rows.length === 0) {
       return null;
     }
 
     return rows[0];
   } catch (error) {
-    console,error("Error fethcing user by Email:", error);
+    console, error("Error fethcing user by Email:", error);
   }
-}
+};
 
 export const getUserById = async (id) => {
   try {
@@ -92,31 +92,31 @@ export const updateUser = async (id, userData) => {
     postal_code,
     country,
   } = userData;
+
   try {
     const [result] = await db.query(
-      "INSERT INTO Users (role, first_name, last_name, email, password, phone, address_line1, address_line2, city, postal_code, country) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+      "UPDATE Users SET first_name = ?, last_name = ?, email = ?, phone = ?, address_line1 = ?, address_line2 = ?, city = ?, postal_code = ?, country = ? WHERE user_id = ?",
       [
-        role,
         first_name,
         last_name,
         email,
-        password,
         phone,
         address_line1,
         address_line2,
         city,
         postal_code,
         country,
+        id, // ID of the user to update
       ]
     );
+
     if (result.affectedRows === 0) {
-      return null;
+      return null; // No user was updated
     }
 
-    userData.user_id = id;
-    return { user_id: id, ...userData };
+    return { user_id: id, ...userData }; // Return updated user data
   } catch (err) {
-    console.error("Error updating Service Category:", err);
+    console.error("Error updating user:", err);
     throw err;
   }
 };

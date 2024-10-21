@@ -6,13 +6,13 @@ import {
 } from "../models/userModel.js";
 
 /**
- * Handler to show all services.
+ * Handler to show all users.
  */
 
 export const showUserById = async (req, res) => {
   try {
-    const service = await getUserById(req.params.id);
-    res.status(200).json(service);
+    const user = await getUserById(req.params.id);
+    res.status(200).json(user);
   } catch (err) {
     console.error("Error in userById:", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -41,17 +41,17 @@ export const deleteUserById = async (req, res) => {
 
 export const updateUserById = async (req, res) => {
   try {
-    const id = req.params.id;
-    const loggedInUserId = req.user.id;
-    const isAdmin = req.user.role === "admin";
+    const id = String(req.params.id);
+    const loggedInUserId = String(req.user.userid);
+    const isAdmin = req.user.role === "admin"; // Check if the user has admin privileges
 
-    //added check so that users can only update their own profile
-    if (userId !== loggedInUserId && !isAdmin) {
+    if (id !== loggedInUserId && !isAdmin) {
       return res
         .status(403)
         .json({ message: "You can only update your own profile" });
     }
-    // Validate input
+
+    // Extract and validate the input fields from the request body
     const {
       first_name,
       last_name,
@@ -64,16 +64,15 @@ export const updateUserById = async (req, res) => {
       postal_code,
       country,
     } = req.body;
-    // Call the service to update the PageReview
+
     const updatedUser = await updateUser(id, req.body);
 
     if (!updatedUser) {
-      return res.status(500).json({ error: "Failed to update Page Review" });
+      return res.status(500).json({ error: "Failed to update user profile" });
     }
-
     res.status(200).json(updatedUser);
   } catch (err) {
-    console.error("Error in updatePageReviewsById:", err);
+    console.error("Error in updateUserById:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
