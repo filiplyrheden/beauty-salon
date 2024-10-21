@@ -14,7 +14,7 @@
 
 <script>
 import { ref, onMounted } from "vue";
-import shahadUrl from "@/assets/shahad.png"; // Ensure this path is correct
+import shahadUrl from "@/assets/shahad.png";
 
 export default {
   name: "AboutUsPage",
