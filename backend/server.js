@@ -74,6 +74,10 @@ import {
   updateOrderById,
   showOrdersById,
 } from "./controllers/order.js";
+import { 
+  sendCode,
+  resetPassword,
+ } from "./controllers/reset-password.js";
 
 dotenv.config();
 const app = express();
@@ -259,6 +263,11 @@ app.delete(
   adminMiddleware,
   deleteProductReviewsById
 );
+
+// Routes for resetting password.
+app.post("/forgot-password", sendCode);
+app.post("/reset-password/:token", resetPassword);
+
 
 //Routes for User
 app.get("/user/:id", showUserById); // Get all User
