@@ -16,6 +16,7 @@ import {
 import {
   GetProductById,
   showProducts,
+  showallProducts,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -95,6 +96,7 @@ app.use("/uploads", express.static(path.join(__dirnameFull, "uploads")));
 
 // Routes for Products
 app.get("/products", showProducts); // Get all products
+app.get("/allproducts", showallProducts); // Get all products with additional info
 app.get("/admin/products", authMiddleware, adminMiddleware, showProducts); // Get all products for admin
 app.post("/admin/products", authMiddleware, adminMiddleware, createProduct); // Create a new product
 app.put("/admin/products", authMiddleware, adminMiddleware, updateProduct); // Update a product
@@ -105,7 +107,7 @@ app.delete(
   deleteProduct
 ); // Delete a product
 
-app.get("/categories", authMiddleware, adminMiddleware, showCategories); // Get all product Categories
+app.get("/categories", showCategories); // Get all product Categories
 app.post("/categories", authMiddleware, adminMiddleware, createNewCategories); // Create
 app.put(
   "/categories/:id",
@@ -268,13 +270,13 @@ app.get("/product/:id", GetProductById);
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Express Error:", err.message);
-  
+
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ error: err.message });
   } else if (err) {
     return res.status(500).json({ error: err.message });
   }
-  
+
   next();
 });
 

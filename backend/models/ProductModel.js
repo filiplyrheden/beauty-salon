@@ -110,6 +110,39 @@ export const fetchProductsByIds = async (productIds) => {
   return rows;
 };
 
+export const getProductsWithInfo = async () => {
+  const [rows] = await db.query(`
+    SELECT 
+      p.product_id,
+      p.product_name,
+      p.description,
+      p.price,
+      p.stock_quantity,
+      p.created_at,
+      JSON_OBJECT(
+          'category_id', c.category_id,
+          'category_name', c.category_name,
+          'parent_category_id', c.parent_category_id
+      ) AS category,
+      JSON_ARRAYAGG(
+          JSON_OBJECT(
+              'image_id', pi.image_id,
+              'image_url', pi.image_url,
+              'is_primary', pi.is_primary
+          )
+      ) AS images
+    FROM 
+      products p
+    LEFT JOIN 
+      productimages pi ON p.product_id = pi.product_id
+    LEFT JOIN
+      categories c ON p.category_id = c.category_id
+    GROUP BY 
+      p.product_id;
+  `);
+  return rows;
+};
+
 // Fetch a single product and its price by product ID
 export const getProductById = async (productId) => {
   const query = `

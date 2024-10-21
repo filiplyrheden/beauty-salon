@@ -1,4 +1,12 @@
-import { getProducts, insertProduct, editProduct, trashProduct, getProductById } from "../models/ProductModel.js";
+import {
+  getProducts,
+  insertProduct,
+  editProduct,
+  trashProduct,
+  getProductById,
+  getProductsWithInfo,
+} from "../models/ProductModel.js";
+import { getCategoriesById } from "../models/productCategoriesModel.js";
 
 /**
  * Handler to show all products.
@@ -11,6 +19,16 @@ export const showProducts = async (req, res) => {
     res.status(200).json(products);
   } catch (err) {
     console.error("Error in showProducts:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const showallProducts = async (req, res) => {
+  try {
+    const products = await getProductsWithInfo();
+    res.status(200).json(products);
+  } catch (err) {
+    console.error("Error in showProductsWithInfo:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -88,7 +106,7 @@ export const GetProductById = async (req, res) => {
     if (result.Rows === 0) {
       return res.status(404).json({ error: "Product not found" });
     }
-    res.status(200).json({result});
+    res.status(200).json({ result });
   } catch (err) {
     console.error("Error in GetProuctById:", err);
     res.status(500).json({ error: "Internal Server Error" });
