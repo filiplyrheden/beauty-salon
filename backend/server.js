@@ -2,6 +2,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import Stripe from "stripe";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import upload from "./config/uploadConfig.js";
@@ -74,22 +75,24 @@ import {
   updateOrderById,
   showOrdersById,
 } from "./controllers/order.js";
-import { 
-  sendCode,
-  resetPassword,
- } from "./controllers/reset-password.js";
+import { sendCode, resetPassword } from "./controllers/reset-password.js";
 
 dotenv.config();
 const app = express();
 const PORT = 3000;
 
 // Middleware
+
+app.options("*", cors()); // Allow preflight requests for all routes
 app.use(
   cors({
     origin: "http://localhost:8080",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
 app.use(express.json());
 
 // Handle __dirname in ES6 modules
@@ -263,7 +266,6 @@ app.delete(
 app.post("/forgot-password", sendCode);
 app.post("/reset-password/:token", resetPassword);
 
-
 //Routes for User
 app.get("/user/:id", showUserById); // Get all User
 app.post("/user", createNewUser); // Create
@@ -272,6 +274,62 @@ app.delete("/user/:id", authMiddleware, adminMiddleware, deleteUserById); // Del
 
 // Routes for singular Product
 app.get("/product/:id", GetProductById);
+
+// This is your test secret API key.
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+const YOUR_DOMAIN = "http://localhost:8080";
+
+app.post("/create-checkout-session", cors(), async (req, res) => {
+  try {
+    const { line_items } = req.body; // Destructure to easily access line_items
+    console.log("Received line_items:", line_items);
+
+    // Ensure line_items is an array and has at least one item
+    if (!Array.isArray(line_items) || line_items.length === 0) {
+      return res.status(400).send("Invalid or missing line items");
+    }
+
+    // get product from db
+    // get the products that corrsponds to the ID sent to server
+    // create the line_items object TYP DET NEDAN :)
+
+    // products = productIds.map((id) => {getProducts(id)} );
+    // line_items = products.map((product) => {
+    //   return {
+    //     price_data: {
+    //       currency: "sek",
+    //       product_data: {
+    //         name: product.product_name,
+    //         images: [product.image],
+    //       },
+    //       unit_amount: product.price * 100,
+    //     },
+    //     quantity: "???????",
+    //   };
+    // });
+
+    // Create a checkout session with all the line items
+    const session = await stripe.checkout.sessions.create({
+      line_items, // Pass the entire line_items array
+      mode: "payment",
+      billing_address_collection: "required",
+      shipping_address_collection: {
+        allowed_countries: ["SE"],
+      },
+      locale: "sv",
+      success_url: `${YOUR_DOMAIN}/success`,
+      cancel_url: `${YOUR_DOMAIN}/cancel`,
+    });
+
+    // Set CORS header and respond with the session URL
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.status(303).json({ url: session.url });
+  } catch (error) {
+    console.error("Error creating Stripe checkout session:", error); // More detailed error log
+    res.status(500).send("Error creating Stripe checkout session");
+  }
+});
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
