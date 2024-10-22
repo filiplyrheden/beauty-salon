@@ -38,7 +38,7 @@ const routes = [
     meta: { requiresAuth: false },
   },
   {
-    path: "/treatments",
+    path: "/behandlingar",
     name: "TreatmentsPage",
     component: TreatmentsPage,
     meta: { requiresAuth: false },

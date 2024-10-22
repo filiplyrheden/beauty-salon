@@ -43,9 +43,7 @@ const tableCreationQueries = [
   // Table: serviceCategories
   `CREATE TABLE serviceCategories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
-    category_name VARCHAR(100),
-    parent_category_id INT,
-    FOREIGN KEY (parent_category_id) REFERENCES serviceCategories(category_id) ON DELETE SET NULL
+    category_name VARCHAR(100)
   );`,
 
   // Table: Products
@@ -171,11 +169,11 @@ const insertDataQueries = [
   ('Manicures & Pedicures', NULL);`,
 
   // Insert into serviceCategories
-  `INSERT INTO serviceCategories (category_name, parent_category_id) VALUES
-  ('Facial Treatments', NULL),
-  ('Massage Therapies', NULL),
-  ('Nail Services', NULL),
-  ('Hair Services', NULL);`,
+  `INSERT INTO serviceCategories (category_name) VALUES
+  ('Facial Treatments' ),
+  ('Massage Therapies'),
+  ('Nail Services'),
+  ('Hair Services');`,
 
   // Insert into Products
   `INSERT INTO Products (product_name, description, price, stock_quantity, category_id)
