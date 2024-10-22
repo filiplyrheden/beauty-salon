@@ -170,7 +170,7 @@ app.post("/login", loginUser);
 app.post("/register", registerUser);
 
 // Routes for Services
-app.get("/services", authMiddleware, adminMiddleware, showServices); // Get all courses
+app.get("/services", showServices); // Get all courses
 app.post(
   "/services",
   authMiddleware,
@@ -194,12 +194,7 @@ app.put(
 app.delete("/services/:id", authMiddleware, adminMiddleware, deleteServiceById); // Delete a service
 
 //Routes for ServicesCategories
-app.get(
-  "/services-categories",
-  authMiddleware,
-  adminMiddleware,
-  showServicesCategories
-); // Get all Servicescategories
+app.get("/services-categories", showServicesCategories); // Get all Servicescategories
 app.post(
   "/services-categories",
   authMiddleware,

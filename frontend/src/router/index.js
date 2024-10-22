@@ -18,6 +18,7 @@ import ProductView from "@/views/ecommerce/ProductView.vue";
 import ProfilePage from "@/views/mainpage/ProfilePage.vue";
 import AboutUsPage from "../views/mainpage/AboutUsView.vue";
 import SuccessPage from "../views/mainpage/SuccessView.vue";
+import TreatmentsPage from "../views/mainpage/TreatmentsView.vue";
 
 const routes = [
   {
@@ -34,6 +35,12 @@ const routes = [
     path: "/about-us",
     name: "AboutUsPage",
     component: AboutUsPage,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: "/treatments",
+    name: "TreatmentsPage",
+    component: TreatmentsPage,
     meta: { requiresAuth: false },
   },
   {
