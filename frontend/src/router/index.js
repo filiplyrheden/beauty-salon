@@ -21,7 +21,7 @@ import ProfilePage from "@/views/mainpage/ProfilePage.vue";
 import AboutUsPage from "../views/mainpage/AboutUsView.vue";
 import SuccessPage from "../views/mainpage/SuccessView.vue";
 import TreatmentsPage from "../views/mainpage/TreatmentsView.vue";
-
+import CheckOutPage from "../views/ecommerce/CheckOutView.vue";
 
 const routes = [
   {
@@ -39,6 +39,12 @@ const routes = [
     name: "AboutUsPage",
     component: AboutUsPage,
     meta: { requiresAuth: false },
+  },
+  {
+    path: "/checkout",
+    name: "CheckoutPage",
+    component: CheckOutPage,
+    meta: { requiresAuth: true },
   },
   {
     path: "/behandlingar",
@@ -143,7 +149,7 @@ const routes = [
     path: "/reset-password/:token",
     name: "Reset Password Page",
     component: ResetPassword,
-  }
+  },
   // Additional routes can be added here
 ];
 
