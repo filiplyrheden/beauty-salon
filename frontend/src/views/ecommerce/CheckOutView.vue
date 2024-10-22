@@ -12,22 +12,13 @@ export default {
     async handleCheckout() {
       try {
         const dummyItems = [
-          { name: "T-shirt", price: 1999, quantity: 2 }, // $19.99 per T-shirt
-          { name: "Sneakers", price: 4999, quantity: 1 }, // $49.99 per pair of sneakers
-          { name: "Cap", price: 1499, quantity: 3 }, // $14.99 per cap
+          { product_id: 1, quantity: 2 },
+          { product_id: 2, quantity: 4 },
+          { product_id: 3, quantity: 1 },
         ];
 
         const response = await axiosInstance.post("/create-checkout-session", {
-          line_items: dummyItems.map((item) => ({
-            price_data: {
-              currency: "SEK",
-              product_data: {
-                name: item.name, // Item name from dummy data
-              },
-              unit_amount: item.price, // Price already in cents in dummy data
-            },
-            quantity: item.quantity, // Quantity from dummy data
-          })),
+          dummyItems: dummyItems
         });
 
         // Manually handle the redirect from the 303 status
