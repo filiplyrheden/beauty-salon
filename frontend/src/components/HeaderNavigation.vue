@@ -41,6 +41,7 @@ export default {
         { name: "Home", path: "/" },
         { name: "Shop", path: "/shop" },
         { name: "About", path: "/about-us" },
+        { name: "Behandlingar", path: "/behandlingar" },
         { name: "Contact", path: "/contact" },
       ],
     };
