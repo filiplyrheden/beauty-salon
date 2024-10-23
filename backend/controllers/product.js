@@ -5,6 +5,7 @@ import {
   trashProduct,
   getProductById,
   getProductsWithInfo,
+  fetchCheckoutProductsByIds,
 } from "../models/ProductModel.js";
 import { getCategoriesById } from "../models/productCategoriesModel.js";
 
@@ -29,6 +30,40 @@ export const showallProducts = async (req, res) => {
     res.status(200).json(products);
   } catch (err) {
     console.error("Error in showProductsWithInfo:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const getCheckoutProducts = async (res, dummyItems) => {
+  try {
+    const productIds = dummyItems.map(item => item.product_id);
+    
+    // Fetch product details using the product IDs
+    const products = await fetchCheckoutProductsByIds(productIds);
+
+    // Create line items with the correct quantity for each product
+    const line_items = products.map((product) => {
+      // Find the matching item in dummyItems to get the quantity
+      const matchingItem = dummyItems.find(item => item.product_id === product.product_id);
+
+      return {
+        price_data: {
+          currency: "SEK",
+          product_data: {
+            name: product.product_name,
+            // images: [product.image], // Uncomment if needed
+          },
+          unit_amount: Math.round(product.price * 100), // Multiply by 100 to get the correct format
+        },
+        // Use the quantity from the matching item
+        quantity: matchingItem ? matchingItem.quantity : 1, // Default to 1 if not found
+      };
+    });
+
+    return line_items;
+
+  } catch (err) {
+    console.error("Error in getCheckoutProducts:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

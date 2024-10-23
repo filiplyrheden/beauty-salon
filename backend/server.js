@@ -21,6 +21,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  getCheckoutProducts,
 } from "./controllers/product.js";
 import {
   showCourses,
@@ -282,32 +283,16 @@ const YOUR_DOMAIN = "http://localhost:8080";
 
 app.post("/create-checkout-session", cors(), async (req, res) => {
   try {
-    const { line_items } = req.body; // Destructure to easily access line_items
-    console.log("Received line_items:", line_items);
-
+    const { dummyItems } = req.body; // Destructure to easily access line_items
+     const line_items = await getCheckoutProducts(res, dummyItems);
+     console.log(line_items);
     // Ensure line_items is an array and has at least one item
-    if (!Array.isArray(line_items) || line_items.length === 0) {
+    if (!Array.isArray(dummyItems) || line_items.length === 0) {
       return res.status(400).send("Invalid or missing line items");
     }
-
     // get product from db
     // get the products that corrsponds to the ID sent to server
-    // create the line_items object TYP DET NEDAN :)
-
-    // products = productIds.map((id) => {getProducts(id)} );
-    // line_items = products.map((product) => {
-    //   return {
-    //     price_data: {
-    //       currency: "sek",
-    //       product_data: {
-    //         name: product.product_name,
-    //         images: [product.image],
-    //       },
-    //       unit_amount: product.price * 100,
-    //     },
-    //     quantity: "???????",
-    //   };
-    // });
+    // create the line_items object
 
     // Create a checkout session with all the line items
     const session = await stripe.checkout.sessions.create({

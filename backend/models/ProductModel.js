@@ -110,6 +110,19 @@ export const fetchProductsByIds = async (productIds) => {
   return rows;
 };
 
+export const fetchCheckoutProductsByIds = async (productIds) => {
+  // Convert the productIds array to a comma-separated string
+  const idsString = productIds.join(',');
+
+  // Use the string inside the SQL query
+  const query = `SELECT product_id, price, product_name FROM Products WHERE product_id IN (${idsString})`;
+
+  // Assuming you're using a MySQL client like mysql2 or similar:
+  const [rows] = await db.query(query);
+  return rows;
+};
+
+
 export const getProductsWithInfo = async () => {
   const [rows] = await db.query(`
     SELECT 
