@@ -105,7 +105,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const YOUR_DOMAIN = "http://localhost:8080";
 
 app.post(
-  "/my-webhook",
+  "/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
     const sig = req.headers["stripe-signature"];
@@ -119,8 +119,20 @@ app.post(
       console.log("Session: ", session);
       const items = await getCheckoutSession(session.id);
       console.log("Items: ", items);
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+        expand: ['data.price.product'],
+      });
+
+      lineItems.data.forEach((lineItem) => {
+        const productId = lineItem.price.product.metadata.product_id;
+        const quantity = lineItem.quantity;
+        // You can now use productId and quantity as needed
+      });
+
+      // take productId, quantity amonsgt other things in the webhook session and send in into a createOrder function to create order for backend. 
       try {
         //call method to create an order with the line_items inside the database using the session information.
+        /* createNewOrder(userId, products_list); */
       } catch (error) {
         console.error("Error creating order: ", error);
         return res.status(500).send("Internal Server Error");
@@ -137,7 +149,9 @@ app.use(express.json());
 app.post("/create-checkout-session", cors(), async (req, res) => {
   try {
     const { dummyItems } = req.body; // Destructure to easily access line_items
+    const { user_id } = req.body;
     const line_items = await getCheckoutProducts(res, dummyItems);
+    console.log(user_id);
     console.log(line_items);
     // Ensure line_items is an array and has at least one item
     if (!Array.isArray(dummyItems) || line_items.length === 0) {
@@ -151,7 +165,11 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
       billing_address_collection: "required",
       shipping_address_collection: {
         allowed_countries: ["SE"],
-      },
+      }, 
+      metadata: {
+        user_id: user_id,
+      },      
+         
       locale: "sv",
       success_url: `${YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${YOUR_DOMAIN}/cancel`,

@@ -7,7 +7,6 @@ import {
   getProductsWithInfo,
   fetchCheckoutProductsByIds,
 } from "../models/ProductModel.js";
-import { getCategoriesById } from "../models/productCategoriesModel.js";
 
 /**
  * Handler to show all products.
@@ -51,6 +50,9 @@ export const getCheckoutProducts = async (res, dummyItems) => {
           currency: "SEK",
           product_data: {
             name: product.product_name,
+            metadata: {
+              product_id: product.product_id, // Include product_id in each line item
+            },
             // images: [product.image], // Uncomment if needed
           },
           unit_amount: Math.round(product.price * 100), // Multiply by 100 to get the correct format
