@@ -59,11 +59,13 @@ export default {
     },
     async handleCheckout() {
       try {
+        console.log(this.$store.state.userId);
         const response = await axiosInstance.post("/create-checkout-session", {
           dummyItems: this.$store.state.cart.map((item) => ({
             product_id: item.product_id,
             quantity: item.quantity,
           })),
+          user_id: this.$store.state.userId
         });
 
         // Manually handle the redirect from the 303 status
