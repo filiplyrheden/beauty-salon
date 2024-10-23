@@ -56,9 +56,7 @@
           <p>{{ product.description }}</p>
           <p>Price: {{ product.price }} SEK</p>
         </router-link>
-        <button @click="handleaddToCart(product.product_id)">
-          + Lägg till i korgen
-        </button>
+        <button @click="addItemToCart(product)">Add to Cart</button>
       </div>
     </div>
 
@@ -137,6 +135,9 @@ export default {
     },
     handleaddToCart(productId) {
       console.log(`Added product ${productId} to cart.`);
+    },
+    addItemToCart(product) {
+      this.$store.commit("addToCart", product);
     },
   },
 };
