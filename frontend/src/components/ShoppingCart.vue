@@ -60,15 +60,9 @@ export default {
     async handleCheckout() {
       try {
         const response = await axiosInstance.post("/create-checkout-session", {
-          line_items: this.$store.state.cart.map((item) => ({
-            price_data: {
-              currency: "SEK",
-              product_data: {
-                name: item.product_name, // Item name from dummy data
-              },
-              unit_amount: item.price * 100, // Price already in cents in dummy data
-            },
-            quantity: item.quantity, // Quantity from dummy data
+          dummyItems: this.$store.state.cart.map((item) => ({
+            product_id: item.product_id,
+            quantity: item.quantity,
           })),
         });
 

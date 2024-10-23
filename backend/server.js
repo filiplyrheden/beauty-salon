@@ -284,15 +284,12 @@ const YOUR_DOMAIN = "http://localhost:8080";
 app.post("/create-checkout-session", cors(), async (req, res) => {
   try {
     const { dummyItems } = req.body; // Destructure to easily access line_items
-     const line_items = await getCheckoutProducts(res, dummyItems);
-     console.log(line_items);
+    const line_items = await getCheckoutProducts(res, dummyItems);
+    console.log(line_items);
     // Ensure line_items is an array and has at least one item
     if (!Array.isArray(dummyItems) || line_items.length === 0) {
       return res.status(400).send("Invalid or missing line items");
     }
-    // get product from db
-    // get the products that corrsponds to the ID sent to server
-    // create the line_items object
 
     // Create a checkout session with all the line items
     const session = await stripe.checkout.sessions.create({
@@ -303,10 +300,10 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
         allowed_countries: ["SE"],
       },
       locale: "sv",
-      success_url: `${YOUR_DOMAIN}/success`,
+      success_url: `${YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${YOUR_DOMAIN}/cancel`,
     });
-
+    console.log("Session created successfully:", session);
     // Set CORS header and respond with the session URL
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
     res.status(303).json({ url: session.url });

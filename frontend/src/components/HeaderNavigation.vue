@@ -26,6 +26,11 @@
             >Admin</router-link
           >
         </li>
+        <li>
+          <router-link to="/checkout"
+            ><font-awesome-icon icon="shopping-bag" class="menu-icon"
+          /></router-link>
+        </li>
       </ul>
     </nav>
   </header>
@@ -73,6 +78,9 @@ export default {
 .header-nav {
   background-color: #333;
   padding: 10px;
+}
+.menu-icon {
+  color: white;
 }
 ul {
   list-style: none;
