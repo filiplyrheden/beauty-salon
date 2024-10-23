@@ -8,6 +8,7 @@ export const store = new Vuex.Store({
     isTokenValid: false,
     LogoutPopup: false,
     userId: null,
+    cart: [],
   },
   mutations: {
     showPopup(state) {
@@ -46,6 +47,51 @@ export const store = new Vuex.Store({
     },
     setUserId(state, userId) {
       state.userId = userId;
+    },
+    setCart(state, cartItems) {
+      state.cart = cartItems; // Assume the cart is already in simplified form
+    },
+    addToCart(state, product) {
+      const item = state.cart.find((i) => i.product_id === product.product_id);
+      if (item) {
+        item.quantity++;
+      } else {
+        state.cart.push({
+          product_id: product.product_id,
+          product_name: product.product_name,
+          price: product.price,
+          quantity: 1,
+          image_url: product.images[0]?.image_url, // Assuming the first image is primary
+        });
+      }
+    },
+    incrementItemInCart(state, productId) {
+      console.log("incrementItemInCart" + productId);
+      const item = state.cart.find((i) => i.product_id === productId);
+      if (item) {
+        item.quantity++;
+      }
+    },
+    decrementItemInCart(state, productId) {
+      console.log("decement" + productId);
+      const item = state.cart.find((i) => i.product_id === productId);
+      if (item) {
+        item.quantity--;
+      }
+    },
+    removeFromCart(state, productId) {
+      state.cart = state.cart.filter((item) => item.product_id !== productId);
+    },
+    clearCart(state) {
+      state.cart = [];
+    },
+  },
+  getters: {
+    cartItems: (state) => state.cart,
+    cartTotalPrice: (state) => {
+      return state.cart.reduce((total, item) => {
+        return total + item.price * item.quantity;
+      }, 0);
     },
   },
   actions: {
