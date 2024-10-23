@@ -94,7 +94,76 @@ app.use(
   })
 );
 
+async function getCheckoutSession(sessionId) {
+  const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
+  return lineItems;
+}
+
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+const YOUR_DOMAIN = "http://localhost:8080";
+
+app.post(
+  "/my-webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const sig = req.headers["stripe-signature"];
+    const event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      STRIPE_WEBHOOK_SECRET
+    );
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+      console.log("Session: ", session);
+      const items = await getCheckoutSession(session.id);
+      console.log("Items: ", items);
+      try {
+        //call method to create an order with the line_items inside the database using the session information.
+      } catch (error) {
+        console.error("Error creating order: ", error);
+        return res.status(500).send("Internal Server Error");
+      }
+    } else {
+      console.log("Unhandled event", event.type);
+    }
+    return res.sendStatus(200);
+  }
+);
+
 app.use(express.json());
+
+app.post("/create-checkout-session", cors(), async (req, res) => {
+  try {
+    const { dummyItems } = req.body; // Destructure to easily access line_items
+    const line_items = await getCheckoutProducts(res, dummyItems);
+    console.log(line_items);
+    // Ensure line_items is an array and has at least one item
+    if (!Array.isArray(dummyItems) || line_items.length === 0) {
+      return res.status(400).send("Invalid or missing line items");
+    }
+
+    // Create a checkout session with all the line items
+    const session = await stripe.checkout.sessions.create({
+      line_items, // Pass the entire line_items array
+      mode: "payment",
+      billing_address_collection: "required",
+      shipping_address_collection: {
+        allowed_countries: ["SE"],
+      },
+      locale: "sv",
+      success_url: `${YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${YOUR_DOMAIN}/cancel`,
+    });
+    // Set CORS header and respond with the session URL
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.status(303).json({ url: session.url });
+  } catch (error) {
+    console.error("Error creating Stripe checkout session:", error); // More detailed error log
+    res.status(500).send("Error creating Stripe checkout session");
+  }
+});
 
 // Handle __dirname in ES6 modules
 const __filename = fileURLToPath(import.meta.url);
@@ -277,41 +346,6 @@ app.delete("/user/:id", authMiddleware, adminMiddleware, deleteUserById); // Del
 app.get("/product/:id", GetProductById);
 
 // This is your test secret API key.
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-const YOUR_DOMAIN = "http://localhost:8080";
-
-app.post("/create-checkout-session", cors(), async (req, res) => {
-  try {
-    const { dummyItems } = req.body; // Destructure to easily access line_items
-    const line_items = await getCheckoutProducts(res, dummyItems);
-    console.log(line_items);
-    // Ensure line_items is an array and has at least one item
-    if (!Array.isArray(dummyItems) || line_items.length === 0) {
-      return res.status(400).send("Invalid or missing line items");
-    }
-
-    // Create a checkout session with all the line items
-    const session = await stripe.checkout.sessions.create({
-      line_items, // Pass the entire line_items array
-      mode: "payment",
-      billing_address_collection: "required",
-      shipping_address_collection: {
-        allowed_countries: ["SE"],
-      },
-      locale: "sv",
-      success_url: `${YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${YOUR_DOMAIN}/cancel`,
-    });
-    console.log("Session created successfully:", session);
-    // Set CORS header and respond with the session URL
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
-    res.status(303).json({ url: session.url });
-  } catch (error) {
-    console.error("Error creating Stripe checkout session:", error); // More detailed error log
-    res.status(500).send("Error creating Stripe checkout session");
-  }
-});
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
