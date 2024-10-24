@@ -8,14 +8,49 @@ export const store = new Vuex.Store({
     isTokenValid: false,
     LogoutPopup: false,
     userId: null,
-    cart: JSON.parse(localStorage.getItem("cart")) || [], // Load cart from localStorage or start with an empty array
+    cart: [],
   },
   mutations: {
-    // Other mutations...
-
+    showPopup(state) {
+      state.isPopupVisible = true;
+    },
+    hidePopup(state) {
+      state.isPopupVisible = false;
+    },
+    login(state) {
+      state.isLoggedIn = true;
+      console.log("Inloggad");
+    },
+    logout(state) {
+      state.isLoggedIn = false;
+      state.isAdmin = false;
+      state.isTokenValid = false;
+      localStorage.removeItem("token");
+      state.userId = null;
+      state.cart = 0;
+    },
+    admin(state) {
+      state.isLoggedIn = true;
+      state.isAdmin = true;
+      state.isTokenValid = true;
+    },
+    setTokenValidity(state, isValid) {
+      state.isTokenValid = isValid;
+    },
+    setExpirationInterval(state, intervalId) {
+      state.expirationInterval = intervalId;
+    },
+    clearExpirationInterval(state) {
+      if (state.expirationInterval) {
+        clearInterval(state.expirationInterval);
+        state.expirationInterval = null;
+      }
+    },
+    setUserId(state, userId) {
+      state.userId = userId;
+    },
     setCart(state, cartItems) {
-      state.cart = cartItems;
-      localStorage.setItem("cart", JSON.stringify(state.cart)); // Save to localStorage
+      state.cart = cartItems; // Assume the cart is already in simplified form
     },
     addToCart(state, product) {
       const item = state.cart.find((i) => i.product_id === product.product_id);
@@ -30,28 +65,23 @@ export const store = new Vuex.Store({
           image_url: product.images[0]?.image_url, // Assuming the first image is primary
         });
       }
-      localStorage.setItem("cart", JSON.stringify(state.cart)); // Save updated cart to localStorage
     },
     incrementItemInCart(state, productId) {
+      console.log("incrementItemInCart" + productId);
       const item = state.cart.find((i) => i.product_id === productId);
       if (item) {
         item.quantity++;
-        localStorage.setItem("cart", JSON.stringify(state.cart)); // Update localStorage
       }
     },
     decrementItemInCart(state, productId) {
+      console.log("decement" + productId);
       const item = state.cart.find((i) => i.product_id === productId);
       if (item) {
         item.quantity--;
-        if (item.quantity === 0) {
-          state.cart = state.cart.filter((i) => i.product_id !== productId); // Remove item if quantity is 0
-        }
-        localStorage.setItem("cart", JSON.stringify(state.cart)); // Update localStorage
       }
     },
     removeFromCart(state, productId) {
       state.cart = state.cart.filter((item) => item.product_id !== productId);
-      localStorage.setItem("cart", JSON.stringify(state.cart)); // Save updated cart to localStorage
     },
     clearCart(state) {
       state.cart = [];
@@ -64,10 +94,77 @@ export const store = new Vuex.Store({
       return state.cart.reduce((total, item) => total + item.quantity, 0);
     },
     cartTotalPrice: (state) => {
-      return state.cart.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-      );
+      return state.cart.reduce((total, item) => {
+        return total + item.price * item.quantity;
+      }, 0);
+    },
+  },
+  actions: {
+    checkTokenExpiration({ commit }) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          const currentTime = Math.floor(Date.now() / 1000);
+
+          if (decodedToken.exp && decodedToken.exp < currentTime) {
+            commit("logout");
+            commit("clearExpirationInterval");
+            console.log("Token has expired.");
+            commit("showPopup");
+            return false;
+          }
+          console.log("Token is valid");
+          return true;
+        } catch (error) {
+          console.error("Error decoding token:", error);
+          commit("logout");
+          return false;
+        }
+      }
+      return false;
+    },
+
+    closePopup({ commit }) {
+      commit("hidePopup");
+    },
+
+    startTokenExpirationCheck({ dispatch, commit }) {
+      console.log("Starta räkning");
+      const intervalId = setInterval(() => {
+        dispatch("checkTokenExpiration");
+      }, 31 * 60 * 1000); // 31 minutes in milliseconds
+
+      commit("setExpirationInterval", intervalId);
+    },
+
+    stopTokenExpirationCheck({ commit }) {
+      commit("clearExpirationInterval");
+    },
+
+    checkAuth({ commit, dispatch }) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          commit("setUserId", decodedToken.userid);
+
+          if (decodedToken.role === "admin") {
+            console.log("Starta räkning");
+            commit("admin");
+            dispatch("startTokenExpirationCheck");
+          } else {
+            commit("login");
+            console.log("Starta räkning");
+            dispatch("startTokenExpirationCheck");
+          }
+        } catch (error) {
+          console.error("Invalid token:", error);
+          commit("logout");
+        }
+      } else {
+        commit("logout");
+      }
     },
   },
 });
