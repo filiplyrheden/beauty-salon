@@ -179,12 +179,13 @@ router.beforeEach((to, from, next) => {
   }
 
   if (requiresAuth && !isAuthenticated) {
-    return next("/login"); // Return immediately if authentication is required but user is not authenticated
+    // Store the intended destination as a query parameter
+    return next({ path: "/login", query: { redirect: to.fullPath } });
   }
 
   if (requiresAdmin) {
     if (!token) {
-      return next("/login"); // Return immediately if there's no token
+      return next({ path: "/login", query: { redirect: to.fullPath } }); // Include redirect for admin too
     }
     // Decode JWT to get role
     const decodedToken = JSON.parse(atob(token.split(".")[1]));
