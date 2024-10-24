@@ -76,8 +76,8 @@ export default {
       const registerData = {
         email: this.email,
         password: this.password,
-        firstname: this.firstname,
-        lastname: this.lastname,
+        first_name: this.firstname,
+        last_name: this.lastname,
       };
 
       try {
