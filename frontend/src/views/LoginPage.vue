@@ -76,12 +76,15 @@ export default {
         // Commit the login mutation to Vuex store
         this.login();
 
+        // Get the intended route to redirect after login (default to home if none)
+        const redirectTo = this.$route.query.redirect || "/";
+
         // Check if user is admin and commit the corresponding mutation
         if (decodedToken.role === "admin") {
           this.admin(); // Mark the user as admin
-          this.$router.push("/admin"); // Redirect to admin panel
+          this.$router.push(redirectTo === "/" ? "/admin" : redirectTo); // Redirect to admin panel or intended page
         } else {
-          this.$router.push("/"); // Redirect to home page
+          this.$router.push(redirectTo); // Redirect to the intended route or home page
         }
       } catch (error) {
         console.error("Error logging in:", error);
