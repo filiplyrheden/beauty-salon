@@ -57,6 +57,10 @@ const routes = [
     name: "SuccessPage",
     component: SuccessPage,
     meta: { requiresAuth: false },
+    beforeEnter: (to, from, next) => {
+      store.commit("clearCart"); // Clear the cart in Vuex and localStorage
+      next();
+    },
   },
   {
     path: "/login",

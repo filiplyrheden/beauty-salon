@@ -1,6 +1,7 @@
 import {
   getOrders,
   getOrderById,
+  getOrderByUserId,
   updateOrder,
   deleteOrder,
   createOrder,
@@ -62,6 +63,25 @@ export const showOrderById = async (req, res) => {
   } catch (err) {
     console.error("Error in showOrderById:", err);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+export const showOrderByUserId = async (user_id) => {
+  try {
+    // Fetch the order by user ID
+    const order = await getOrderByUserId(user_id); // Replace with the actual function to get the order
+
+    if (!order) {
+      return null; // No order found for user
+    }
+
+    // Fetch the products for the order
+    const orderDetails = await fetchSpecificOrderDetails(order.order_id);
+
+    // Return order with products
+    return { ...order, products: orderDetails };
+  } catch (err) {
+    console.error("Error in getOrderByUserId:", err);
+    throw new Error("Unable to retrieve order");
   }
 };
 

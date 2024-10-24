@@ -76,8 +76,10 @@ import {
   showOrders,
   updateOrderById,
   showOrdersById,
+  showOrderByUserId,
 } from "./controllers/order.js";
 import { sendCode, resetPassword } from "./controllers/reset-password.js";
+import { getOrderById } from "./models/orderModel.js";
 
 dotenv.config();
 const app = express();
@@ -187,6 +189,32 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
   } catch (error) {
     console.error("Error creating Stripe checkout session:", error); // More detailed error log
     res.status(500).send("Error creating Stripe checkout session");
+  }
+});
+
+app.get("/api/get-session-details", async (req, res) => {
+  const { session_id } = req.query;
+  console.log(session_id);
+
+  try {
+    // Fetch the session details from Stripe
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+
+    // Get the user ID from the session metadata
+    const user_id = session.metadata.user_id;
+
+    // Fetch the order details by user ID
+    const order = await showOrderByUserId(user_id);
+    console.log(order);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Send back order details
+    res.status(200).json(order);
+  } catch (error) {
+    console.error("Error in /api/get-session-details:", error);
+    res.status(500).json({ error: "Unable to fetch session details" });
   }
 });
 
