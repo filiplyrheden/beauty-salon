@@ -106,11 +106,11 @@ export const updateOrderById = async (req, res) => {
   }
 };
 
-export const createOrderByHook = async (user_id, lineItems) => {
+export const createOrderByHook = async (user_id, lineItems, shippingAddress) => {
   let connection;
   try {
     console.log("user_id inside createOrderByHook: " + user_id);
-
+    console.log("ShippingAdress inside createOrderByHook " + shippingAddress);
     // Acquire a connection from the pool
     connection = await pool.getConnection();
 
@@ -162,10 +162,17 @@ export const createOrderByHook = async (user_id, lineItems) => {
     // Create the order in the database
     const order_status = "pending"; // Or any default status you want to set
     const order_date = new Date(); // You can adjust this if needed
+    const address_line1 = shippingAddress.line1;
+    const address_line2 = shippingAddress.line2;
+    const postal_code = shippingAddress.postal_code;
+    const country = shippingAddress.country;
+    const city = shippingAddress.city;
+    console.log("address_line1 i createOrderByHook " + address_line1);
+    console.log("city i createOrderByHook " + city);
 
     const [orderResult] = await connection.query(
-      "INSERT INTO orders (user_id, order_status, total_amount, order_date) VALUES (?, ?, ?, ?)",
-      [user_id, order_status, totalAmount, order_date]
+      "INSERT INTO orders (user_id, order_status, total_amount, order_date, address_line1, address_line2, postal_code, country, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [user_id, order_status, totalAmount, order_date, address_line1, address_line2, postal_code, country, city]
     );
     const newOrderId = orderResult.insertId;
 

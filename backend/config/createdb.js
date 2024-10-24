@@ -24,11 +24,6 @@ const tableCreationQueries = [
     email VARCHAR(100) UNIQUE,
     password VARCHAR(255),
     phone VARCHAR(20),
-    address_line1 VARCHAR(255),
-    address_line2 VARCHAR(255),
-    postal_code VARCHAR(20),
-    country VARCHAR(100),
-    city VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );`,
 
@@ -74,6 +69,11 @@ const tableCreationQueries = [
     order_status VARCHAR(50),
     total_amount DECIMAL(10,2),
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    address_line1 VARCHAR(255),
+    address_line2 VARCHAR(255),
+    postal_code VARCHAR(20),
+    country VARCHAR(100),
+    city VARCHAR(100),
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE SET NULL
   );`,
 
