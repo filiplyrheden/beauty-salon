@@ -70,6 +70,7 @@ import {
 
 import { loginUser, registerUser } from "./controllers/authentication.js";
 import {
+  createOrderByHook,
   createNewOrder,
   deleteOrderById,
   showOrders,
@@ -108,39 +109,42 @@ app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    const event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      STRIPE_WEBHOOK_SECRET
-    );
+    let event;
+    try {
+      const sig = req.headers["stripe-signature"];
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Acknowledge the webhook quickly
+    res.sendStatus(200);
+
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
       console.log("Session: ", session);
-      const items = await getCheckoutSession(session.id);
-      console.log("Items: ", items);
-      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
-        expand: ['data.price.product'],
-      });
 
-      lineItems.data.forEach((lineItem) => {
-        const productId = lineItem.price.product.metadata.product_id;
-        const quantity = lineItem.quantity;
-        // You can now use productId and quantity as needed
-      });
-
-      // take productId, quantity amonsgt other things in the webhook session and send in into a createOrder function to create order for backend. 
-      try {
-        //call method to create an order with the line_items inside the database using the session information.
-        /* createNewOrder(userId, products_list); */
-      } catch (error) {
-        console.error("Error creating order: ", error);
-        return res.status(500).send("Internal Server Error");
-      }
-    } else {
-      console.log("Unhandled event", event.type);
+      // Move the rest to a background process
+      (async () => {
+        try {
+          const items = await getCheckoutSession(session.id);
+          const lineItems = await stripe.checkout.sessions.listLineItems(
+            session.id,
+            {
+              expand: ["data.price.product"],
+            }
+          );
+          const user_id = session.metadata.user_id;
+          await createOrderByHook(user_id, lineItems);
+        } catch (error) {
+          console.error("Error creating order: ", error);
+        }
+      })();
     }
-    return res.sendStatus(200);
   }
 );
 
@@ -165,11 +169,11 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
       billing_address_collection: "required",
       shipping_address_collection: {
         allowed_countries: ["SE"],
-      }, 
+      },
       metadata: {
         user_id: user_id,
-      },      
-         
+      },
+
       locale: "sv",
       success_url: `${YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${YOUR_DOMAIN}/cancel`,

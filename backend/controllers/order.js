@@ -17,6 +17,7 @@ import {
   fetchSpecificOrderDetails,
 } from "../models/OrderDetailModel.js";
 import { getUserById } from "../models/userModel.js";
+import pool from "../config/database.js";
 
 /**
  * Handler to show all services.
@@ -105,9 +106,99 @@ export const updateOrderById = async (req, res) => {
   }
 };
 
-/* export const createOrderByHook = async (user_id, ) => {
+export const createOrderByHook = async (user_id, lineItems) => {
+  let connection;
+  try {
+    console.log("user_id inside createOrderByHook: " + user_id);
 
-} */
+    // Acquire a connection from the pool
+    connection = await pool.getConnection();
+
+    // Begin transaction
+    await connection.query("BEGIN");
+
+    // Extract product IDs and quantities from lineItems
+    const products = lineItems.data.map((lineItem) => ({
+      product_id: lineItem.price.product.metadata.product_id,
+      quantity: lineItem.quantity,
+    }));
+
+    // Fetch product prices from the database
+    const productIds = products.map((product) => product.product_id);
+    const [fetchedProducts] = await connection.query(
+      "SELECT product_id, price FROM products WHERE product_id IN (?)",
+      [productIds]
+    );
+
+    // Calculate total order amount and create order details
+    let totalAmount = 0;
+
+    fetchedProducts.forEach((product) => {
+      console.log("fetched Products: " + JSON.stringify(product, null, 2));
+    });
+    products.forEach((product) => {
+      console.log("products: " + JSON.stringify(product, null, 2));
+    });
+
+    const orderDetails = products.map((product) => {
+      const productData = fetchedProducts.find(
+        (p) => p.product_id === Number(product.product_id)
+      );
+      if (!productData) {
+        throw new Error(`Product with ID ${product.product_id} not found`);
+      }
+
+      const productTotal = productData.price * product.quantity;
+      totalAmount += productTotal;
+
+      return {
+        product_id: product.product_id,
+        quantity: product.quantity,
+        price: productData.price,
+        total_price: productTotal,
+      };
+    });
+
+    // Create the order in the database
+    const order_status = "pending"; // Or any default status you want to set
+    const order_date = new Date(); // You can adjust this if needed
+
+    const [orderResult] = await connection.query(
+      "INSERT INTO orders (user_id, order_status, total_amount, order_date) VALUES (?, ?, ?, ?)",
+      [user_id, order_status, totalAmount, order_date]
+    );
+    const newOrderId = orderResult.insertId;
+
+    // Insert order details in bulk
+    const orderDetailQueries = orderDetails.map((item) => [
+      newOrderId,
+      item.product_id,
+      item.quantity,
+      item.price,
+    ]);
+
+    await connection.query(
+      "INSERT INTO orderDetails (order_id, product_id, quantity, unit_price) VALUES ?",
+      [orderDetailQueries]
+    );
+
+    // Commit the transaction
+    await connection.query("COMMIT");
+
+    return {
+      message: "Order created successfully",
+      order_id: newOrderId,
+      orderDetails,
+    };
+  } catch (err) {
+    console.error("Error in createOrderByHook:", err);
+    // Rollback the transaction on error
+    if (connection) await connection.query("ROLLBACK");
+    throw new Error("Internal Server Error");
+  } finally {
+    if (connection) connection.release(); // Release the connection back to the pool
+  }
+};
 
 export const createNewOrder = async (req, res) => {
   const client = await db.connect(); // For managing the transaction
