@@ -39,35 +39,11 @@ export const getUserById = async (id) => {
 };
 
 export const createUser = async (userData) => {
-  const {
-    role,
-    first_name,
-    last_name,
-    email,
-    password,
-    phone,
-    address_line1,
-    address_line2,
-    city,
-    postal_code,
-    country,
-  } = userData;
+  const { role, first_name, last_name, email, password, phone } = userData;
   try {
     const [result] = await db.query(
-      "INSERT INTO Users (role, first_name, last_name, email, password, phone, address_line1, address_line2, city, postal_code, country) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-      [
-        role,
-        first_name,
-        last_name,
-        email,
-        password,
-        phone,
-        address_line1,
-        address_line2,
-        city,
-        postal_code,
-        country,
-      ]
+      "INSERT INTO Users (role, first_name, last_name, email, password, phone) VALUES (?,?,?,?,?,?)",
+      [role, first_name, last_name, email, password, phone]
     );
 
     // Return the newly created category ID or some acknowledgment
@@ -79,33 +55,16 @@ export const createUser = async (userData) => {
 };
 
 export const updateUser = async (id, userData) => {
-  const {
-    role,
-    first_name,
-    last_name,
-    email,
-    password,
-    phone,
-    address_line1,
-    address_line2,
-    city,
-    postal_code,
-    country,
-  } = userData;
+  const { role, first_name, last_name, email, password, phone } = userData;
 
   try {
     const [result] = await db.query(
-      "UPDATE Users SET first_name = ?, last_name = ?, email = ?, phone = ?, address_line1 = ?, address_line2 = ?, city = ?, postal_code = ?, country = ? WHERE user_id = ?",
+      "UPDATE Users SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE user_id = ?",
       [
         first_name,
         last_name,
         email,
         phone,
-        address_line1,
-        address_line2,
-        city,
-        postal_code,
-        country,
         id, // ID of the user to update
       ]
     );
