@@ -16,10 +16,6 @@
           <p><strong>Efternamn:</strong> {{ form.lastName || "Ej Angivet" }}</p>
           <p><strong>Email:</strong> {{ form.email || "Ej Angivet" }}</p>
           <p><strong>Telefon:</strong> {{ form.phone || "Ej Angivet" }}</p>
-          <p><strong>Adress 1:</strong> {{ form.address1 || "Ej Angivet" }}</p>
-          <p><strong>Adress 2:</strong> {{ form.address2 || "Ej Angivet" }}</p>
-          <p><strong>Postkod:</strong> {{ form.postCode || "Ej Angivet" }}</p>
-          <p><strong>Land:</strong> {{ form.country || "Ej Angivet" }}</p>
         </div>
         <button @click="editProfile">Redigera</button>
       </div>
@@ -48,24 +44,6 @@
           <div class="form-group">
             <label for="address">Telefon:</label>
             <input v-model="form.phone" type="text" id="address" />
-          </div>
-          <!-- Address -->
-          <div class="form-group">
-            <label for="address">Adress 1:</label>
-            <input v-model="form.address1" type="text" id="address" />
-          </div>
-          <div class="form-group">
-            <label for="address">Adress 2:</label>
-            <input v-model="form.address2" type="text" id="address" />
-          </div>
-
-          <div class="form-group">
-            <label for="address">Postkod:</label>
-            <input v-model="form.postCode" type="text" id="address" />
-          </div>
-          <div class="form-group">
-            <label for="address">Land:</label>
-            <input v-model="form.country" type="text" id="address" />
           </div>
 
           <!-- Buttons -->
@@ -103,27 +81,19 @@
           <tr v-for="order in orders" :key="order.order_id">
             <td>{{ order.order_id }}</td>
             <td>
-              {{
-                (order.user?.first_name || "Okänt Förnamn") +
-                " " +
-                (order.user?.last_name || "Okänt Efternamn")
-              }}
-              <br />
-              {{ order.user?.address_line1 || "Ingen Address Angiven" }}
+              {{ order.address_line1 || "Ingen Address Angiven" }}
               <template v-if="order.user?.address_line2">
                 <br />
-                {{ order.user.address_line2 }}
+                {{ order.address_line2 }}
               </template>
               <br />
               {{
-                order.user?.postal_code && order.user?.city
-                  ? `${order.user.postal_code} ${order.user.city}`
+                order.postal_code && order.city
+                  ? `${order.postal_code} ${order.city}`
                   : "Ingen postkod angiven"
               }}
               <br />
-              {{ order.user?.country || "Inget land Angivet" }}
-              <br />
-              {{ order.user?.phone || "Inget telefonnummer angivet" }}
+              {{ order.country || "Inget land Angivet" }}
             </td>
 
             <td>{{ order.order_status }}</td>
@@ -221,12 +191,6 @@ export default {
         this.form.firstName = user.first_name;
         this.form.lastName = user.last_name;
         this.form.email = user.email;
-        this.form.address1 = user.address_line1;
-        this.form.address2 = user.address_line2;
-        this.form.postCode = user.postal_code; // Use 'postCode' to match form
-        this.form.city = user.city;
-        this.form.country = user.country;
-        this.form.phone = user.phone;
       } catch (error) {
         console.error("Error fetching user:", error.response || error.message);
         Swal.fire(
@@ -246,11 +210,6 @@ export default {
         const response = await axiosInstance.put(`/user/${this.userId}`, {
           first_name: this.form.firstName,
           last_name: this.form.lastName,
-          address_line1: this.form.address1,
-          address_line2: this.form.address2,
-          postal_code: this.form.postCode,
-          city: this.form.city,
-          country: this.form.country,
           phone: this.form.phone,
           email: this.form.email,
         });
@@ -279,10 +238,6 @@ export default {
      */
     resetForm() {
       this.form = {
-        address1: this.user.address_line1,
-        address2: this.user.address_line2,
-        postCode: this.user.postal_code,
-        country: this.user.country,
         phone: this.user.phone,
         email: this.user.email,
         firstName: this.user.first_name,
@@ -292,10 +247,6 @@ export default {
 
     editProfile() {
       this.isEditing = true;
-      this.form.address1 = this.user.address_line1;
-      this.form.address2 = this.user.address_line2;
-      this.form.postCode = this.user.postal_code;
-      this.form.country = this.user.country;
       this.form.phone = this.user.phone;
       this.form.email = this.user.email;
       this.form.firstName = this.user.first_name;

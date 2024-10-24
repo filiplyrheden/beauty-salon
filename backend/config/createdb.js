@@ -153,11 +153,11 @@ const tableCreationQueries = [
 // SQL Statements for Inserting Dummy Data
 const insertDataQueries = [
   // Insert into Users
-  `INSERT INTO Users (role, first_name, last_name, email, password, phone, address_line1, address_line2, postal_code, country)
+  `INSERT INTO Users (role, first_name, last_name, email, password, phone)
   VALUES
-  ('admin', 'Emily', 'Blossom', 'emily.blossom@beautywellness.com', 'hashed_password1', '555-1234', '123 Beauty Ave', 'Suite 100', '90001', 'USA'),
-  ('customer', 'Sophia', 'Grace', 'sophia.grace@example.com', 'hashed_password2', '555-5678', '456 Relax St', NULL, '90002', 'USA'),
-  ('customer', 'Liam', 'Johnson', 'liam.johnson@example.com', 'hashed_password3', '555-8765', '789 Serenity Blvd', 'Apt 5B', '90003', 'USA');`,
+  ('admin', 'Emily', 'Blossom', 'emily.blossom@beautywellness.com', 'hashed_password1', "123-456-7890"),
+  ('customer', 'Sophia', 'Grace', 'sophia.grace@example.com', 'hashed_password2', "123-456-7890"),
+  ('customer', 'Liam', 'Johnson', 'liam.johnson@example.com', 'hashed_password3', "123-456-7890");`,
 
   // Insert into Categories
   `INSERT INTO Categories (category_name, parent_category_id) VALUES
@@ -192,10 +192,10 @@ const insertDataQueries = [
   (4, 'http://example.com/images/hair_mask_primary.jpg', TRUE);`,
 
   // Insert into Orders
-  `INSERT INTO Orders (user_id, order_status, total_amount)
+  `INSERT INTO Orders (user_id, order_status, total_amount, address_line1, address_line2, postal_code, country, city)
   VALUES
-  (2, 'Confirmed', 65.97),
-  (3, 'Pending', 19.99);`,
+  (2, 'Confirmed', 65.97, '123 Main St', 'Apt 101', '12345', 'USA', 'Springfield'),
+  (3, 'Pending', 19.99, '456 Main St', 'Apt 101', '12345', 'USA', 'Springfield');`,
 
   // Insert into OrderDetails
   `INSERT INTO OrderDetails (order_id, product_id, quantity, unit_price)
