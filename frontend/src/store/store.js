@@ -27,6 +27,7 @@ export const store = new Vuex.Store({
       state.isTokenValid = false;
       localStorage.removeItem("token");
       state.userId = null;
+      state.cart = 0;
     },
     admin(state) {
       state.isLoggedIn = true;
@@ -89,6 +90,9 @@ export const store = new Vuex.Store({
   },
   getters: {
     cartItems: (state) => state.cart,
+    cartCount: (state) => {
+      return state.cart.reduce((total, item) => total + item.quantity, 0);
+    },
     cartTotalPrice: (state) => {
       return state.cart.reduce((total, item) => {
         return total + item.price * item.quantity;
