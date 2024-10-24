@@ -26,10 +26,11 @@
             >Admin</router-link
           >
         </li>
-        <li>
+        <li class="li-styles">
           <router-link to="/checkout"
             ><font-awesome-icon icon="shopping-bag" class="menu-icon"
           /></router-link>
+          <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
         </li>
       </ul>
     </nav>
@@ -53,6 +54,9 @@ export default {
   },
   computed: {
     ...mapState(["isLoggedIn", "isAdmin"]),
+    cartCount() {
+      return this.$store.getters.cartCount; // Correctly using the getter for cart count
+    },
   },
   created() {
     this.checkAuthentication();
@@ -75,6 +79,21 @@ export default {
 </script>
 
 <style scoped>
+
+.cart-badge{
+  position: absolute;
+  top: -8px;
+  right: -18px;
+  background-color: rgb(41, 34, 150);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 7px;
+  font-size: 12px;
+}
+
+.li-styles{
+  position: relative;
+}
 .header-nav {
   background-color: #333;
   padding: 10px;
