@@ -84,6 +84,7 @@ export const store = new Vuex.Store({
     },
     clearCart(state) {
       state.cart = [];
+      localStorage.removeItem("cart"); // Remove cart from localStorage
     },
   },
   getters: {

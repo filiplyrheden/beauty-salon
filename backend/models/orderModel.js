@@ -46,6 +46,26 @@ export const getOrderById = async (id) => {
     throw err;
   }
 };
+export const getOrderByUserId = async (id) => {
+  try {
+    // Modify the query to fetch the latest order by sorting it
+    const [rows] = await db.query(
+      "SELECT * FROM Orders WHERE user_id = ? ORDER BY order_date DESC LIMIT 1",
+      [id]
+    );
+
+    // Check if there are any orders
+    if (rows.length === 0) {
+      return null; // No orders found
+    }
+
+    // Return the latest order
+    return rows[0]; // The first (and only) row after LIMIT
+  } catch (err) {
+    console.error("Error fetching order by user ID:", err);
+    throw err;
+  }
+};
 
 // Insert a new order into the 'orders' table
 export const createOrder = async (
