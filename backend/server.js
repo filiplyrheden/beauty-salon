@@ -131,6 +131,8 @@ app.post(
       // Move the rest to a background process
       (async () => {
         try {
+          const shippingAddress = session.customer_details.address;
+          console.log("Shipping Address: ", shippingAddress);
           const items = await getCheckoutSession(session.id);
           const lineItems = await stripe.checkout.sessions.listLineItems(
             session.id,
@@ -139,7 +141,8 @@ app.post(
             }
           );
           const user_id = session.metadata.user_id;
-          await createOrderByHook(user_id, lineItems);
+          /* const adress = get the adress from the stripe input */
+          await createOrderByHook(user_id, lineItems, shippingAddress);
         } catch (error) {
           console.error("Error creating order: ", error);
         }
