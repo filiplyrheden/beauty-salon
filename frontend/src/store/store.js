@@ -27,7 +27,6 @@ export const store = new Vuex.Store({
       state.isTokenValid = false;
       localStorage.removeItem("token");
       state.userId = null;
-      state.cart = 0;
     },
     admin(state) {
       state.isLoggedIn = true;
