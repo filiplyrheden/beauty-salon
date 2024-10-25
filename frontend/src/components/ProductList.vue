@@ -6,6 +6,17 @@
         <div class="product-info">
           <p><strong>Name:</strong> {{ product.product_name }}</p>
           <p><strong>ID:</strong> {{ product.product_id }}</p>
+          <div class="image-container-wrapper">
+            <div class="product-image-container">
+              <img :src="getImageUrl(product.image_url_primary)" :alt="product.name" class="product-image" />
+            </div>
+            <div class="product-image-container">
+              <img :src="getImageUrl(product.image_url_secondary)" :alt="product.name" class="product-image" />
+            </div>
+            <div class="product-image-container">
+              <img :src="getImageUrl(product.image_url_third)" :alt="product.name" class="product-image" />
+            </div>
+          </div>
           <p><strong>Description:</strong> {{ product.description }}</p>
           <p><strong>Category ID:</strong> {{ product.category_id }}</p>
           <p><strong>Created At:</strong> {{ product.created_at }}</p>
@@ -37,6 +48,35 @@
             
             <label for="editStock">Stock Quantity:</label>
             <input v-model="editingProduct.stock_quantity" id="editStock" type="number" />
+          </div>
+          <div class="form-group">
+            <label for="primaryImage">Primary Image:</label>
+            <input 
+              type="file" 
+              id="primaryImage" 
+              @change="onImageChange($event, 'primary')" 
+              accept="image/*" 
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="secondaryImage">Secondary Image:</label>
+            <input 
+              type="file" 
+              id="secondaryImage" 
+              @change="onImageChange($event, 'secondary')" 
+              accept="image/*" 
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="thirdImage">Third Image:</label>
+            <input 
+              type="file" 
+              id="thirdImage"
+              @change="onImageChange($event, 'third')" 
+              accept="image/*" 
+            />
           </div>
           
           <div class="form-buttons">
@@ -78,6 +118,20 @@
             console.error("Error deleting product:", error.response ? error.response.data : error.message);
           });
       },
+      onImageChange(event, imageType) {
+        const file = event.target.files[0];
+
+        if (imageType === 'primary') {
+          this.primaryImageFile = file;
+        } else if (imageType === 'secondary') {
+          this.secondaryImageFile = file;
+        } else if (imageType === 'third') {
+          this.thirdImageFile = file;
+        }
+      },
+      getImageUrl(imageName) {
+      return `${imageName}`;
+      },
       editProduct(product) {
         this.editingProduct = { ...product };
       },
@@ -104,10 +158,36 @@
   </script>
   
   <style scoped>
+  .product-image-container {
+  display: flex; /* Use flexbox to arrange images */
+  flex-direction: column; /* Arrange images vertically */
+  align-items: center; /* Center images horizontally */
+  gap: 10px; /* Space between images */
+  margin: 20px 0; /* Add margin above and below the container */
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.product-image-container img {
+  max-width: 100%; /* Make images responsive */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Rounded corners for images */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); /* Subtle shadow for depth */
+}
+
+.product-image-container label {
+  font-weight: bold; /* Bold label for better visibility */
+  margin-bottom: 5px; /* Space below label */
+}
 .product-list {
   max-width: 900px;
   margin: 0 auto;
   padding: 20px;
+}
+.image-container-wrapper{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 h2 {

@@ -70,16 +70,37 @@ export const getCheckoutProducts = async (res, dummyItems) => {
   }
 };
 
-/**
- * Handler to insert a new product.
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- */
 export const createProduct = async (req, res) => {
   const product = req.body; // Get product details from the request body
+  const files = req.files;
+  console.log(files);
+
+    // Get the file paths for the uploaded images
+    const primaryImagePath = req.files.primaryImage[0].filename;
+    const secondaryImagePath = req.files.secondaryImage[0].filename;
+    const thirdImagePath = req.files.thirdImage[0].filename;
+
+    // Construct URLs for both images
+    const primaryImageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/uploads/${primaryImagePath}`;
+    const secondaryImageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/uploads/${secondaryImagePath}`;
+    const thirdImageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/uploads/${thirdImagePath}`;
+
+    // Add image URLs to service data
+    const newProductData = {
+      ...product,
+      image_url_primary: primaryImageUrl,
+      image_url_secondary: secondaryImageUrl,
+      image_url_third: thirdImageUrl, 
+    };
 
   try {
-    const result = await insertProduct(product);
+    const result = await insertProduct(newProductData);
     res.status(201).json({ message: "Product created successfully" });
   } catch (err) {
     console.error("Error in createProduct:", err);
