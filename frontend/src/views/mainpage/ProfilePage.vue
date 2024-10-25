@@ -9,6 +9,8 @@
         <div class="spinner"></div>
       </div>
 
+      <a v-else @click="handleLogout">Logout</a>
+
       <!-- User Profile -->
       <div v-if="!isEditing" class="form-container">
         <div class="profile-data">
@@ -124,7 +126,7 @@
 
 <script>
 import axiosInstance from "@/services/axiosConfig";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import Swal from "sweetalert2";
 
 export default {
@@ -269,6 +271,14 @@ export default {
         minute: "2-digit",
       };
       return new Date(datetime).toLocaleDateString(undefined, options);
+    },
+    ...mapMutations(["logout"]), // Map the logout mutation
+    handleLogout() {
+      this.logout();
+      this.$router.push("/"); // Redirect to home
+    },
+    checkAuthentication() {
+      this.$store.dispatch("checkAuth");
     },
   },
 };

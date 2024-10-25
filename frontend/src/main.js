@@ -12,12 +12,16 @@ import {
   faComments,
   faLayerGroup,
   faShoppingBag,
+  faUser,
+  faMagnifyingGlass,
+  faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { store } from "./store/store.js";
 
 library.add(
   faBox,
+  faUser,
   faCalendar,
   faStar,
   faGraduationCap,
@@ -25,7 +29,10 @@ library.add(
   faTags,
   faComments,
   faLayerGroup,
-  faShoppingBag
+  faShoppingBag,
+  faUser,
+  faLock,
+  faMagnifyingGlass
 );
 
 createApp(App)

@@ -35,7 +35,7 @@ const routes = [
     component: RegisterPage,
   },
   {
-    path: "/about-us",
+    path: "/om-mig",
     name: "AboutUsPage",
     component: AboutUsPage,
     meta: { requiresAuth: false },
@@ -69,7 +69,7 @@ const routes = [
     meta: { requiresAuth: false },
   },
   {
-    path: "/user/profile",
+    path: "/user/profil",
     name: "ProfilePage",
     component: ProfilePage,
     meta: { requiresAuth: true },
