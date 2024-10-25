@@ -25,12 +25,21 @@ export const getProducts = async () => {
  * @returns {Promise<Object>} The result of the insert operation.
  */
 export const insertProduct = async (product) => {
-  const { product_name, description, price, stock_quantity, category_id } =
-    product;
+  console.log(product);
+  const {
+    product_name,
+    description,
+    price,
+    stock_quantity,
+    category_id,
+    image_url_primary,
+    image_url_secondary,
+    image_url_third,
+  } = product;
   try {
     const query = `
-      INSERT INTO Products (product_name, description, price, stock_quantity, category_id)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO Products (product_name, description, price, stock_quantity, category_id, image_url_primary, image_url_secondary, image_url_third)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [result] = await db.query(query, [
       product_name,
@@ -38,6 +47,9 @@ export const insertProduct = async (product) => {
       price,
       stock_quantity,
       category_id,
+      image_url_primary,
+      image_url_secondary,
+      image_url_third,
     ]);
     return result;
   } catch (err) {
@@ -65,11 +77,14 @@ export const editProduct = async (product) => {
     price,
     stock_quantity,
     category_id,
+    image_url_primary,
+    image_url_secondary,
+    image_url_third,
   } = product;
   try {
     const query = `
       UPDATE Products
-      SET product_name = ?, description = ?, price = ?, stock_quantity = ?, category_id = ?
+      SET product_name = ?, description = ?, price = ?, stock_quantity = ?, category_id = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
       WHERE product_id = ?
     `;
     const [result] = await db.query(query, [
@@ -78,6 +93,9 @@ export const editProduct = async (product) => {
       price,
       stock_quantity,
       category_id,
+      image_url_primary,
+      image_url_secondary,
+      image_url_third,
       product_id,
     ]);
     return result;
@@ -165,6 +183,9 @@ export const getProductById = async (productId) => {
       p.description, 
       p.price, 
       p.stock_quantity, 
+      p.image_url_primary,
+      p.image_url_secondary,
+      p.image_url_third,
       c.category_name
     FROM Products p
     INNER JOIN Categories c ON p.category_id = c.category_id

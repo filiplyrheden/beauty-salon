@@ -229,12 +229,18 @@ app.use("/uploads", express.static(path.join(__dirnameFull, "uploads")));
 app.get("/products", showProducts); // Get all products
 app.get("/allproducts", showallProducts); // Get all products with additional info
 app.get("/admin/products", authMiddleware, adminMiddleware, showProducts); // Get all products for admin
-app.post("/admin/products", authMiddleware, adminMiddleware, createProduct); // Create a new product
+app.post("/admin/products", authMiddleware, adminMiddleware,   
+  upload.fields([
+  { name: "primaryImage", maxCount: 1 },
+  { name: "secondaryImage", maxCount: 1 },
+  { name: "thirdImage", maxCount: 1 },
+]), createProduct); // Create a new product
 app.put("/admin/products", authMiddleware, adminMiddleware, updateProduct); // Update a product
 app.delete(
   "/admin/products/:id",
   authMiddleware,
   adminMiddleware,
+  upload.single("image"),
   deleteProduct
 ); // Delete a product
 

@@ -132,7 +132,7 @@ export const store = new Vuex.Store({
       console.log("Starta räkning");
       const intervalId = setInterval(() => {
         dispatch("checkTokenExpiration");
-      }, 31 * 60 * 1000); // 31 minutes in milliseconds
+      }, 1 * 60 * 1000); // 1 minute
 
       commit("setExpirationInterval", intervalId);
     },
@@ -149,12 +149,10 @@ export const store = new Vuex.Store({
           commit("setUserId", decodedToken.userid);
 
           if (decodedToken.role === "admin") {
-            console.log("Starta räkning");
             commit("admin");
             dispatch("startTokenExpirationCheck");
           } else {
             commit("login");
-            console.log("Starta räkning");
             dispatch("startTokenExpirationCheck");
           }
         } catch (error) {

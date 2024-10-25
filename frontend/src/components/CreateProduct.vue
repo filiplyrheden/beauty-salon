@@ -1,7 +1,7 @@
 <template>
   <div class="create-product">
     <h2>Add New Product</h2>
-    <form @submit.prevent="saveProduct">
+    <form id="uploadForm" @submit.prevent="saveProduct" enctype="multipart/form-data">
       <div class="form-group">
         <label for="productName">Product Name</label>
         <input 
@@ -57,6 +57,37 @@
         />
       </div>
 
+    <div class="form-group">
+      <label for="primaryImage">Primary Image:</label>
+      <input 
+        type="file" 
+        id="primaryImage" 
+        @change="onImageChange($event, 'primary')" 
+        accept="image/*" 
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="secondaryImage">Secondary Image:</label>
+      <input 
+        type="file" 
+        id="secondaryImage" 
+        @change="onImageChange($event, 'secondary')" 
+        accept="image/*" 
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="thirdImage">Third Image:</label>
+      <input 
+        type="file" 
+        id="thirdImage"
+        @change="onImageChange($event, 'third')" 
+        accept="image/*" 
+      />
+    </div>
+
+
       <button type="submit" class="submit-btn">Add Product</button>
     </form>
 
@@ -66,61 +97,97 @@
     </div>
   </div>
 </template>
-  
-  <script>
-  import axiosInstance from '@/services/axiosConfig';
-  
-  export default {
-    data() {
-      return {
-        productName: "",
-        description: "",
-        productPrice: "",
-        stockQuantity: "",
-        categoryId: "",
-        message: "", // For success or error messages
-      };
-    },
-    methods: {
-  // Save new product
-  async saveProduct() {
-    const newProduct = {
-      product_name: this.productName,
-      description: this.description,
-      price: parseFloat(this.productPrice),
-      stock_quantity: parseInt(this.stockQuantity),
-      category_id: parseInt(this.categoryId),
-    };
 
-    try {
-      const response = await axiosInstance.post(`/products`, newProduct);
-      console.log("Response:", response);
-      this.message = "Product added successfully! Product ID: " + response.data.product_id; // Ensure correct property access
-      this.resetForm(); // Clear form fields after successful submission
-    } catch (error) {
-      console.error("Error adding product:", error);
-      // Check if error response exists
-      if (error.response && error.response.data) {
-        this.message = "Error adding product: " + error.response.data.error; // Access error message safely
-      } else {
-        this.message = "Error adding product: " + error.message || "Internal Server Error"; // Fallback error message
-      }
+<script>
+import axiosInstance from '@/services/axiosConfig';
+
+export default {
+  data() {
+    return {
+      productName: "",
+      description: "",
+      productPrice: "",
+      primaryImageFile: null,
+      secondaryImageFile: null,
+      thirdImageFile: null,
+      stockQuantity: "",
+      categoryId: "",
+      message: "", // For success or error messages
+    };
+  },
+  methods: {
+  // Method to handle image changes
+  onImageChange(event, imageType) {
+    const file = event.target.files[0];
+
+    if (imageType === 'primary') {
+      this.primaryImageFile = file;
+    } else if (imageType === 'secondary') {
+      this.secondaryImageFile = file;
+    } else if (imageType === 'third') {
+      this.thirdImageFile = file;
     }
   },
 
-  // Reset form fields
-  resetForm() {
-    this.productName = "";
-    this.description = "";
-    this.productPrice = "";
-    this.stockQuantity = "";
-    this.categoryId = "";
-  },
+  // Save new product
+  async saveProduct() {
+  // Create a new FormData object
+  const formData = new FormData();
+
+  // Append product details to the FormData
+  formData.append("product_name", this.productName);
+  formData.append("description", this.description);
+  formData.append("price", parseFloat(this.productPrice));
+  formData.append("stock_quantity", parseInt(this.stockQuantity));
+  formData.append("category_id", parseInt(this.categoryId));
+
+  // Append image files to the FormData
+  if (this.primaryImageFile) {
+  formData.append("primaryImage", this.primaryImageFile);
 }
-  };
-  </script>
-  
-  <style scoped>
+if (this.secondaryImageFile) {
+  formData.append("secondaryImage", this.secondaryImageFile);
+}
+if (this.thirdImageFile) {
+  formData.append("thirdImage", this.thirdImageFile);
+}
+
+  try {
+    const response = await axiosInstance.post(`admin/products`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+    console.log("Response:", response);
+    this.message = "Product added successfully! Product ID: " + response.data.product_id;
+    this.resetForm();
+  } catch (error) {
+    console.error("Error adding product:", error);
+    if (error.response && error.response.data) {
+      this.message = "Error adding product: " + error.response.data.error;
+    } else {
+      this.message = "Error adding product: " + error.message || "Internal Server Error";
+    }
+  }
+},
+
+
+    // Reset form fields
+    resetForm() {
+      this.productName = "";
+      this.description = "";
+      this.productPrice = "";
+      this.stockQuantity = "";
+      this.primaryImageFile = null;
+      this.secondaryImageFile = null;
+      this.thirdImageFile = null;
+      this.categoryId = "";
+    },
+  }
+};
+</script>
+
+<style scoped>
 .create-product {
   max-width: 600px;
   margin: 0 auto;
@@ -241,4 +308,3 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 }
 </style>
-  
