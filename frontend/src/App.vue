@@ -12,6 +12,7 @@
 </template>
 
 <script>
+
 import { mapState } from "vuex";
 import HeaderNav from "./components/HeaderNavigation.vue";
 import PopupComponent from "./components/LogoutPopup.vue";
@@ -55,6 +56,7 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 *,
 *::before,
 *::after {

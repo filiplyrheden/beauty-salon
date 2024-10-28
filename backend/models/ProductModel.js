@@ -150,22 +150,16 @@ export const getProductsWithInfo = async () => {
       p.price,
       p.stock_quantity,
       p.created_at,
+      p.image_url_primary,
+      p.image_url_secondary,
+      p.image_url_third,
       JSON_OBJECT(
           'category_id', c.category_id,
           'category_name', c.category_name,
           'parent_category_id', c.parent_category_id
-      ) AS category,
-      JSON_ARRAYAGG(
-          JSON_OBJECT(
-              'image_id', pi.image_id,
-              'image_url', pi.image_url,
-              'is_primary', pi.is_primary
-          )
-      ) AS images
+      ) AS category
     FROM 
       products p
-    LEFT JOIN 
-      productimages pi ON p.product_id = pi.product_id
     LEFT JOIN
       categories c ON p.category_id = c.category_id
     GROUP BY 

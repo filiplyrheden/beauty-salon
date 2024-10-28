@@ -9,8 +9,15 @@ export const store = new Vuex.Store({
     LogoutPopup: false,
     userId: null,
     cart: [],
+    cartPopupVisible: false,
   },
   mutations: {
+    showCartPopup(state) {
+      state.cartPopupVisible = true;
+    },
+    hideCartPopup(state) {
+      state.cartPopupVisible = false;
+    },
     showPopup(state) {
       state.isPopupVisible = true;
     },
@@ -55,14 +62,16 @@ export const store = new Vuex.Store({
       const item = state.cart.find((i) => i.product_id === product.product_id);
       if (item) {
         item.quantity++;
+        state.cartPopupVisible = true;
       } else {
         state.cart.push({
           product_id: product.product_id,
           product_name: product.product_name,
           price: product.price,
           quantity: 1,
-          image_url: product.images[0]?.image_url, // Assuming the first image is primary
+          image_url: product.image_url_primary,
         });
+        state.cartPopupVisible = true;
       }
     },
     incrementItemInCart(state, productId) {
@@ -73,7 +82,7 @@ export const store = new Vuex.Store({
       }
     },
     decrementItemInCart(state, productId) {
-      console.log("decement" + productId);
+      console.log("decrement" + productId);
       const item = state.cart.find((i) => i.product_id === productId);
       if (item) {
         item.quantity--;
@@ -97,6 +106,7 @@ export const store = new Vuex.Store({
         return total + item.price * item.quantity;
       }, 0);
     },
+    cartPopup: (state) => state.cartPopupVisible,
   },
   actions: {
     checkTokenExpiration({ commit }) {

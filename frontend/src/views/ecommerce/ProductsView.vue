@@ -41,15 +41,7 @@
         :key="product.product_id"
         class="product-card"
       >
-        <img
-          :src="
-            product.images && product.images.length
-              ? product.images.find((image) => image.is_primary === 1)
-                  ?.image_url || require('@/assets/noImage.png')
-              : require('@/assets/noImage.png')
-          "
-          alt="Product Image"
-        />
+      <img :src="getImageUrl(product.image_url_primary)" :alt="product.name" class="product-image" />
 
         <router-link :to="'/products/' + product.product_id">
           <h2>{{ product.product_name }}</h2>
@@ -117,6 +109,9 @@ export default {
       } catch (error) {
         console.error("Error fetching products:", error);
       }
+    },
+    getImageUrl(imageName) {
+      return `${imageName}`;
     },
     async getCategories() {
       try {

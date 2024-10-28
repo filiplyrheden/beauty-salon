@@ -58,18 +58,46 @@
         </li>
 
         <li class="li-styles">
-          <router-link to="/checkout"
-            ><font-awesome-icon icon="shopping-bag" class="menu-icon"
-          /></router-link>
+          <button class="noBorder" @click="toggleCartPopup()"> <!-- if cart is already showing if you click it again it disappears -->
+            <font-awesome-icon icon="shopping-bag" class="menu-icon"></font-awesome-icon>
+          </button>
           <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
         </li>
       </ul>
+
+      <div v-if="isCartPopupVisible" class="cartPopupWrapper">
+        <div class="popupHeader">
+          <button class="cartExitButton" @click="hideCartPopup()"><img src="../assets/exit.svg" alt=""></button> <!-- Close button -->
+        </div>
+        <div class="item-content">
+          <div v-for="item in cartItems" :key="item.id" class="cart-item">
+            <button @click="removeFromCart(item.product_id)" class="cartExitButton" >
+              <img class="trashIcon" src="../assets/trashcan.svg" alt="">
+            </button>
+            <img class="cart-image" :src="getImageUrl(item.image_url)" :alt="item.name" />
+            <div class="cartNameandPrice">
+              <p>{{ item.product_name }}</p>
+              <p>{{ item.price }} kr</p>
+            </div>
+            <div class="cartAddRemoveQuantity">
+              <button class="incrementDecrement" @click="decrementItemInCart(item.product_id)"><img src="../assets/minus.svg" alt=""></button> <!-- Trashcan button -->
+              <p class="incrementDecrementText">{{ item.quantity }}</p>
+              <button class="incrementDecrement" @click="incrementItemInCart(item.product_id)"><img src="../assets/plus.svg" alt=""></button>
+            </div>
+          </div>
+          <p class="totalCart">Totala belopp: {{ cartTotalPrice }} kr</p>
+          <button class="checkoutButton">
+            <a class="noLinkStyles" href="/checkout">CHECKOUT</a>
+          </button>
+        </div>
+      </div>
+
     </nav>
   </header>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   data() {
@@ -93,6 +121,15 @@ export default {
     cartCount() {
       return this.$store.getters.cartCount;
     },
+    cartItems() {
+      return this.$store.getters.cartItems;
+    },
+    isCartPopupVisible() {
+      return this.$store.getters.cartPopup;
+    },
+    cartTotalPrice() {
+      return this.$store.getters.cartTotalPrice;
+    },
     currentTopBarLink() {
       return this.topBarLinks[this.currentTopBarLinkIndex];
     },
@@ -107,8 +144,25 @@ export default {
     clearInterval(this.linkRotationInterval);
   },
   methods: {
+    ...mapMutations({
+      incrementItemInCart: 'incrementItemInCart',
+      decrementItemInCart: 'decrementItemInCart',
+      removeFromCart: 'removeFromCart',
+      hideCartPopup: 'hideCartPopup',
+      showCartPopup: 'showCartPopup',
+    }),
+    toggleCartPopup() {
+    if (this.isCartPopupVisible) {
+      this.hideCartPopup();
+    } else {
+      this.showCartPopup();
+    }
+  },
     checkAuthentication() {
       this.$store.dispatch("checkAuth");
+    },
+    getImageUrl(imageName) {
+      return `${imageName}`;
     },
     startLinkRotation() {
       this.linkRotationInterval = setInterval(() => {
@@ -226,6 +280,102 @@ export default {
   display: none;
 }
 
+.cartPopupWrapper{
+  z-index: 99;
+  padding: 10px;
+  background-color: white;
+  border: 2px solid black;
+  display: flex;
+  flex-direction: column;
+  width: 363px;
+  position: absolute;
+  top: 90%;
+  right: 67px; /* ändra sen? */
+}
+
+.item-content{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cart-item{
+  display: flex;
+  width: 100%;
+  height: 48px;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.checkoutButton{
+  font-family: 'Playfair Display', serif;
+  background-color: #202020;
+  color: white;
+  height: 47px;
+}
+
+.cartAddRemoveQuantity{
+  align-self: flex-end;
+  display: flex;
+  margin-left: auto;
+  height: 28px;
+  width: 72px;
+  align-items: center;
+  border: 2px solid black;
+}
+
+.cartAddRemoveQuantity button{
+  cursor: pointer;
+}
+.noLinkStyles{
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.incrementDecrementText{
+  width: 24px;
+  text-align: center;
+  font-size: 18px;
+}
+.cart-image{
+  height: 48px;
+  width: 48px;
+  object-fit:contain;
+}
+.totalCart{
+  display: flex;
+  justify-content: end;
+  font-size: 20px;
+}
+.trashIcon{
+  height: 24px;
+  width: 24px;
+}
+.cartExitButton{
+  border: none;
+}
+.noBorder{
+  cursor: pointer;
+  border: none;
+}
+.cartExitButton:hover{
+  cursor: pointer;
+}
+.popupHeader{
+  display: flex;
+  justify-content: end;
+}
+.incrementDecrement{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+  object-fit: cover;
+  align-content: center;
+  border:none;
+}
 /* Mobile styling (only one link visible at a time) */
 @media (max-width: 768px) {
   .mobile-top-bar {
