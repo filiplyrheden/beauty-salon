@@ -7,6 +7,8 @@ import {
   getProductsWithInfo,
   fetchCheckoutProductsByIds,
 } from "../models/ProductModel.js";
+import path from "path";
+import fs from "fs";
 
 /**
  * Handler to show all products.
@@ -114,10 +116,62 @@ export const createProduct = async (req, res) => {
  * @param {Object} res - Express response object.
  */
 export const updateProduct = async (req, res) => {
-  const product = req.body; // Get product details from the request body
+  const product = req.body;
+  console.log(product);
+  console.log("---------------------------------");
+  const files = req.files;
+  const productId = product.product_id
+  console.log(files);
+
+  const existingProduct = await getProductById(productId);
+  console.log("existing product with images that needs to be deleted" + existingProduct);
+
+  if (existingProduct) {
+    const existingImages = [
+      existingProduct.image_url_primary,
+      existingProduct.image_url_secondary,
+      existingProduct.image_url_third,
+    ];
+
+    existingImages.forEach(imagePath => {
+      if (imagePath) {
+        const fullPath = path.join("uploads", path.basename(imagePath));
+        fs.unlink(fullPath, (err) => {
+          console.log("Deleted image with fullPath: " + fullPath);
+          if (err) {
+            console.error(`Failed to delete image at ${fullPath}:`, err);
+          }
+        });
+      }
+    });
+  }
+
+    // Get the file paths for the uploaded images
+    const primaryImagePath = req.files.primaryImage[0].filename;
+    const secondaryImagePath = req.files.secondaryImage[0].filename;
+    const thirdImagePath = req.files.thirdImage[0].filename;
+
+    // Construct URLs for both images
+    const primaryImageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/uploads/${primaryImagePath}`;
+    const secondaryImageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/uploads/${secondaryImagePath}`;
+    const thirdImageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/uploads/${thirdImagePath}`;
+
+    // Add image URLs to service data
+    const newProductData = {
+      ...product,
+      image_url_primary: primaryImageUrl,
+      image_url_secondary: secondaryImageUrl,
+      image_url_third: thirdImageUrl, 
+    };
 
   try {
-    const result = await editProduct(product);
+    const result = await editProduct(newProductData);
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "Product not found" });
     }
