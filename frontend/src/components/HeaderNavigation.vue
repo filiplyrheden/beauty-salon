@@ -77,13 +77,13 @@ export default {
       navLinksLeft: [
         { name: "Boka", path: "/behandlingar" },
         { name: "Produkter", path: "/shop" },
-        { name: "Event", path: "/event" },
+        { name: "Event & Kurser", path: "/event-och-kurser" },
         { name: "Om mig", path: "/om-mig" },
       ],
       topBarLinks: [
-        { name: "Boka behandling och Kurs", path: "/treatment" },
+        { name: "Boka behandling och Kurs", path: "/behandlingar" },
         { name: "Köp hudvård online", path: "/shop" },
-        { name: "Vasaplatsen - Göteborg", path: "/about-us" },
+        { name: "Vasaplatsen - Göteborg", path: "/om-mig" },
       ],
       currentTopBarLinkIndex: 0, // For cycling top bar links on mobile
     };
