@@ -22,7 +22,8 @@ import AboutUsPage from "../views/mainpage/AboutUsView.vue";
 import SuccessPage from "../views/mainpage/SuccessView.vue";
 import TreatmentsPage from "../views/mainpage/TreatmentsView.vue";
 import CheckOutPage from "../views/ecommerce/CheckOutView.vue";
-import EventsandCoursesPage from "../views/mainpage/EventsandCoursesView.vue";
+import EventsPage from "../views/mainpage/EventsView.vue";
+import CoursesPage from "../views/mainpage/CoursesView.vue";
 
 const routes = [
   {
@@ -42,9 +43,15 @@ const routes = [
     meta: { requiresAuth: false },
   },
   {
-    path: "/event-och-kurser",
-    name: "EventsandCoursesPage",
-    component: EventsandCoursesPage,
+    path: "/events",
+    name: "EventPage",
+    component: EventsPage,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: "/kurser",
+    name: "CoursePage",
+    component: CoursesPage,
     meta: { requiresAuth: false },
   },
   {
