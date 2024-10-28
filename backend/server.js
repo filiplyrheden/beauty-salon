@@ -278,6 +278,7 @@ app.put(
 app.delete("/courses/:id", authMiddleware, adminMiddleware, deleteCourseById); // Delete a course
 
 // Routes for events with image upload
+app.get("/events", showEvents);
 app.get("/admin/events", authMiddleware, adminMiddleware, showEvents);
 app.post(
   "/admin/events",

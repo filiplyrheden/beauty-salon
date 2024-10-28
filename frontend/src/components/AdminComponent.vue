@@ -1,5 +1,6 @@
 <template>
   <div class="admin-dashboard">
+    <a @click="handleLogout">Logout</a>
     <div class="dashboard-header">
       <h1>Beauty Salon Administration</h1>
     </div>
@@ -81,8 +82,17 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   name: "AdminDashboard",
+  methods: {
+    ...mapMutations(["logout"]), // Map the logout mutation
+
+    handleLogout() {
+      this.logout();
+      this.$router.push("/"); // Redirect to home
+    },
+  },
 };
 </script>
 
@@ -105,11 +115,11 @@ export default {
   font-size: 36px;
   font-weight: 600;
   margin-bottom: 20px;
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
 }
 
 .dashboard-header::after {
-  content: '';
+  content: "";
   display: block;
   width: 100px;
   height: 3px;
@@ -143,7 +153,7 @@ export default {
 }
 
 .menu-item::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -203,8 +213,14 @@ export default {
 
 /* Add some subtle animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .menu-item {
@@ -215,7 +231,7 @@ export default {
 
 /* Add a subtle texture overlay to the background */
 .admin-dashboard::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
