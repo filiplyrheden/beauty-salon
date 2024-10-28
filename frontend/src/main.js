@@ -15,11 +15,13 @@ import {
   faUser,
   faMagnifyingGlass,
   faLock,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { store } from "./store/store.js";
 
 library.add(
+  faTrash,
   faBox,
   faUser,
   faCalendar,
