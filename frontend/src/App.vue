@@ -65,4 +65,9 @@ export default {
   padding: 0;
   font-family: "Outfit", sans-serif;
 }
+
+body,
+html {
+  height: 100%;
+}
 </style>
