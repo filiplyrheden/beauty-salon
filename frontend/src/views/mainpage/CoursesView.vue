@@ -1,23 +1,5 @@
 <template>
   <div class="events-and-courses-container">
-    <h1>Our Events</h1>
-
-    <!-- Show loading state for events -->
-    <div v-if="isLoading" class="loading">Loading...</div>
-
-    <!-- Show message if no events are available -->
-    <div v-else-if="events.length === 0" class="no-events">
-      No Events available at the moment.
-    </div>
-
-    <!-- List of events if they are available -->
-    <div v-else class="events">
-      <div v-for="event in events" :key="event.event_id">
-        <div class="event-item">
-          <div class="event-name">{{ event.name }}</div>
-        </div>
-      </div>
-    </div>
 
     <h1>Our Courses</h1>
 
@@ -44,7 +26,6 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
-      events: [],
       courses: [],
       isLoading: false,
       isPopupVisible: false, // For popup visibility
@@ -70,27 +51,9 @@ export default {
       }
     },
 
-    async fetchEvents() {
-      try {
-        const response = await axiosInstance.get(`/events`);
-        this.events = response.data.map((event) => ({
-          ...event,
-        }));
-      } catch (error) {
-        console.error(
-          "Error fetching events:",
-          error.response || error.message
-        );
-        Swal.fire(
-          "Fel",
-          "Fel vid hämtning av Events: Misslyckades med att hämta events. Försök igen senare",
-          "error"
-        );
-      }
-    },
+
   },
   created() {
-    this.fetchEvents(); // Fetch data when the component is created
     this.fetchCourses();
   },
 };

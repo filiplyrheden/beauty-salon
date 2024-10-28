@@ -105,7 +105,8 @@ export default {
       navLinksLeft: [
         { name: "Boka", path: "/behandlingar" },
         { name: "Produkter", path: "/shop" },
-        { name: "Event & Kurser", path: "/event-och-kurser" },
+        { name: "Event", path: "/events" },
+        { name: "Kurser", path: "/kurser" },
         { name: "Om mig", path: "/om-mig" },
       ],
       topBarLinks: [
@@ -181,7 +182,11 @@ export default {
   color: #fff;
   padding: 8px 72px;
 }
+.top-bar nav {
+  max-width: 1280px;
+  margin: 0 auto;
 
+}
 .top-bar ul {
   list-style: none;
   display: flex;

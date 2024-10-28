@@ -28,16 +28,26 @@
         <Carousel>
           <Slide v-for="(slide, index) in slides" :key="index">
             <div class="carousel__item">
+              <div class="carousel__images">              <img
+                :src="slide.image"
+                alt="Slide image"
+                class="carousel__image carousel__image__back"
+              />
               <img
                 :src="slide.image"
                 alt="Slide image"
-                class="carousel__image"
-              />
-              <h3>{{ slide.title }}</h3>
-              <p>{{ slide.description }}</p>
+                class="carousel__image carousel__image__front"
+              /></div>
+                <div class="carousel__content">
+                  <h3 class="carousel__content__title">{{ slide.title }}</h3>
+                  <p class="carousel__content__description">{{ slide.description }}</p>
+                  <button class="carousel__content__button">TILL BOKNING</button>
+                </div>
+     
             </div>
-          </Slide>
+            
 
+          </Slide>
           <template #addons>
             <Navigation />
             <Pagination />
@@ -51,25 +61,27 @@
 <script>
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
+import noImage from "@/assets/noImage.png";
+
 export default {
   data() {
     return {
-      items: [], // This will store the products
+      items: [], 
       slides: [
         {
-          title: "First Slide",
-          image: "path/to/image1.jpg",
-          description: "This is the description for the first slide.",
+          title: "Brudmakeup",
+          image: noImage,
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et.",
         },
         {
-          title: "Second Slide",
-          image: "path/to/image2.jpg",
-          description: "This is the description for the second slide.",
+          title: "Ansiktsbehandlingar",
+          image: noImage,
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et..",
         },
         {
-          title: "Third Slide",
-          image: "path/to/image3.jpg",
-          description: "This is the description for the third slide.",
+          title: "Massage",
+          image: noImage,
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et.",
         },
         // Add more slides as needed
       ],
@@ -91,21 +103,108 @@ export default {
 .carousel__item {
   text-align: center;
   padding: 10px;
-  height: 100vh;
+  height: 70vh;
   width: 100%;
+  display: flex;
+align-items: center;
+  justify-content: center;
 }
+.carousel__images, .carousel__content {
+  display: flex;
+  flex-direction: column;
+}
+.carousel__images {
+  height:100%;
+  margin-left:100px;
+  margin-right:10px;
+  width: 60%;
+  position:relative;
+}
+.carousel__content {
+  margin-right:100px;
+  width:40%;
+  display: flex;
+  flex-direction: column;
+  gap:16px;
+  justify-content: center;
+}
+.carousel__content__title {
+  font-family: "Playfair Display", serif !important;
 
+font-size: 33.18px;
+font-weight: 600;
+line-height: 36.5px;
+letter-spacing: 0.02em;
+text-align: center;
+
+}
+.carousel__content__description {
+font-size: 16px;
+font-weight: 400;
+line-height: 22.4px;
+text-align: center;
+
+
+}
+.carousel__content__button {
+  font-family: "Playfair Display", serif !important;
+font-size: 16px;
+font-weight: 600;
+line-height: 17.6px;
+letter-spacing: 0.04em;
+text-align: left;
+align-self: center;
+}
+.carousel__pagination-button {
+  background-color: unset;
+}
+.carousel__pagination-button::after {
+  width: 9px;
+  height: 9px;
+  border-radius: 6px;
+ background-color:unset;
+  border: 1px solid black;
+}
+.carousel__pagination-item{
+  display: flex;
+}
+.carousel__prev,.carousel__next, .carousel__icon {
+  width: 75px;
+  height:75px;
+}
+.carousel__pagination {
+  gap:6px;
+}
+.carousel__pagination-button--active::after {
+    background-color: var(--vc-pgn-active-color);
+    width: 12px;
+  height: 12px;
+  border-radius: 6px;
+}
 .carousel__image {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
+  width: 60%;
+    height: auto;
+    height: 50%;
+    object-fit: cover;
 }
-
+.carousel__image__front,.carousel__image__back{
+  position:absolute;
+}
+.carousel__image__front{
+  position:absolute;
+  bottom:100px;
+  right:0;
+}
+.carousel__image__back{
+  position:absolute;
+  top:100px;
+  left:0;
+}
 .hero-container {
   padding-bottom: 140px;
 }
 .treatments-container {
-  padding-top: 70px;
+  padding: 70px 0px;
 }
 .hero-container,
 .treatments {
@@ -164,17 +263,17 @@ export default {
 }
 .sub-title {
   font-size: 8em;
-  font-family: "Playfair Display", serif !important;
-  color: #202020;
-  opacity: 50%;
-  letter-spacing: 4%;
-  line-height: 180.78px;
-  font-weight: 600;
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -285%); /* Centers and offsets slightly up */
+    font-family: "Playfair Display", serif !important;
+    color: #202020;
+    opacity: 50%;
+    letter-spacing: 4%;
+    line-height: 180.78px;
+    font-weight: 600;
+    text-align: center;
+    position: absolute;
+    top: -88px;
+    left: 50%;
+    transform: translate(-50%, -8px);
 }
 .title {
   font-size: 8em;

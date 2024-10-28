@@ -6,7 +6,7 @@ import mysql from "mysql2/promise";
 const dbConfig = {
   host: "localhost",
   user: "root", // MySQL username
-  password: "", // MySQL password
+  password: "1234", // MySQL password
   // database will be specified later
 };
 
