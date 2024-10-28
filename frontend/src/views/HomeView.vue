@@ -1,42 +1,123 @@
 <template>
-  <div class="home-page-container">
-    <div class="hero">
-      <img src="https://picsum.photos/1200/600" alt="big" class="big-image" />
-      <img src="https://picsum.photos/500/600" alt="big" class="small-image" />
-      <div class="overlay">
-        <h1 class="title">SN BEAUTY</h1>
-        <div class="content">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            et commodo ligula. Orci varius natoque penatibus et magnis dis
-            parturient montes, nascetur ridiculus mus. Pellentesque euismod
-            tempus lectus, et auctor enim tempus et.
-          </p>
-          <button>BOKA BEHANDLING</button>
+  <div>
+    <div class="hero-container">
+      <div class="hero">
+        <img src="https://picsum.photos/1200/600" alt="big" class="big-image" />
+        <img
+          src="https://picsum.photos/500/600"
+          alt="big"
+          class="small-image"
+        />
+        <div class="overlay">
+          <h1 class="title">SN BEAUTY</h1>
+          <div class="content">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Suspendisse et commodo ligula. Orci varius natoque penatibus et
+              magnis dis parturient montes, nascetur ridiculus mus. Pellentesque
+              euismod tempus lectus, et auctor enim tempus et.
+            </p>
+            <button>BOKA BEHANDLING</button>
+          </div>
         </div>
+      </div>
+    </div>
+    <div class="treatments-container">
+      <h2 class="sub-title">BEHANDLINGAR</h2>
+      <div class="treatments">
+        <Carousel>
+          <Slide v-for="(slide, index) in slides" :key="index">
+            <div class="carousel__item">
+              <img
+                :src="slide.image"
+                alt="Slide image"
+                class="carousel__image"
+              />
+              <h3>{{ slide.title }}</h3>
+              <p>{{ slide.description }}</p>
+            </div>
+          </Slide>
+
+          <template #addons>
+            <Navigation />
+            <Pagination />
+          </template>
+        </Carousel>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import "vue3-carousel/dist/carousel.css";
+import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 export default {
   data() {
     return {
       items: [], // This will store the products
+      slides: [
+        {
+          title: "First Slide",
+          image: "path/to/image1.jpg",
+          description: "This is the description for the first slide.",
+        },
+        {
+          title: "Second Slide",
+          image: "path/to/image2.jpg",
+          description: "This is the description for the second slide.",
+        },
+        {
+          title: "Third Slide",
+          image: "path/to/image3.jpg",
+          description: "This is the description for the third slide.",
+        },
+        // Add more slides as needed
+      ],
     };
   },
   created() {},
   methods: {},
+  components: {
+    Carousel,
+    Slide,
+    Pagination,
+    Navigation,
+  },
   name: "HomeView",
 };
 </script>
 
 <style>
-.home-page-container {
+.carousel__item {
+  text-align: center;
+  padding: 10px;
+  height: 100vh;
+  width: 100%;
+}
+
+.carousel__image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.hero-container {
+  padding-bottom: 140px;
+}
+.treatments-container {
+  padding-top: 70px;
+}
+.hero-container,
+.treatments {
   max-width: 1280px;
   margin: 0 auto;
 }
+.treatments-container {
+  background-color: #f3f3f3;
+  width: 100%;
+  position: relative;
+}
+
 .hero {
   position: relative;
   width: 100%;
@@ -81,7 +162,20 @@ export default {
   align-items: center;
   gap: 2rem;
 }
-
+.sub-title {
+  font-size: 8em;
+  font-family: "Playfair Display", serif !important;
+  color: #202020;
+  opacity: 50%;
+  letter-spacing: 4%;
+  line-height: 180.78px;
+  font-weight: 600;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -285%); /* Centers and offsets slightly up */
+}
 .title {
   font-size: 8em;
   font-family: "Playfair Display", serif !important;
