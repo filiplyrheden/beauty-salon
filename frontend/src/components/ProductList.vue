@@ -136,17 +136,42 @@
         this.editingProduct = { ...product };
       },
       saveProduct(product) {
-        console.log("Saving product:", product);
-        axiosInstance.put('admin/products', product)
-          .then(response => {
-            console.log("Product saved successfully:", response.data);
-            alert(product.product_name + " saved successfully!");
-          })
-          .catch(error => {
-            console.error("Error saving product:", error.response ? error.response.data : error.message);
-          });
-        this.editingProduct = null;
+      console.log("Saving product:", product);
+      const formData = new FormData();
+      formData.append("product_name", product.product_name);
+      formData.append("description", product.description);
+      formData.append("price", product.price);
+      formData.append("stock_quantity", product.stock_quantity);
+      formData.append("category_id", product.category_id);
+      formData.append("product_id", product.product_id);
+
+      if (this.primaryImageFile) {
+        formData.append("primaryImage", this.primaryImageFile);
+      }
+      if (this.secondaryImageFile) {
+        formData.append("secondaryImage", this.secondaryImageFile);
+      }
+      if (this.thirdImageFile) {
+        formData.append("thirdImage", this.thirdImageFile);
+      }
+
+      axiosInstance
+        .put("admin/products", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("Product saved successfully:", response.data);
+          alert(product.product_name + " saved successfully!");
+        })
+        .catch((error) => {
+          console.error("Error saving product:", error.response ? error.response.data : error.message);
+        });
+
+      this.editingProduct = null;
       },
+
       cancelEdit() {
         this.editingProduct = null;
       }
