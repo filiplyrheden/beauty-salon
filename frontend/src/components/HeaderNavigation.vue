@@ -80,7 +80,7 @@
               <p>{{ item.price }} kr</p>
             </div>
             <div class="cartAddRemoveQuantity">
-              <button class="incrementDecrement" @click="decrementItemInCart(item.product_id)"><img src="../assets/minus.svg" alt=""></button> <!-- Trashcan button -->
+              <button class="incrementDecrement" @click="handleDecrementOrRemove(item.product_id)"><img src="../assets/minus.svg" alt=""></button>
               <p class="incrementDecrementText">{{ item.quantity }}</p>
               <button class="incrementDecrement" @click="incrementItemInCart(item.product_id)"><img src="../assets/plus.svg" alt=""></button>
             </div>
@@ -159,6 +159,16 @@ export default {
       this.showCartPopup();
     }
   },
+  handleDecrementOrRemove(productId) {
+      const item = this.$store.state.cart.find(
+        (item) => item.product_id === productId
+      );
+      if (item.quantity === 1) {
+        this.removeFromCart(productId); // Remove the item if quantity is 1
+      } else {
+        this.decrementItemInCart(productId); // Otherwise, decrement the quantity
+      }
+    },
     checkAuthentication() {
       this.$store.dispatch("checkAuth");
     },
@@ -358,9 +368,11 @@ export default {
   width: 24px;
 }
 .cartExitButton{
+  all: unset;
   border: none;
 }
 .noBorder{
+  all: unset;
   cursor: pointer;
   border: none;
 }
@@ -372,6 +384,7 @@ export default {
   justify-content: end;
 }
 .incrementDecrement{
+  all: unset;
   display: flex;
   align-items: center;
   justify-content: center;
