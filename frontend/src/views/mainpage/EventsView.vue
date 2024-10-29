@@ -34,11 +34,11 @@ export default {
     };
   },
   methods: {
-    async fetchCourses() {
+    async fetchEvents() {
       try {
-        const response = await axiosInstance.get(`/courses`);
-        this.courses = response.data.map((course) => ({
-          ...course,
+        const response = await axiosInstance.get(`/events`);
+        this.events = response.data.map((event) => ({
+          ...event,
         }));
       } catch (error) {
         console.error(
@@ -47,16 +47,14 @@ export default {
         );
         Swal.fire(
           "Fel",
-          "Fel vid hämtning av Kurser: Misslyckades med att hämta kurser. Försök igen senare",
+          "Fel vid hämtning av Event: Misslyckades med att hämta Event. Försök igen senare",
           "error"
         );
       }
     },
-
-
   },
   created() {
-    this.fetchCourses();
+    this.fetchEvents();
   },
 };
 </script>
