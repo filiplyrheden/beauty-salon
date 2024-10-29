@@ -89,15 +89,19 @@
     </div>
     <div class="courses-container">
       <div class="courses">
-        <h2>Kurser & Utbildningar</h2>
-        <img src="../assets/noImage.png" alt="" />
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-          et commodo ligula. Orci varius natoque penatibus et magnis dis
-          parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus
-          lectus, et auctor enim tempus et.
-        </p>
-        <button>LÄS MER</button>
+        <h2 class="courses-title">Kurser & Utbildningar</h2>
+        <div class="courses-content">
+          <img class="courses-image" src="../assets/noImage.png" alt="" />
+          <div class="courses-text-content">
+            <p class="courses-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Suspendisse et commodo ligula. Orci varius natoque penatibus et
+              magnis dis parturient montes, nascetur ridiculus mus. Pellentesque
+              euismod tempus lectus, et auctor enim tempus et.
+            </p>
+            <button class="courses-button">LÄS MER</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="events-container">
@@ -432,6 +436,43 @@ export default {
 }
 .about-me-content-text button {
   align-self: flex-start;
+}
+.courses-container {
+  width: 100%;
+  height: 90vh;
+}
+.courses {
+  max-width: 1280px;
+  width: 910px;
+  margin: 0 auto;
+  padding: 80px 40px 0px 40px;
+}
+.courses-title {
+  font-family: "Playfair Display", serif !important;
+  font-size: 47.78px;
+  font-weight: 600;
+  line-height: 52.56px;
+  letter-spacing: 0.04em;
+  text-align: right;
+  color: rgba(32, 32, 32, 0.5);
+  padding-bottom: 32px;
+}
+.courses-content {
+  display: flex;
+  gap: 16px;
+  height: 100%;
+}
+.courses-image {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+}
+.courses-text-content {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
 }
 
 .hero {
