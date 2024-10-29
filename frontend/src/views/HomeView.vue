@@ -75,6 +75,22 @@
         </div>
       </div>
     </div>
+    <div class="products-container">
+      <div class="products-header">
+        <h2>Beställ hem</h2>
+        <div classname="line"></div>
+        <button>Visa alla</button>
+      </div>
+    </div>
+    <div class="courses-container">
+      <div class="courses"><h2>Kurser & Utbildningar</h2></div>
+    </div>
+    <div class="events-container">
+      <div class="events"><h2>Events</h2></div>
+    </div>
+    <div class="social-media-container">
+      <div class="social-media"><h2>SOCIAL MEDIA</h2></div>
+    </div>
   </div>
 </template>
 
@@ -251,6 +267,7 @@ export default {
   width: 100%;
   position: relative;
 }
+
 .about-me-container {
   width: 100%;
   height: 90vh;
