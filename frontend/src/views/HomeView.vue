@@ -76,12 +76,16 @@
       </div>
     </div>
     <div class="products-container">
-      <div class="products-header">
-        <h2>Beställ hem</h2>
-        <div classname="line"></div>
-        <button>Visa alla</button>
+      <div class="products">
+        <div class="products-header">
+          <h2 class="products-header-title">BESTÄLL HEM</h2>
+          <div class="line"></div>
+          <router-link to="/shop">
+            <button class="products-header-button">Visa alla</button>
+          </router-link>
+        </div>
+        <ProductCarousel></ProductCarousel>
       </div>
-      <ProductCarousel></ProductCarousel>
     </div>
     <div class="courses-container">
       <div class="courses"><h2>Kurser & Utbildningar</h2></div>
@@ -269,6 +273,49 @@ export default {
   background-color: #f3f3f3;
   width: 100%;
   position: relative;
+}
+.products-container {
+  height: 90vh;
+  width: 100%;
+}
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 80px;
+  padding-bottom: 40px;
+}
+.products-header-title {
+  font-family: "Playfair Display", serif !important;
+  font-size: 33.18px;
+  font-weight: 600;
+  line-height: 36.5px;
+  letter-spacing: 0.02em;
+  text-align: left;
+  white-space: nowrap;
+  color: rgba(32, 32, 32, 0.5);
+}
+.products-header .line {
+  width: fill-available;
+  height: 1px;
+  background-color: rgba(32, 32, 32, 0.5);
+}
+.products-header-button {
+  white-space: nowrap;
+  width: 79px;
+  padding: 8px 12px;
+  background: #202020;
+  color: #f3f3f3;
+  font-family: "Playfair Display", serif !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 15.4px;
+  letter-spacing: 0.02em;
+  text-align: left;
 }
 
 .about-me-container {

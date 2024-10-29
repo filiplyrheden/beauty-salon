@@ -1,33 +1,79 @@
 <template>
   <div class="product-carousel">
-    <Carousel :items-to-show="1" :items-to-scroll="1" wrap-around>
-      <Slide v-for="product in products" :key="product.id">
+    <Carousel :items-to-show="4.4" :items-to-scroll="1" wrap-around>
+      <Slide v-for="product in products" :key="product.product_id">
         <div class="product-item">
-          <img
-            :src="product.image_url_primary"
-            :alt="product.name"
-            class="product-image"
-          />
-          <h3>{{ product.product_name }}</h3>
-          <p>{{ product.description }}</p>
-          <span>{{ product.price }} kr</span>
+          <div class="product-image-section">
+            <img
+              src="../assets/noImage.png"
+              :alt="product.name"
+              class="product-image"
+            />
+            <div
+              class="card-overlay"
+              @mouseleave="hideSizeOptions(product.product_id)"
+            >
+              <div class="card-overlay-container">
+                <div
+                  class="select-size"
+                  @click="toggleSizeMenu(product.product_id)"
+                >
+                  <div class="size-toggle">Välj storlek</div>
+                  <font-awesome-icon icon="chevron-up" />
+                </div>
+                <transition name="size-options">
+                  <div
+                    v-if="showSizeOptions[product.product_id]"
+                    class="size-options"
+                  >
+                    <p @click="selectSize('60 ml / TRAVEL')">60 ml / TRAVEL</p>
+                    <p @click="selectSize('200 ml / RETAIL')">
+                      200 ml / RETAIL
+                    </p>
+                    <p @click="selectSize('472 ml / PROFESSIONAL')">
+                      472 ml / PROFESSIONAL
+                    </p>
+                  </div>
+                </transition>
+                <button class="add-to-cart" @click="addItemToCart(product)">
+                  LÄGG I VARUKORG
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-info">
+            <div class="product-info-header">
+              <h3 class="product-name">{{ product.product_name }}</h3>
+              <span>{{ product.price }} kr</span>
+            </div>
+
+            <div class="product-description">{{ product.description }}</div>
+          </div>
         </div>
       </Slide>
+      <template #addons>
+        <Navigation />
+      </template>
     </Carousel>
   </div>
 </template>
 
 <script>
-import { Carousel, Slide } from "vue3-carousel";
+import { Carousel, Slide, Navigation } from "vue3-carousel";
 import axiosInstance from "@/services/axiosConfig";
+
 export default {
   components: {
     Carousel,
     Slide,
+    Navigation,
   },
   data() {
     return {
       products: [],
+      showSizeOptions: {}, // Object to track size option visibility
+      selectedSize: null,
     };
   },
   mounted() {
@@ -37,30 +83,179 @@ export default {
     async fetchProducts() {
       try {
         const response = await axiosInstance.get(`/allproducts`);
-        this.productItems = response.data;
+        this.products = response.data;
       } catch (error) {
         console.error("Error fetching products:", error);
       }
+    },
+    toggleSizeMenu(productId) {
+      // Directly assign the value to toggle the visibility
+      this.showSizeOptions[productId] = !this.showSizeOptions[productId];
+    },
+    hideSizeOptions(productId) {
+      // Set the size options to false when mouse leaves
+      this.showSizeOptions[productId] = false;
+    },
+    selectSize(size) {
+      this.selectedSize = size;
+      this.showSizeOptions = {}; // Hide all menus after selection
+      console.log("Selected size:", size); // For debugging
+    },
+    addItemToCart(product) {
+      this.$store.commit("addToCart", product);
     },
   },
 };
 </script>
 
 <style scoped>
-.product-carousel {
-  max-width: 400px;
-  margin: auto;
+.select-size {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19.6px;
+  text-align: left;
+  cursor: pointer;
 }
-.product-item {
+.carousel__slide {
+  align-items: flex-start;
+  width: 100%;
+  opacity: 0.5;
+}
+
+.carousel__slide--prev,
+.carousel__slide--next,
+.carousel__slide--active {
+  opacity: 1;
+}
+.product-carousel {
+  width: 100%;
+}
+
+.product-info {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  gap: 2px;
+}
+.product-item {
+  width: 100%;
+  margin: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.card-overlay:hover .card-overlay-container {
+  background-color: rgba(240, 240, 240, 0.9);
+}
+.card-overlay-container {
+  padding: 8px;
+}
+.product-name {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22.4px;
+  letter-spacing: 0.02em;
+  text-align: left;
+}
+.product-info-header {
+  display: flex;
+  justify-content: space-between;
+}
+.product-description {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19.6px;
+  text-align: left;
+}
+.product-image-section {
+  position: relative;
+  width: 100%;
+  height: 368px;
+  margin-bottom: 10px;
 }
 .product-image {
-  width: 150px;
-  height: 150px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: -2;
   object-fit: cover;
-  margin-bottom: 10px;
+  width: 100%;
+  height: 100%;
+}
+
+.card-overlay {
+  opacity: 0.5;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+}
+.card-overlay:hover {
+  opacity: 1;
+}
+
+.size-toggle {
+  background: none;
+  border: none;
+  color: #202020;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19.6px;
+  text-align: left;
+}
+
+.size-options {
+  z-index: 10;
+  width: 100%;
+  padding: 0px 10px;
+}
+
+.size-options p {
+  margin: 0;
+  padding: 5px 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.size-options p:hover {
+  opacity: 0.7;
+}
+
+.add-to-cart {
+  background-color: unset;
+  color: black;
+  padding: 8px 16px;
+  border: 1px solid black;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.size-options {
+  overflow: hidden;
+}
+.size-options-enter-active,
+.size-options-leave-active {
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+.size-options-enter-from,
+.size-options-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+.size-options-enter-to,
+.size-options-leave-from {
+  max-height: 100px;
+  opacity: 1;
 }
 </style>
