@@ -28,31 +28,51 @@
         <Carousel>
           <Slide v-for="(slide, index) in slides" :key="index">
             <div class="carousel__item">
-              <div class="carousel__images">              <img
-                :src="slide.image"
-                alt="Slide image"
-                class="carousel__image carousel__image__back"
-              />
-              <img
-                :src="slide.image"
-                alt="Slide image"
-                class="carousel__image carousel__image__front"
-              /></div>
-                <div class="carousel__content">
-                  <h3 class="carousel__content__title">{{ slide.title }}</h3>
-                  <p class="carousel__content__description">{{ slide.description }}</p>
-                  <button class="carousel__content__button">TILL BOKNING</button>
-                </div>
-     
+              <div class="carousel__images">
+                <img
+                  :src="slide.image"
+                  alt="Slide image"
+                  class="carousel__image carousel__image__back"
+                />
+                <img
+                  :src="slide.image"
+                  alt="Slide image"
+                  class="carousel__image carousel__image__front"
+                />
+              </div>
+              <div class="carousel__content">
+                <h3 class="carousel__content__title">{{ slide.title }}</h3>
+                <p class="carousel__content__description">
+                  {{ slide.description }}
+                </p>
+                <button class="carousel__content__button">TILL BOKNING</button>
+              </div>
             </div>
-            
-
           </Slide>
           <template #addons>
             <Navigation />
             <Pagination />
           </template>
         </Carousel>
+      </div>
+    </div>
+    <div class="about-me-container">
+      <div class="about-me">
+        <div class="about-me-image">
+          <img src="../assets/Shahad2.png" alt="" />
+        </div>
+        <div class="about-me-content">
+          <h2>SHAHAD NASIR</h2>
+          <div class="about-me-content-text">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Suspendisse et commodo ligula. Orci varius natoque penatibus et
+              magnis dis parturient montes, nascetur ridiculus mus. Pellentesque
+              euismod tempus lectus, et auctor enim tempus et.
+            </p>
+            <button>MER OM MIG</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -66,22 +86,25 @@ import noImage from "@/assets/noImage.png";
 export default {
   data() {
     return {
-      items: [], 
+      items: [],
       slides: [
         {
           title: "Brudmakeup",
           image: noImage,
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et.",
+          description:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et.",
         },
         {
           title: "Ansiktsbehandlingar",
           image: noImage,
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et..",
+          description:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et..",
         },
         {
           title: "Massage",
           image: noImage,
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et.",
+          description:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et.",
         },
         // Add more slides as needed
       ],
@@ -106,54 +129,52 @@ export default {
   height: 70vh;
   width: 100%;
   display: flex;
-align-items: center;
+  align-items: center;
   justify-content: center;
 }
-.carousel__images, .carousel__content {
+.carousel__images,
+.carousel__content {
   display: flex;
   flex-direction: column;
 }
 .carousel__images {
-  height:100%;
-  margin-left:100px;
-  margin-right:10px;
+  height: 100%;
+  margin-left: 100px;
+  margin-right: 10px;
   width: 60%;
-  position:relative;
+  position: relative;
 }
 .carousel__content {
-  margin-right:100px;
-  width:40%;
+  margin-right: 100px;
+  width: 40%;
   display: flex;
   flex-direction: column;
-  gap:16px;
+  gap: 16px;
   justify-content: center;
 }
 .carousel__content__title {
   font-family: "Playfair Display", serif !important;
 
-font-size: 33.18px;
-font-weight: 600;
-line-height: 36.5px;
-letter-spacing: 0.02em;
-text-align: center;
-
+  font-size: 33.18px;
+  font-weight: 600;
+  line-height: 36.5px;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 .carousel__content__description {
-font-size: 16px;
-font-weight: 400;
-line-height: 22.4px;
-text-align: center;
-
-
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22.4px;
+  text-align: center;
 }
 .carousel__content__button {
   font-family: "Playfair Display", serif !important;
-font-size: 16px;
-font-weight: 600;
-line-height: 17.6px;
-letter-spacing: 0.04em;
-text-align: left;
-align-self: center;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 17.6px;
+  letter-spacing: 0.04em;
+  text-align: left;
+  align-self: center;
 }
 .carousel__pagination-button {
   background-color: unset;
@@ -162,43 +183,46 @@ align-self: center;
   width: 9px;
   height: 9px;
   border-radius: 6px;
- background-color:unset;
+  background-color: unset;
   border: 1px solid black;
 }
-.carousel__pagination-item{
+.carousel__pagination-item {
   display: flex;
 }
-.carousel__prev,.carousel__next, .carousel__icon {
+.carousel__prev,
+.carousel__next,
+.carousel__icon {
   width: 75px;
-  height:75px;
+  height: 75px;
 }
 .carousel__pagination {
-  gap:6px;
+  gap: 6px;
 }
 .carousel__pagination-button--active::after {
-    background-color: var(--vc-pgn-active-color);
-    width: 12px;
+  background-color: var(--vc-pgn-active-color);
+  width: 12px;
   height: 12px;
   border-radius: 6px;
 }
 .carousel__image {
   width: 60%;
-    height: auto;
-    height: 50%;
-    object-fit: cover;
+  height: auto;
+  height: 50%;
+  object-fit: cover;
 }
-.carousel__image__front,.carousel__image__back{
-  position:absolute;
+.carousel__image__front,
+.carousel__image__back {
+  position: absolute;
 }
-.carousel__image__front{
-  position:absolute;
-  bottom:100px;
-  right:0;
+.carousel__image__front {
+  position: absolute;
+  bottom: 100px;
+  right: 0;
 }
-.carousel__image__back{
-  position:absolute;
-  top:100px;
-  left:0;
+.carousel__image__back {
+  position: absolute;
+  top: 100px;
+  left: 0;
 }
 .hero-container {
   padding-bottom: 140px;
@@ -211,10 +235,77 @@ align-self: center;
   max-width: 1280px;
   margin: 0 auto;
 }
+.about-me {
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  height: 100%;
+  padding-bottom: 80px;
+}
 .treatments-container {
   background-color: #f3f3f3;
   width: 100%;
   position: relative;
+}
+.about-me-container {
+  width: 100%;
+  height: 90vh;
+  background-color: #cacaca;
+}
+
+.about-me-image {
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-100%, -50%);
+  z-index: 1;
+}
+.about-me-image img {
+  height: 100%;
+}
+.about-me-content {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 800px;
+}
+.about-me-content h2 {
+  font-family: "Playfair Display", serif !important;
+  font-size: 99.08px;
+  font-weight: 600;
+  line-height: 108.99px;
+  letter-spacing: 0.04em;
+  text-align: left;
+  color: #f3f3f3;
+  z-index: 1;
+  text-align: center;
+}
+.about-me-content-text {
+  width: 50%;
+  padding-top: 32px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(104, 98, 98, 0.5);
+
+  align-self: flex-end;
+  margin-right: 30px;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+}
+
+.about-me-content-text p {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22.4px;
+  text-align: left;
+}
+.about-me-content-text button {
+  align-self: flex-start;
 }
 
 .hero {
@@ -263,17 +354,17 @@ align-self: center;
 }
 .sub-title {
   font-size: 8em;
-    font-family: "Playfair Display", serif !important;
-    color: #202020;
-    opacity: 50%;
-    letter-spacing: 4%;
-    line-height: 180.78px;
-    font-weight: 600;
-    text-align: center;
-    position: absolute;
-    top: -88px;
-    left: 50%;
-    transform: translate(-50%, -8px);
+  font-family: "Playfair Display", serif !important;
+  color: #202020;
+  opacity: 50%;
+  letter-spacing: 4%;
+  line-height: 180.78px;
+  font-weight: 600;
+  text-align: center;
+  position: absolute;
+  top: -88px;
+  left: 50%;
+  transform: translate(-50%, -8px);
 }
 .title {
   font-size: 8em;
