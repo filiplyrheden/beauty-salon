@@ -14,7 +14,6 @@ import RegisterPage from "../views/RegisterPage.vue";
 import OrderPage from "../views/admin/orderView.vue";
 import ProductsPage from "../views/ecommerce/ProductsView.vue";
 import { store } from "@/store/store";
-import ProductView from "@/views/ecommerce/ProductView.vue";
 import ForgotPassword from "@/views/mainpage/ForgotPassword.vue";
 import ResetPassword from "@/views/mainpage/ResetPassword.vue";
 import ProfilePage from "@/views/mainpage/ProfilePage.vue";
@@ -24,6 +23,7 @@ import TreatmentsPage from "../views/mainpage/TreatmentsView.vue";
 import CheckOutPage from "../views/ecommerce/CheckOutView.vue";
 import EventsPage from "../views/mainpage/EventsView.vue";
 import CoursesPage from "../views/mainpage/CoursesView.vue";
+import Product from "@/views/mainpage/ProductPage.vue";
 
 const routes = [
   {
@@ -100,6 +100,11 @@ const routes = [
     meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
+    path: "/products/:id",
+    name: "Individual Product View",
+    component: Product,
+  },
+  {
     path: "/admin/courses",
     name: "CourseView",
     component: CourseView,
@@ -152,11 +157,6 @@ const routes = [
     name: "Product Reviews Page",
     component: ProductReviewsPage,
     meta: { requiresAuth: true, requiresAdmin: true },
-  },
-  {
-    path: "/product/:id",
-    name: "Singular Product Page",
-    component: ProductView,
   },
   {
     path: "/forgot-password",

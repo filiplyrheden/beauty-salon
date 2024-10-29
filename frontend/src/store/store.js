@@ -84,10 +84,11 @@ export const store = new Vuex.Store({
     decrementItemInCart(state, productId) {
       console.log("decrement" + productId);
       const item = state.cart.find((i) => i.product_id === productId);
-      if (item) {
+      if (item && item.quantity > 1) {
         item.quantity--;
       }
     },
+    
     removeFromCart(state, productId) {
       state.cart = state.cart.filter((item) => item.product_id !== productId);
     },
