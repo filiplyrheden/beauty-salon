@@ -88,13 +88,32 @@
       </div>
     </div>
     <div class="courses-container">
-      <div class="courses"><h2>Kurser & Utbildningar</h2></div>
+      <div class="courses">
+        <h2>Kurser & Utbildningar</h2>
+        <img src="../assets/noImage.png" alt="" />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+          et commodo ligula. Orci varius natoque penatibus et magnis dis
+          parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus
+          lectus, et auctor enim tempus et.
+        </p>
+        <button>LÄS MER</button>
+      </div>
     </div>
     <div class="events-container">
-      <div class="events"><h2>Events</h2></div>
+      <div class="events">
+        <h2 class="events-title">Boka Event</h2>
+        <p class="events-content">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+          et commodo ligula. Orci varius natoque penatibus et magnis dis
+          parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus
+          lectus, et auctor enim tempus et.
+        </p>
+        <Button class="events-button">BOKA</Button>
+      </div>
     </div>
     <div class="social-media-container">
-      <div class="social-media"><h2>SOCIAL MEDIA</h2></div>
+      <div class="social-media"><h2>SOCIAL MEDIER</h2></div>
     </div>
   </div>
 </template>
@@ -318,6 +337,46 @@ export default {
   text-align: left;
 }
 
+.events-container {
+  width: 100%;
+  height: 50vh;
+  background-color: #dddddd;
+}
+.events {
+  max-width: 362px;
+  margin: 0 auto;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.events-title {
+  font-family: "Playfair Display", serif !important;
+  font-size: 33.18px;
+  font-weight: 600;
+  line-height: 36.5px;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: rgba(32, 32, 32, 0.5);
+}
+.events-content {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22.4px;
+  text-align: center;
+}
+.events-button {
+  padding: 16px 24px;
+  gap: 0px;
+  opacity: 0px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 17.6px;
+  letter-spacing: 0.04em;
+  align-self: center;
+}
 .about-me-container {
   width: 100%;
   height: 90vh;
