@@ -52,16 +52,10 @@ const tableCreationQueries = [
     stock_quantity INT,
     category_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    image_url_primary TEXT,
+    image_url_secondary TEXT,
+    image_url_third TEXT,
     FOREIGN KEY (category_id) REFERENCES Categories(category_id) ON DELETE SET NULL
-  );`,
-
-  // Table: ProductImages
-  `CREATE TABLE ProductImages (
-    image_id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT,
-    image_url VARCHAR(255),
-    is_primary BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE CASCADE
   );`,
 
   // Table: Orders
@@ -184,14 +178,6 @@ const insertDataQueries = [
   ('Organic Shampoo', 'Gentle cleansing with natural ingredients.', 15.99, 200, 2),
   ('Matte Liquid Lipstick', 'Long-lasting matte finish in various shades.', 19.99, 100, 3),
   ('Revitalizing Hair Mask', 'Nourishes and strengthens hair.', 25.99, 80, 2);`,
-
-  // Insert into ProductImages
-  `INSERT INTO ProductImages (product_id, image_url, is_primary) VALUES
-  (1, 'http://example.com/images/hydrating_facial_cream_primary.jpg', TRUE),
-  (1, 'http://example.com/images/hydrating_facial_cream_side.jpg', FALSE),
-  (2, 'http://example.com/images/organic_shampoo_primary.jpg', TRUE),
-  (3, 'http://example.com/images/matte_lipstick_primary.jpg', TRUE),
-  (4, 'http://example.com/images/hair_mask_primary.jpg', TRUE);`,
 
   // Insert into Orders
   `INSERT INTO Orders (user_id, order_status, total_amount, address_line1, address_line2, postal_code, country, city)
