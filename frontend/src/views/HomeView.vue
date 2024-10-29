@@ -76,21 +76,48 @@
       </div>
     </div>
     <div class="products-container">
-      <div class="products-header">
-        <h2>Beställ hem</h2>
-        <div classname="line"></div>
-        <button>Visa alla</button>
+      <div class="products">
+        <div class="products-header">
+          <h2 class="products-header-title">BESTÄLL HEM</h2>
+          <div class="line"></div>
+          <router-link to="/shop">
+            <button class="products-header-button">Visa alla</button>
+          </router-link>
+        </div>
+        <ProductCarousel></ProductCarousel>
       </div>
-      <ProductCarousel></ProductCarousel>
     </div>
     <div class="courses-container">
-      <div class="courses"><h2>Kurser & Utbildningar</h2></div>
+      <div class="courses">
+        <h2 class="courses-title">Kurser & Utbildningar</h2>
+        <div class="courses-content">
+          <img class="courses-image" src="../assets/noImage.png" alt="" />
+          <div class="courses-text-content">
+            <p class="courses-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Suspendisse et commodo ligula. Orci varius natoque penatibus et
+              magnis dis parturient montes, nascetur ridiculus mus. Pellentesque
+              euismod tempus lectus, et auctor enim tempus et.
+            </p>
+            <button class="courses-button">LÄS MER</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="events-container">
-      <div class="events"><h2>Events</h2></div>
+      <div class="events">
+        <h2 class="events-title">Boka Event</h2>
+        <p class="events-content">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+          et commodo ligula. Orci varius natoque penatibus et magnis dis
+          parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus
+          lectus, et auctor enim tempus et.
+        </p>
+        <Button class="events-button">BOKA</Button>
+      </div>
     </div>
     <div class="social-media-container">
-      <div class="social-media"><h2>SOCIAL MEDIA</h2></div>
+      <div class="social-media"><h2>SOCIAL MEDIER</h2></div>
     </div>
   </div>
 </template>
@@ -270,7 +297,90 @@ export default {
   width: 100%;
   position: relative;
 }
+.products-container {
+  height: 90vh;
+  width: 100%;
+}
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 80px;
+  padding-bottom: 40px;
+}
+.products-header-title {
+  font-family: "Playfair Display", serif !important;
+  font-size: 33.18px;
+  font-weight: 600;
+  line-height: 36.5px;
+  letter-spacing: 0.02em;
+  text-align: left;
+  white-space: nowrap;
+  color: rgba(32, 32, 32, 0.5);
+}
+.products-header .line {
+  width: fill-available;
+  height: 1px;
+  background-color: rgba(32, 32, 32, 0.5);
+}
+.products-header-button {
+  white-space: nowrap;
+  width: 79px;
+  padding: 8px 12px;
+  background: #202020;
+  color: #f3f3f3;
+  font-family: "Playfair Display", serif !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 15.4px;
+  letter-spacing: 0.02em;
+  text-align: left;
+}
 
+.events-container {
+  width: 100%;
+  height: 50vh;
+  background-color: #dddddd;
+}
+.events {
+  max-width: 362px;
+  margin: 0 auto;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.events-title {
+  font-family: "Playfair Display", serif !important;
+  font-size: 33.18px;
+  font-weight: 600;
+  line-height: 36.5px;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: rgba(32, 32, 32, 0.5);
+}
+.events-content {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22.4px;
+  text-align: center;
+}
+.events-button {
+  padding: 16px 24px;
+  gap: 0px;
+  opacity: 0px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 17.6px;
+  letter-spacing: 0.04em;
+  align-self: center;
+}
 .about-me-container {
   width: 100%;
   height: 90vh;
@@ -326,6 +436,43 @@ export default {
 }
 .about-me-content-text button {
   align-self: flex-start;
+}
+.courses-container {
+  width: 100%;
+  height: 90vh;
+}
+.courses {
+  max-width: 1280px;
+  width: 910px;
+  margin: 0 auto;
+  padding: 80px 40px 0px 40px;
+}
+.courses-title {
+  font-family: "Playfair Display", serif !important;
+  font-size: 47.78px;
+  font-weight: 600;
+  line-height: 52.56px;
+  letter-spacing: 0.04em;
+  text-align: right;
+  color: rgba(32, 32, 32, 0.5);
+  padding-bottom: 32px;
+}
+.courses-content {
+  display: flex;
+  gap: 16px;
+  height: 100%;
+}
+.courses-image {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+}
+.courses-text-content {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
 }
 
 .hero {
