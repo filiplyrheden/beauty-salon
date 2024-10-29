@@ -81,6 +81,7 @@
         <div classname="line"></div>
         <button>Visa alla</button>
       </div>
+      <ProductCarousel></ProductCarousel>
     </div>
     <div class="courses-container">
       <div class="courses"><h2>Kurser & Utbildningar</h2></div>
@@ -98,6 +99,7 @@
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import noImage from "@/assets/noImage.png";
+import ProductCarousel from "@/components/ProductCarousel.vue";
 
 export default {
   data() {
@@ -133,6 +135,7 @@ export default {
     Slide,
     Pagination,
     Navigation,
+    ProductCarousel,
   },
   name: "HomeView",
 };
