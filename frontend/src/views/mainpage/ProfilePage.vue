@@ -105,7 +105,9 @@
                   v-for="product in order.products"
                   :key="product.product_id"
                 >
-                  <strong>{{ product.product_name }}</strong>
+                  <strong>{{ product.product_name }} </strong>
+                  <br />
+                  {{ product.size }}
                   <br />
                   Antal: {{ product.quantity }}
                   <br />
@@ -166,6 +168,7 @@ export default {
         this.orders = response.data.map((order) => ({
           ...order,
         }));
+        console.log(this.orders);
       } catch (error) {
         console.error(
           "Error fetching orders:",
