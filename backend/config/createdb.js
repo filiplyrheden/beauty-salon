@@ -193,7 +193,7 @@ const insertDataQueries = [
     (1, '100 ml', 34.99, 100),
     (2, '250 ml', 15.99, 200),
     (3, '5 ml', 19.99, 100),
-    INSERT INTO productSizes (size_id, product_id, size, price, stock_quantity) VALUES (5, 4, '30 ml', 24.99, 75);`, // Insert into Orders
+    (4, '30 ml', 24.99, 75);`, // Insert into Orders
   `INSERT INTO Orders (user_id, order_status, total_amount, address_line1, address_line2, postal_code, country, city)
   VALUES
   (2, 'Confirmed', 65.97, '123 Main St', 'Apt 101', '12345', 'USA', 'Springfield'),
