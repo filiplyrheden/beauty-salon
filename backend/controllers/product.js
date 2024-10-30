@@ -17,7 +17,7 @@ import fs from "fs";
  */
 export const showProducts = async (req, res) => {
   try {
-    const products = await getProducts();
+    const products = await getProductsWithInfo();
     res.status(200).json(products);
   } catch (err) {
     console.error("Error in showProducts:", err);
@@ -75,7 +75,17 @@ export const getCheckoutProducts = async (res, dummyItems) => {
 export const createProduct = async (req, res) => {
   const product = req.body; // Get product details from the request body
   const files = req.files;
+  console.log(product);
   console.log(files);
+
+  if (typeof product.sizes === 'string') {
+    try {
+      product.sizes = JSON.parse(product.sizes);
+    } catch (error) {
+      console.error("Error parsing sizes:", error);
+      return res.status(400).json({ error: "Invalid sizes format" });
+    }
+  }
 
     // Get the file paths for the uploaded images
     const primaryImagePath = req.files.primaryImage[0].filename;

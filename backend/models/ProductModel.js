@@ -14,68 +14,59 @@ export const getProducts = async () => {
   }
 };
 
-/**
- * Insert a new product into the database.
- * @param {Object} product - The product object containing details to be inserted.
- * @param {string} product.product_name - The name of the product.
- * @param {string} product.description - The description of the product.
- * @param {number} product.price - The price of the product.
- * @param {number} product.stock_quantity - The stock quantity of the product.
- * @param {number} product.category_id - The ID of the product's category.
- * @returns {Promise<Object>} The result of the insert operation.
- */
 export const insertProduct = async (product) => {
-  console.log(product);
   const {
     product_name,
     description,
-    price,
-    stock_quantity,
+    sizes, // Assuming this is an array of objects
     category_id,
     image_url_primary,
     image_url_secondary,
     image_url_third,
   } = product;
+
   try {
-    const query = `
-      INSERT INTO Products (product_name, description, price, stock_quantity, category_id, image_url_primary, image_url_secondary, image_url_third)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    // Step 1: Insert into the Products table
+    const productQuery = `
+      INSERT INTO Products (product_name, description, category_id, image_url_primary, image_url_secondary, image_url_third)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
-    const [result] = await db.query(query, [
+    const [productResult] = await db.query(productQuery, [
       product_name,
       description,
-      price,
-      stock_quantity,
       category_id,
       image_url_primary,
       image_url_secondary,
       image_url_third,
     ]);
-    return result;
+
+    const productId = productResult.insertId;
+
+    // Step 2: Insert sizes into the ProductSizes table
+      const sizeValues = sizes.map(({ sizeName, price, quantity }) => 
+        `(${productId}, '${sizeName}', ${price}, ${quantity})`
+      ).join(", ");
+
+    const sizeQuery = `
+      INSERT INTO ProductSizes (product_id, size, price, stock_quantity)
+      VALUES ${sizeValues}
+    `;
+
+    await db.query(sizeQuery); // Execute the insert query
+
+    return productResult;
   } catch (err) {
-    console.error("Error inserting product:", err);
-    throw err; // Propagate the error to be handled by the controller
+    console.error("Error inserting product and sizes:", err);
+    throw err;
   }
 };
 
-/**
- * Update an existing product in the database.
- * @param {Object} product - The product object containing updated details.
- * @param {number} product.product_id - The ID of the product to be updated.
- * @param {string} product.product_name - The updated name of the product.
- * @param {string} product.description - The updated description of the product.
- * @param {number} product.price - The updated price of the product.
- * @param {number} product.stock_quantity - The updated stock quantity of the product.
- * @param {number} product.category_id - The updated ID of the product's category.
- * @returns {Promise<Object>} The result of the update operation.
- */
 export const editProduct = async (product) => {
   const {
     product_id,
     product_name,
     description,
-    price,
-    stock_quantity,
+    sizes,
     category_id,
     image_url_primary,
     image_url_secondary,
@@ -84,7 +75,7 @@ export const editProduct = async (product) => {
   try {
     const query = `
       UPDATE Products
-      SET product_name = ?, description = ?, price = ?, stock_quantity = ?, category_id = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
+      SET product_name = ?, description = ?, category_id = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
       WHERE product_id = ?
     `;
     const [result] = await db.query(query, [
@@ -144,28 +135,47 @@ export const fetchCheckoutProductsByIds = async (productIds) => {
 export const getProductsWithInfo = async () => {
   const [rows] = await db.query(`
     SELECT 
-      p.product_id,
-      p.product_name,
-      p.description,
-      p.price,
-      p.stock_quantity,
-      p.created_at,
-      p.image_url_primary,
-      p.image_url_secondary,
-      p.image_url_third,
-      JSON_OBJECT(
-          'category_id', c.category_id,
-          'category_name', c.category_name,
-          'parent_category_id', c.parent_category_id
-      ) AS category
-    FROM 
-      Products p
-    LEFT JOIN
-      Categories c ON p.category_id = c.category_id
-    GROUP BY 
-      p.product_id;
+    p.product_id,
+    p.product_name,
+    p.description,
+    p.created_at,
+    p.image_url_primary,
+    p.image_url_secondary,
+    p.image_url_third,
+    JSON_OBJECT(
+        'category_id', c.category_id,
+        'category_name', c.category_name,
+        'parent_category_id', c.parent_category_id
+    ) AS category,
+    JSON_ARRAYAGG(
+        CASE 
+            WHEN ps.size_id IS NOT NULL THEN JSON_OBJECT(
+                'size_id', ps.size_id,
+                'size', ps.size,
+                'price', ps.price,
+                'stock_quantity', ps.stock_quantity
+            )
+        END
+    ) AS variants
+FROM 
+    Products p
+LEFT JOIN
+    Categories c ON p.category_id = c.category_id
+LEFT JOIN 
+    ProductSizes ps ON p.product_id = ps.product_id
+GROUP BY 
+    p.product_id;
+
   `);
-  return rows;
+
+  // Post-process the rows to ensure variants is an empty object if there are no sizes
+  return rows.map((row) => {
+    // Check if variants is an empty array or undefined, and set to empty object
+    if (!row.variants || row.variants.length === 0) {
+      row.variants = {}; // Set to empty object if there are no variants
+    }
+    return row;
+  });
 };
 
 // Fetch a single product and its price by product ID

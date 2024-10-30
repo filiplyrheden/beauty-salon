@@ -6,7 +6,7 @@ const adminMiddleware = async (req, res, next) => {
   console.log("User ID:", userId);
 
   try {
-    const [user] = await db.query("SELECT * FROM users WHERE user_id = ?", [
+    const [user] = await db.query("SELECT * FROM Users WHERE user_id = ?", [
       userId,
     ]); // Change user_id to id if that's the column name
 

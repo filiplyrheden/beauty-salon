@@ -73,7 +73,7 @@ const tableCreationQueries = [
   );`,
 
   // create Table product_sizes
-  `CREATE TABLE productSizes (
+  `CREATE TABLE ProductSizes (
     size_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT,
     size VARCHAR(50),
@@ -181,11 +181,11 @@ const insertDataQueries = [
   ('Nail Services'),
   ('Hair Services');`,
 
-  `INSERT INTO productSizes (product_id, size, price, stock_quantity) VALUES
+  `INSERT INTO ProductSizes (product_id, size, price, stock_quantity) VALUES
     (1, '50 ml', 29.99, 150),
     (1, '100 ml', 34.99, 100),
     (2, '250 ml', 15.99, 200),
-    (3, '5 ml', 19.99, 100);`
+    (3, '5 ml', 19.99, 100);`,
 
   // Insert into Products
   `INSERT INTO Products (product_name, description, stock_quantity, category_id)
