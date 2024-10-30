@@ -112,11 +112,9 @@ export default {
         const response = await axiosInstance.get(`/allproducts`);
         // Initialize selectedSize for each product
         this.products = response.data.map((product) => {
-          // If there's only one variant, set selectedSize to its size_id
-          const defaultSizeId =
-            product.variants && product.variants.length === 1
-              ? product.variants[0].size_id
-              : null;
+          const defaultSizeId = product.variants
+            ? product.variants[0].size_id
+            : null;
 
           return {
             ...product,

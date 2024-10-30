@@ -59,8 +59,10 @@ export const store = new Vuex.Store({
       state.cart = cartItems; // Assume the cart is already in simplified form
     },
     addToCart(state, { product, size_id }) {
-      const item = state.cart.find((i) => i.product_id === product.product_id);
-      if (item && item.size_id === size_id) {
+      const item = state.cart.find(
+        (i) => i.product_id === product.product_id && i.size_id === size_id
+      );
+      if (item) {
         item.quantity++;
         state.cartPopupVisible = true;
       } else {
