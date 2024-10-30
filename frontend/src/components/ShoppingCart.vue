@@ -7,10 +7,12 @@
     <div v-for="item in cartItems" :key="item.id">
       <p>{{ item.product_name }} - {{ item.price }} (x{{ item.quantity }})</p>
       <!-- Button for removing or decrementing item -->
-      <button @click="handleDecrementOrRemove(item.product_id)">
+      <button @click="handleDecrementOrRemove(item.product_id, item.size_id)">
         {{ item.quantity === 1 ? "Ta bort" : "-" }}
       </button>
-      <button @click="incrementItemInCart(item.product_id)">+</button>
+      <button @click="incrementItemInCart(item.product_id, item.size_id)">
+        +
+      </button>
     </div>
     <h3>Total: {{ totalPrice.toFixed(2) }}</h3>
     <button @click="handleCheckout">Proceed to Checkout</button>
@@ -34,27 +36,36 @@ export default {
     addItemToCart(product) {
       this.$store.commit("addToCart", product);
     },
-    incrementItemInCart(productId) {
-      this.$store.commit("incrementItemInCart", productId);
+    incrementItemInCart(productId, sizeId) {
+      this.$store.commit("incrementItemInCart", {
+        productId: productId,
+        sizeId: sizeId,
+      });
     },
-    decrementItem(productId) {
-      this.$store.commit("decrementItemInCart", productId); // Commit the Vuex mutation
+    decrementItem(productId, sizeId) {
+      this.$store.commit("decrementItemInCart", {
+        productId: productId,
+        sizeId: sizeId,
+      }); // Commit the Vuex mutation
     },
-    removeItem(productId) {
-      this.$store.commit("removeFromCart", productId);
+    removeItem(productId, sizeId) {
+      this.$store.commit("removeFromCart", {
+        productId: productId,
+        sizeId: sizeId,
+      });
     },
     clearCart() {
       this.$store.commit("clearCart");
     },
     // Method to handle both decrement and remove logic
-    handleDecrementOrRemove(productId) {
+    handleDecrementOrRemove(productId, sizeId) {
       const item = this.$store.state.cart.find(
-        (item) => item.product_id === productId
+        (item) => item.product_id === productId && item.size_id === sizeId
       );
       if (item.quantity === 1) {
-        this.removeItem(productId); // Remove the item if quantity is 1
+        this.removeItem(productId, sizeId); // Remove the item if quantity is 1
       } else {
-        this.decrementItem(productId); // Otherwise, decrement the quantity
+        this.decrementItem(productId, sizeId); // Otherwise, decrement the quantity
       }
     },
     async handleCheckout() {
@@ -65,7 +76,7 @@ export default {
             product_id: item.product_id,
             quantity: item.quantity,
           })),
-          user_id: this.$store.state.userId
+          user_id: this.$store.state.userId,
         });
 
         // Manually handle the redirect from the 303 status
