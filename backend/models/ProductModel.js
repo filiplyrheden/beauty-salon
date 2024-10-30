@@ -130,7 +130,7 @@ export const fetchProductsByIds = async (productIds) => {
 
 export const fetchCheckoutProductsByIds = async (productIds) => {
   // Convert the productIds array to a comma-separated string
-  const idsString = productIds.join(',');
+  const idsString = productIds.join(",");
 
   // Use the string inside the SQL query
   const query = `SELECT product_id, price, product_name FROM Products WHERE product_id IN (${idsString})`;
@@ -140,32 +140,51 @@ export const fetchCheckoutProductsByIds = async (productIds) => {
   return rows;
 };
 
-
 export const getProductsWithInfo = async () => {
   const [rows] = await db.query(`
+  
     SELECT 
-      p.product_id,
-      p.product_name,
-      p.description,
-      p.price,
-      p.stock_quantity,
-      p.created_at,
-      p.image_url_primary,
-      p.image_url_secondary,
-      p.image_url_third,
-      JSON_OBJECT(
-          'category_id', c.category_id,
-          'category_name', c.category_name,
-          'parent_category_id', c.parent_category_id
-      ) AS category
-    FROM 
-      Products p
-    LEFT JOIN
-      Categories c ON p.category_id = c.category_id
-    GROUP BY 
-      p.product_id;
+    p.product_id,
+    p.product_name,
+    p.description,
+    p.created_at,
+    p.image_url_primary,
+    p.image_url_secondary,
+    p.image_url_third,
+    JSON_OBJECT(
+        'category_id', c.category_id,
+        'category_name', c.category_name,
+        'parent_category_id', c.parent_category_id
+    ) AS category,
+    JSON_ARRAYAGG(
+        CASE 
+            WHEN ps.size_id IS NOT NULL THEN JSON_OBJECT(
+                'size_id', ps.size_id,
+                'size', ps.size,
+                'price', ps.price,
+                'stock_quantity', ps.stock_quantity
+            )
+        END
+    ) AS variants
+FROM 
+    Products p
+LEFT JOIN
+    Categories c ON p.category_id = c.category_id
+LEFT JOIN 
+    productSizes ps ON p.product_id = ps.product_id
+GROUP BY 
+    p.product_id;
+
   `);
-  return rows;
+
+  // Post-process the rows to ensure variants is an empty object if there are no sizes
+  return rows.map((row) => {
+    // Check if variants is an empty array or undefined, and set to empty object
+    if (!row.variants || row.variants.length === 0) {
+      row.variants = {}; // Set to empty object if there are no variants
+    }
+    return row;
+  });
 };
 
 // Fetch a single product and its price by product ID
