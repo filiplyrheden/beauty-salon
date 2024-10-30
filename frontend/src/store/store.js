@@ -59,8 +59,10 @@ export const store = new Vuex.Store({
       state.cart = cartItems; // Assume the cart is already in simplified form
     },
     addToCart(state, { product, size_id }) {
-      const item = state.cart.find((i) => i.product_id === product.product_id);
-      if (item && item.size_id === size_id) {
+      const item = state.cart.find(
+        (i) => i.product_id === product.product_id && i.size_id === size_id
+      );
+      if (item) {
         item.quantity++;
         state.cartPopupVisible = true;
       } else {
@@ -78,23 +80,30 @@ export const store = new Vuex.Store({
       }
     },
 
-    incrementItemInCart(state, productId) {
-      console.log("incrementItemInCart" + productId);
-      const item = state.cart.find((i) => i.product_id === productId);
+    incrementItemInCart(state, { productId, sizeId }) {
+      console.log("incrementItemInCart" + productId + sizeId);
+      const item = state.cart.find(
+        (i) => i.product_id === productId && i.size_id === sizeId
+      );
       if (item) {
         item.quantity++;
       }
     },
-    decrementItemInCart(state, productId) {
+    decrementItemInCart(state, { productId, sizeId }) {
       console.log("decrement" + productId);
-      const item = state.cart.find((i) => i.product_id === productId);
+      const item = state.cart.find(
+        (i) => i.product_id === productId && i.size_id === sizeId
+      );
       if (item && item.quantity > 1) {
         item.quantity--;
       }
     },
 
-    removeFromCart(state, productId) {
-      state.cart = state.cart.filter((item) => item.product_id !== productId);
+    removeFromCart(state, { productId, sizeId }) {
+      console.log("removeFromCart" + productId + sizeId);
+      state.cart = state.cart.filter(
+        (item) => !(item.product_id === productId && item.size_id === sizeId)
+      );
     },
     clearCart(state) {
       state.cart = [];
