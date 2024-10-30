@@ -128,13 +128,11 @@ app.post(
 
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
-      console.log("Session: ", session);
 
       // Move the rest to a background process
       (async () => {
         try {
           const shippingAddress = session.customer_details.address;
-          console.log("Shipping Address: ", shippingAddress);
           const items = await getCheckoutSession(session.id);
           const lineItems = await stripe.checkout.sessions.listLineItems(
             session.id,
@@ -159,6 +157,7 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
   try {
     const { dummyItems } = req.body; // Destructure to easily access line_items
     const { user_id } = req.body;
+    console.log(dummyItems);
     const line_items = await getCheckoutProducts(res, dummyItems);
     console.log(user_id);
     console.log(line_items);
@@ -229,19 +228,28 @@ app.use("/uploads", express.static(path.join(__dirnameFull, "uploads")));
 app.get("/products", showProducts); // Get all products
 app.get("/allproducts", showallProducts); // Get all products with additional info
 app.get("/admin/products", authMiddleware, adminMiddleware, showProducts); // Get all products for admin
-app.post("/admin/products", authMiddleware, adminMiddleware,   
+app.post(
+  "/admin/products",
+  authMiddleware,
+  adminMiddleware,
   upload.fields([
-  { name: "primaryImage", maxCount: 1 },
-  { name: "secondaryImage", maxCount: 1 },
-  { name: "thirdImage", maxCount: 1 },
-  ]), createProduct); // Create a new product
-app.put("/admin/products", authMiddleware, adminMiddleware,
-  upload.fields([
-  { name: "primaryImage", maxCount: 1 },
-  { name: "secondaryImage", maxCount: 1 },
-  { name: "thirdImage", maxCount: 1 },
+    { name: "primaryImage", maxCount: 1 },
+    { name: "secondaryImage", maxCount: 1 },
+    { name: "thirdImage", maxCount: 1 },
   ]),
-   updateProduct); // Update a product
+  createProduct
+); // Create a new product
+app.put(
+  "/admin/products",
+  authMiddleware,
+  adminMiddleware,
+  upload.fields([
+    { name: "primaryImage", maxCount: 1 },
+    { name: "secondaryImage", maxCount: 1 },
+    { name: "thirdImage", maxCount: 1 },
+  ]),
+  updateProduct
+); // Update a product
 app.delete(
   "/admin/products/:id",
   authMiddleware,

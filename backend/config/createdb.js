@@ -89,8 +89,10 @@ const tableCreationQueries = [
     product_id INT,
     quantity INT,
     unit_price DECIMAL(10,2),
+    size_id INT,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE SET NULL
+    FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE SET NULL,
+    FOREIGN KEY (size_id) REFERENCES productSizes(size_id) ON DELETE SET NULL
   );`,
 
   // Table: Services
@@ -190,7 +192,8 @@ const insertDataQueries = [
     (1, '50 ml', 29.99, 150),
     (1, '100 ml', 34.99, 100),
     (2, '250 ml', 15.99, 200),
-    (3, '5 ml', 19.99, 100);`,
+    (3, '5 ml', 19.99, 100),
+    (4, '30 ml', 24.99, 75);`, // Insert into Orders
 
   // Insert into Products
   `INSERT INTO Products (product_name, description, stock_quantity, category_id)
@@ -207,11 +210,11 @@ const insertDataQueries = [
   (3, 'Pending', 19.99, '456 Main St', 'Apt 101', '12345', 'USA', 'Springfield');`,
 
   // Insert into OrderDetails
-  `INSERT INTO OrderDetails (order_id, product_id, quantity, unit_price)
+  `INSERT INTO OrderDetails (order_id, product_id, quantity, size_id, unit_price)
   VALUES
-  (1, 1, 2, 29.99),
-  (1, 2, 1, 15.99),
-  (2, 3, 1, 19.99);`,
+  (1, 1, 2, 1, 29.99),
+  (1, 2, 1, 3, 15.99),
+  (2, 3, 1, 4, 19.99);`,
 
   // Insert into Services
   `INSERT INTO Services (name, description, time, price, category_id, booking_link)

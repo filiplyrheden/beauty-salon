@@ -119,14 +119,29 @@ export const fetchProductsByIds = async (productIds) => {
   return rows;
 };
 
-export const fetchCheckoutProductsByIds = async (productIds) => {
-  // Convert the productIds array to a comma-separated string
-  const idsString = productIds.join(",");
+export const fetchCheckoutProductsByIds = async (items) => {
+  // Construct conditions from items to filter by specific (product_id, size_id) pairs
+  const conditions = items
+    .map((item) => `(${item.product_id}, ${item.size_id})`)
+    .join(", ");
 
-  // Use the string inside the SQL query
-  const query = `SELECT product_id, price, product_name FROM Products WHERE product_id IN (${idsString})`;
+  // Use a SQL query to join Products and ProductSizes based on these pairs
+  const query = `
+    SELECT 
+      Products.product_id, 
+      Products.product_name, 
+      ProductSizes.size_id, 
+      ProductSizes.size, 
+      ProductSizes.price 
+    FROM 
+      Products
+    INNER JOIN 
+      ProductSizes ON Products.product_id = ProductSizes.product_id
+    WHERE 
+      (Products.product_id, ProductSizes.size_id) IN (${conditions})
+  `;
 
-  // Assuming you're using a MySQL client like mysql2 or similar:
+  // Execute the query
   const [rows] = await db.query(query);
   return rows;
 };

@@ -37,35 +37,35 @@ export const showallProducts = async (req, res) => {
 
 export const getCheckoutProducts = async (res, dummyItems) => {
   try {
-    const productIds = dummyItems.map(item => item.product_id);
-    
-    // Fetch product details using the product IDs
-    const products = await fetchCheckoutProductsByIds(productIds);
+    // Fetch product and size details for each (product_id, size_id) pair
+    const products = await fetchCheckoutProductsByIds(dummyItems);
 
-    // Create line items with the correct quantity for each product
+    // Create line items with the correct quantity, size, and price for each product
     const line_items = products.map((product) => {
       // Find the matching item in dummyItems to get the quantity
-      const matchingItem = dummyItems.find(item => item.product_id === product.product_id);
+      const matchingItem = dummyItems.find(
+        (item) =>
+          item.product_id === product.product_id &&
+          item.size_id === product.size_id
+      );
 
       return {
         price_data: {
           currency: "SEK",
           product_data: {
-            name: product.product_name,
+            name: `${product.product_name} (${product.size})`, // Include size in the name
             metadata: {
-              product_id: product.product_id, // Include product_id in each line item
+              product_id: product.product_id,
+              size_id: product.size_id,
             },
-            // images: [product.image], // Uncomment if needed
           },
-          unit_amount: Math.round(product.price * 100), // Multiply by 100 to get the correct format
+          unit_amount: Math.round(product.price * 100), // Multiply by 100 for correct format
         },
-        // Use the quantity from the matching item
         quantity: matchingItem ? matchingItem.quantity : 1, // Default to 1 if not found
       };
     });
 
     return line_items;
-
   } catch (err) {
     console.error("Error in getCheckoutProducts:", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -77,6 +77,7 @@ export const createProduct = async (req, res) => {
   const files = req.files;
   console.log(product);
   console.log(files);
+
 
   if (typeof product.sizes === 'string') {
     try {
@@ -111,6 +112,7 @@ export const createProduct = async (req, res) => {
       image_url_third: thirdImageUrl, 
     };
 
+
   try {
     const result = await insertProduct(newProductData);
     res.status(201).json({ message: "Product created successfully" });
@@ -130,11 +132,13 @@ export const updateProduct = async (req, res) => {
   console.log(product);
   console.log("---------------------------------");
   const files = req.files;
-  const productId = product.product_id
+  const productId = product.product_id;
   console.log(files);
 
   const existingProduct = await getProductById(productId);
-  console.log("existing product with images that needs to be deleted" + existingProduct);
+  console.log(
+    "existing product with images that needs to be deleted" + existingProduct
+  );
 
   if (existingProduct) {
     const existingImages = [
@@ -143,7 +147,7 @@ export const updateProduct = async (req, res) => {
       existingProduct.image_url_third,
     ];
 
-    existingImages.forEach(imagePath => {
+    existingImages.forEach((imagePath) => {
       if (imagePath) {
         const fullPath = path.join("uploads", path.basename(imagePath));
         fs.unlink(fullPath, (err) => {
@@ -156,29 +160,29 @@ export const updateProduct = async (req, res) => {
     });
   }
 
-    // Get the file paths for the uploaded images
-    const primaryImagePath = req.files.primaryImage[0].filename;
-    const secondaryImagePath = req.files.secondaryImage[0].filename;
-    const thirdImagePath = req.files.thirdImage[0].filename;
+  // Get the file paths for the uploaded images
+  const primaryImagePath = req.files.primaryImage[0].filename;
+  const secondaryImagePath = req.files.secondaryImage[0].filename;
+  const thirdImagePath = req.files.thirdImage[0].filename;
 
-    // Construct URLs for both images
-    const primaryImageUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/uploads/${primaryImagePath}`;
-    const secondaryImageUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/uploads/${secondaryImagePath}`;
-    const thirdImageUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/uploads/${thirdImagePath}`;
+  // Construct URLs for both images
+  const primaryImageUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/uploads/${primaryImagePath}`;
+  const secondaryImageUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/uploads/${secondaryImagePath}`;
+  const thirdImageUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/uploads/${thirdImagePath}`;
 
-    // Add image URLs to service data
-    const newProductData = {
-      ...product,
-      image_url_primary: primaryImageUrl,
-      image_url_secondary: secondaryImageUrl,
-      image_url_third: thirdImageUrl, 
-    };
+  // Add image URLs to service data
+  const newProductData = {
+    ...product,
+    image_url_primary: primaryImageUrl,
+    image_url_secondary: secondaryImageUrl,
+    image_url_third: thirdImageUrl,
+  };
 
   try {
     const result = await editProduct(newProductData);
