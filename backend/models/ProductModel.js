@@ -159,9 +159,9 @@ export const getProductsWithInfo = async () => {
           'parent_category_id', c.parent_category_id
       ) AS category
     FROM 
-      products p
+      Products p
     LEFT JOIN
-      categories c ON p.category_id = c.category_id
+      Categories c ON p.category_id = c.category_id
     GROUP BY 
       p.product_id;
   `);
