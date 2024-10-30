@@ -75,6 +75,7 @@ export default {
           dummyItems: this.$store.state.cart.map((item) => ({
             product_id: item.product_id,
             quantity: item.quantity,
+            size_id: item.size_id,
           })),
           user_id: this.$store.state.userId,
         });

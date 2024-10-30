@@ -8,10 +8,20 @@ export const fetchOrderDetails = async (order_id) => {
 
 export const fetchSpecificOrderDetails = async (orderId) => {
   const [rows] = await db.query(
-    `SELECT od.product_id, p.product_name, od.quantity, od.unit_price
-    FROM OrderDetails od
-    INNER JOIN Products p ON od.product_id = p.product_id
-    WHERE od.order_id = ?`,
+    `SELECT 
+       od.product_id, 
+       p.product_name, 
+       od.quantity, 
+       od.unit_price, 
+       ps.size  -- Fetch the size from ProductSizes
+     FROM 
+       OrderDetails od
+     INNER JOIN 
+       Products p ON od.product_id = p.product_id
+     INNER JOIN 
+       ProductSizes ps ON od.product_id = ps.product_id AND od.size_id = ps.size_id
+     WHERE 
+       od.order_id = ?`,
     [orderId]
   );
 

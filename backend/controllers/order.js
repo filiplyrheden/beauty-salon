@@ -126,30 +126,47 @@ export const updateOrderById = async (req, res) => {
   }
 };
 
-export const createOrderByHook = async (user_id, lineItems, shippingAddress) => {
+export const createOrderByHook = async (
+  user_id,
+  lineItems,
+  shippingAddress
+) => {
   let connection;
   try {
-    console.log("user_id inside createOrderByHook: " + user_id);
-    console.log("ShippingAdress inside createOrderByHook " + shippingAddress);
     // Acquire a connection from the pool
     connection = await pool.getConnection();
 
     // Begin transaction
     await connection.query("BEGIN");
 
-    // Extract product IDs and quantities from lineItems
+    // Extract product IDs, size IDs, and quantities from lineItems
     const products = lineItems.data.map((lineItem) => ({
       product_id: lineItem.price.product.metadata.product_id,
+      size_id: lineItem.price.product.metadata.size_id,
       quantity: lineItem.quantity,
     }));
+    const productSizePairs = products.map(({ product_id, size_id }) => [
+      product_id,
+      size_id,
+    ]);
 
-    // Fetch product prices from the database
-    const productIds = products.map((product) => product.product_id);
+    // Fetch product prices from the database based on (product_id, size_id)
     const [fetchedProducts] = await connection.query(
-      "SELECT product_id, price FROM products WHERE product_id IN (?)",
-      [productIds]
+      `
+        SELECT 
+          products.product_id, 
+          productSizes.size_id, 
+          productSizes.price 
+        FROM 
+          Products 
+        INNER JOIN 
+          productSizes ON products.product_id = productSizes.product_id
+        WHERE 
+          (products.product_id, productSizes.size_id) IN (?)
+      `,
+      [productSizePairs] // Pass array of pairs (product_id, size_id)
     );
-
+    console.log("fetched products" + fetchedProducts);
     // Calculate total order amount and create order details
     let totalAmount = 0;
 
@@ -176,6 +193,7 @@ export const createOrderByHook = async (user_id, lineItems, shippingAddress) => 
         quantity: product.quantity,
         price: productData.price,
         total_price: productTotal,
+        size_id: product.size_id,
       };
     });
 
@@ -192,7 +210,17 @@ export const createOrderByHook = async (user_id, lineItems, shippingAddress) => 
 
     const [orderResult] = await connection.query(
       "INSERT INTO orders (user_id, order_status, total_amount, order_date, address_line1, address_line2, postal_code, country, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [user_id, order_status, totalAmount, order_date, address_line1, address_line2, postal_code, country, city]
+      [
+        user_id,
+        order_status,
+        totalAmount,
+        order_date,
+        address_line1,
+        address_line2,
+        postal_code,
+        country,
+        city,
+      ]
     );
     const newOrderId = orderResult.insertId;
 
@@ -201,11 +229,12 @@ export const createOrderByHook = async (user_id, lineItems, shippingAddress) => 
       newOrderId,
       item.product_id,
       item.quantity,
+      item.size_id,
       item.price,
     ]);
 
     await connection.query(
-      "INSERT INTO orderDetails (order_id, product_id, quantity, unit_price) VALUES ?",
+      "INSERT INTO orderDetails (order_id, product_id, quantity, size_id, unit_price) VALUES ?",
       [orderDetailQueries]
     );
 
