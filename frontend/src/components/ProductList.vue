@@ -8,20 +8,24 @@
           <p><strong>ID:</strong> {{ product.product_id }}</p>
           <div class="image-container-wrapper">
             <div class="product-image-container">
-              <img :src="getImageUrl(product.image_url_primary)" :alt="product.name" class="product-image" />
+              <img :src="getImageUrl(product.image_url_primary)" :alt="product.product_name" class="product-image" />
             </div>
             <div class="product-image-container">
-              <img :src="getImageUrl(product.image_url_secondary)" :alt="product.name" class="product-image" />
+              <img :src="getImageUrl(product.image_url_secondary)" :alt="product.product_name" class="product-image" />
             </div>
             <div class="product-image-container">
-              <img :src="getImageUrl(product.image_url_third)" :alt="product.name" class="product-image" />
+              <img :src="getImageUrl(product.image_url_third)" :alt="product.product_name" class="product-image" />
             </div>
           </div>
           <p><strong>Description:</strong> {{ product.description }}</p>
-          <p><strong>Category ID:</strong> {{ product.category_id }}</p>
+          <p><strong>Category:</strong> {{ product.category.category_name }}</p>
           <p><strong>Created At:</strong> {{ product.created_at }}</p>
-          <p><strong>Price:</strong> ${{ product.price }}</p>
-          <p><strong>Stock Quantity:</strong> {{ product.stock_quantity }}</p>
+          <p><strong>Sizes:</strong></p>
+          <ul>
+            <li v-for="(variant, index) in product.variants" :key="index">
+              <strong>{{ variant.size }}</strong> - Price: {{ variant.price }} SEK, Stock: {{ variant.stock_quantity }}
+            </li>
+          </ul>
         </div>
 
         <div class="action-buttons">
@@ -39,16 +43,38 @@
           <div class="form-group">
             <label for="editName">Name:</label>
             <input v-model="editingProduct.product_name" id="editName" type="text" />
-            
+
             <label for="editDescription">Description:</label>
             <input v-model="editingProduct.description" id="editDescription" type="text" />
-            
-            <label for="editPrice">Price:</label>
-            <input v-model="editingProduct.price" id="editPrice" type="number" />
-            
-            <label for="editStock">Stock Quantity:</label>
-            <input v-model="editingProduct.stock_quantity" id="editStock" type="number" />
           </div>
+
+          <div class="form-group">
+            <label for="sizes">Sizes and Prices</label>
+            <div v-for="(variant, index) in editingProduct.variants" :key="index" class="size-entry">
+              <input 
+                v-model="variant.size" 
+                type="text" 
+                placeholder="Size (e.g., 300 ml)" 
+                required
+              />
+              <input 
+                v-model.number="variant.price" 
+                type="number" 
+                step="0.01" 
+                placeholder="Price (SEK)" 
+                required
+              />
+              <input 
+                v-model.number="variant.stock_quantity" 
+                type="number" 
+                placeholder="Stock" 
+                required
+              />
+              <button @click.prevent="removeSize(index)">Remove</button>
+            </div>
+            <button @click.prevent="addSize">Add Size</button>
+          </div>
+
           <div class="form-group">
             <label for="primaryImage">Primary Image:</label>
             <input 
@@ -78,7 +104,7 @@
               accept="image/*" 
             />
           </div>
-          
+
           <div class="form-buttons">
             <button class="save-btn" @click="saveProduct(editingProduct)">Save Changes</button>
             <button class="cancel-btn" @click="cancelEdit">Cancel</button>
@@ -88,62 +114,74 @@
     </ul>
   </div>
 </template>
-  
-  <script>
-  import axiosInstance from '@/services/axiosConfig';
-  
-  export default {
-    name: "ProductList",
-    props: {
-      items: {
-        type: Array,
-        required: true,
+
+<script>
+import axiosInstance from '@/services/axiosConfig';
+
+export default {
+  name: "ProductList",
+  props: {
+    items: {
+      type: Array,
+      required: true,
+    }
+  },
+  data() {
+    return {
+      editingProduct: null,
+      primaryImageFile: null,
+      secondaryImageFile: null,
+      thirdImageFile: null,
+    };
+  },
+  methods: {
+    deleteProduct(productId) {
+      console.log("Deleting product with ID:", productId);
+      axiosInstance.delete(`admin/products/${productId}`)
+        .then(response => {
+          console.log("Product deleted successfully:", response.data);
+          this.$emit('product-deleted', productId);
+        })
+        .catch(error => {
+          console.error("Error deleting product:", error.response ? error.response.data : error.message);
+        });
+    },
+    onImageChange(event, imageType) {
+      const file = event.target.files[0];
+      if (imageType === 'primary') {
+        this.primaryImageFile = file;
+      } else if (imageType === 'secondary') {
+        this.secondaryImageFile = file;
+      } else if (imageType === 'third') {
+        this.thirdImageFile = file;
       }
     },
-    data() {
-      return {
-        editingProduct: null,
-      };
+    getImageUrl(imageName) {
+      return imageName; // Adjust this if necessary for your image handling logic
     },
-    methods: {
-      deleteProduct(productId) {
-        console.log("Deleting product with ID:", productId);
-        axiosInstance.delete(`admin/products/${productId}`)
-          .then(response => {
-            console.log("Product deleted successfully:", response.data);
-            // Emit an event to the parent component to delete the product
-            this.$emit('product-deleted', productId);
-          })
-          .catch(error => {
-            console.error("Error deleting product:", error.response ? error.response.data : error.message);
-          });
-      },
-      onImageChange(event, imageType) {
-        const file = event.target.files[0];
-
-        if (imageType === 'primary') {
-          this.primaryImageFile = file;
-        } else if (imageType === 'secondary') {
-          this.secondaryImageFile = file;
-        } else if (imageType === 'third') {
-          this.thirdImageFile = file;
-        }
-      },
-      getImageUrl(imageName) {
-      return `${imageName}`;
-      },
-      editProduct(product) {
-        this.editingProduct = { ...product };
-      },
-      saveProduct(product) {
+    editProduct(product) {
+      this.editingProduct = JSON.parse(JSON.stringify(product)); // Deep copy to avoid mutating original
+    },
+    addSize() {
+      this.editingProduct.variants.push({ size: '', price: 0, stock_quantity: 0 });
+    },
+    removeSize(index) {
+      this.editingProduct.variants.splice(index, 1);
+    },
+    saveProduct(product) {
       console.log("Saving product:", product);
       const formData = new FormData();
       formData.append("product_name", product.product_name);
       formData.append("description", product.description);
-      formData.append("price", product.price);
-      formData.append("stock_quantity", product.stock_quantity);
-      formData.append("category_id", product.category_id);
+      formData.append("category_id", product.category.category_id);
       formData.append("product_id", product.product_id);
+
+      // Append sizes
+      product.variants.forEach((variant, index) => {
+        formData.append(`variants[${index}][size]`, variant.size);
+        formData.append(`variants[${index}][price]`, variant.price);
+        formData.append(`variants[${index}][stock_quantity]`, variant.stock_quantity);
+      });
 
       if (this.primaryImageFile) {
         formData.append("primaryImage", this.primaryImageFile);
@@ -156,31 +194,33 @@
       }
 
       axiosInstance
-        .put("admin/products", formData, {
+        .put(`admin/products/${product.product_id}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then((response) => {
           console.log("Product saved successfully:", response.data);
-          alert(product.product_name + " saved successfully!");
+          alert(`${product.product_name} saved successfully!`);
+          this.cancelEdit(); // Reset editing state
         })
         .catch((error) => {
           console.error("Error saving product:", error.response ? error.response.data : error.message);
         });
-
-      this.editingProduct = null;
-      },
-
-      cancelEdit() {
-        this.editingProduct = null;
-      }
     },
-    mounted() {
-      console.log("Product items:", this.items);
+    cancelEdit() {
+      this.editingProduct = null;
+      this.primaryImageFile = null;
+      this.secondaryImageFile = null;
+      this.thirdImageFile = null;
     }
-  };
-  </script>
+  },
+  mounted() {
+    console.log("Product items:", this.items);
+  }
+};
+</script>
+
   
   <style scoped>
   .product-image-container {
