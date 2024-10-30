@@ -18,7 +18,16 @@
                   class="select-size"
                   @click="toggleSizeMenu(product.product_id)"
                 >
-                  <div class="size-toggle">Välj storlek</div>
+                  <div class="size-toggle">
+                    {{
+                      product.selectedSize
+                        ? product.variants.find(
+                            (v) => v.size_id === product.selectedSize
+                          )?.size + " (vald)"
+                        : product.variants[0]?.size + " (vald)" ||
+                          "Välj storlek"
+                    }}
+                  </div>
                   <font-awesome-icon icon="chevron-up" />
                 </div>
                 <transition name="size-options">
@@ -26,13 +35,25 @@
                     v-if="showSizeOptions[product.product_id]"
                     class="size-options"
                   >
-                    <p @click="selectSize('60 ml / TRAVEL')">60 ml / TRAVEL</p>
-                    <p @click="selectSize('200 ml / RETAIL')">
-                      200 ml / RETAIL
+                    <p
+                      v-if="!product.variants || product.variants.length === 0"
+                    >
+                      Inga Varianter :()
                     </p>
-                    <p @click="selectSize('472 ml / PROFESSIONAL')">
-                      472 ml / PROFESSIONAL
-                    </p>
+
+                    <div
+                      v-else
+                      v-for="variant in product.variants"
+                      :key="variant.size_id"
+                    >
+                      <div
+                        @click="selectSize(product.product_id, variant.size_id)"
+                        class="variant-options"
+                      >
+                        <p>{{ variant.size }}</p>
+                        <p>{{ variant.price }} kr</p>
+                      </div>
+                    </div>
                   </div>
                 </transition>
                 <button class="add-to-cart" @click="addItemToCart(product)">
@@ -45,9 +66,16 @@
           <div class="product-info">
             <div class="product-info-header">
               <h3 class="product-name">{{ product.product_name }}</h3>
-              <span>{{ product.price }} kr</span>
+              <span v-if="product.selectedSize">
+                {{
+                  product.variants.find(
+                    (v) => v.size_id === product.selectedSize
+                  )?.price || "0"
+                }}
+                kr
+              </span>
+              <span v-else> {{ product.variants[0]?.price || "0" }} kr </span>
             </div>
-
             <div class="product-description">{{ product.description }}</div>
           </div>
         </div>
@@ -73,7 +101,6 @@ export default {
     return {
       products: [],
       showSizeOptions: {}, // Object to track size option visibility
-      selectedSize: null,
     };
   },
   mounted() {
@@ -83,26 +110,50 @@ export default {
     async fetchProducts() {
       try {
         const response = await axiosInstance.get(`/allproducts`);
-        this.products = response.data;
+        // Initialize selectedSize for each product
+        this.products = response.data.map((product) => {
+          // If there's only one variant, set selectedSize to its size_id
+          const defaultSizeId =
+            product.variants && product.variants.length === 1
+              ? product.variants[0].size_id
+              : null;
+
+          return {
+            ...product,
+            selectedSize: defaultSizeId, // Initialize selectedSize with the default size_id
+          };
+        });
+        console.log(this.products);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     },
+
     toggleSizeMenu(productId) {
-      // Directly assign the value to toggle the visibility
       this.showSizeOptions[productId] = !this.showSizeOptions[productId];
     },
     hideSizeOptions(productId) {
-      // Set the size options to false when mouse leaves
       this.showSizeOptions[productId] = false;
     },
-    selectSize(size) {
-      this.selectedSize = size;
-      this.showSizeOptions = {}; // Hide all menus after selection
-      console.log("Selected size:", size); // For debugging
+    selectSize(productId, sizeId) {
+      const product = this.products.find((p) => p.product_id === productId);
+      product.selectedSize = sizeId; // Set selectedSize for the specific product
+      this.showSizeOptions[productId] = false; // Hide size options after selection
+      console.log("Selected size for product", productId, ":", sizeId); // Debugging purpose
     },
     addItemToCart(product) {
-      this.$store.commit("addToCart", product);
+      // Add product to the cart with the selected size_id
+      if (product.selectedSize === null) {
+        // Show the size options for the current product if no size is selected
+        this.showSizeOptions[product.product_id] = true;
+      } else {
+        // Proceed to add the product to the cart
+        console.log("Adding to cart:", product.selectedSize);
+        this.$store.commit("addToCart", {
+          product,
+          size_id: product.selectedSize,
+        });
+      }
     },
   },
 };
@@ -185,7 +236,10 @@ export default {
   width: 100%;
   height: 100%;
 }
-
+.variant-options {
+  display: flex;
+  justify-content: space-between;
+}
 .card-overlay {
   opacity: 0.5;
   height: 100%;
