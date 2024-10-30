@@ -24,29 +24,6 @@
       </div>
 
       <div class="form-group">
-        <label for="productPrice">Price ($)</label>
-        <input 
-          type="number" 
-          id="productPrice" 
-          v-model="productPrice" 
-          step="0.01" 
-          required
-          placeholder="0.00"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="stockQuantity">Stock Quantity</label>
-        <input 
-          type="number" 
-          id="stockQuantity" 
-          v-model="stockQuantity" 
-          required
-          placeholder="Enter quantity"
-        />
-      </div>
-
-      <div class="form-group">
         <label for="categoryId">Category ID</label>
         <input 
           type="number" 
@@ -57,7 +34,35 @@
         />
       </div>
 
-    <div class="form-group">
+      <!-- Sizes Section -->
+      <div class="form-group">
+        <label for="sizes">Sizes and Prices</label>
+        <div v-for="(size, index) in sizes" :key="index" class="size-entry">
+          <input 
+            v-model="size.sizeName" 
+            type="text" 
+            placeholder="Size (e.g., 50 ml)" 
+            required
+          />
+          <input 
+            v-model.number="size.price" 
+            type="number" 
+            step="0.01" 
+            placeholder="Price (SEK)" 
+            required
+          />
+          <input 
+            v-model.number="size.quantity" 
+            type="number" 
+            placeholder="Quantity (10, 20, 30)" 
+            required
+          />
+          <button @click.prevent="removeSize(index)">Remove</button>
+        </div>
+        <button @click.prevent="addSize">Add Size</button>
+      </div>
+
+      <div class="form-group">
       <label for="primaryImage">Primary Image:</label>
       <input 
         type="file" 
@@ -87,7 +92,6 @@
       />
     </div>
 
-
       <button type="submit" class="submit-btn">Add Product</button>
     </form>
 
@@ -98,6 +102,7 @@
   </div>
 </template>
 
+
 <script>
 import axiosInstance from '@/services/axiosConfig';
 
@@ -106,16 +111,23 @@ export default {
     return {
       productName: "",
       description: "",
-      productPrice: "",
+      sizes: [
+        { sizeName: "", price: "", quantity: "" }
+      ],
       primaryImageFile: null,
       secondaryImageFile: null,
       thirdImageFile: null,
-      stockQuantity: "",
       categoryId: "",
       message: "", // For success or error messages
     };
   },
   methods: {
+    addSize() {
+      this.sizes.push({ sizeName: "", price: 0, quantity: 0 });
+    },
+    removeSize(index) {
+      this.sizes.splice(index, 1);
+    },
   // Method to handle image changes
   onImageChange(event, imageType) {
     const file = event.target.files[0];
@@ -137,20 +149,19 @@ export default {
   // Append product details to the FormData
   formData.append("product_name", this.productName);
   formData.append("description", this.description);
-  formData.append("price", parseFloat(this.productPrice));
-  formData.append("stock_quantity", parseInt(this.stockQuantity));
+  formData.append("sizes", JSON.stringify(this.sizes));
   formData.append("category_id", parseInt(this.categoryId));
 
   // Append image files to the FormData
   if (this.primaryImageFile) {
   formData.append("primaryImage", this.primaryImageFile);
-}
-if (this.secondaryImageFile) {
-  formData.append("secondaryImage", this.secondaryImageFile);
-}
-if (this.thirdImageFile) {
-  formData.append("thirdImage", this.thirdImageFile);
-}
+  }
+  if (this.secondaryImageFile) {
+    formData.append("secondaryImage", this.secondaryImageFile);
+  }
+  if (this.thirdImageFile) {
+    formData.append("thirdImage", this.thirdImageFile);
+  }
 
   try {
     const response = await axiosInstance.post(`admin/products`, formData, {
@@ -176,8 +187,7 @@ if (this.thirdImageFile) {
     resetForm() {
       this.productName = "";
       this.description = "";
-      this.productPrice = "";
-      this.stockQuantity = "";
+      this.sizes = [{ sizeName: "", price: 0, quantity: 0 }];
       this.primaryImageFile = null;
       this.secondaryImageFile = null;
       this.thirdImageFile = null;
