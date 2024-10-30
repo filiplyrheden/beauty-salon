@@ -58,8 +58,12 @@
         </li>
 
         <li class="li-styles">
-          <button class="noBorder" @click="toggleCartPopup()"> <!-- if cart is already showing if you click it again it disappears -->
-            <font-awesome-icon icon="shopping-bag" class="menu-icon"></font-awesome-icon>
+          <button class="noBorder" @click="toggleCartPopup()">
+            <!-- if cart is already showing if you click it again it disappears -->
+            <font-awesome-icon
+              icon="shopping-bag"
+              class="menu-icon"
+            ></font-awesome-icon>
           </button>
           <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
         </li>
@@ -67,31 +71,63 @@
 
       <div v-if="isCartPopupVisible" class="cartPopupWrapper">
         <div class="popupHeader">
-          <button class="cartExitButton" @click="hideCartPopup()"><img src="../assets/exit.svg" alt=""></button> <!-- Close button -->
+          <button class="cartExitButton" @click="hideCartPopup()">
+            <img src="../assets/exit.svg" alt="" />
+          </button>
+          <!-- Close button -->
         </div>
         <div class="item-content">
           <div v-for="item in cartItems" :key="item.id" class="cart-item">
-            <button @click="removeFromCart(item.product_id)" class="cartExitButton" >
-              <img class="trashIcon" src="../assets/trashcan.svg" alt="">
+            <button
+              @click="
+                removeFromCart({
+                  productId: item.product_id,
+                  sizeId: item.size_id,
+                })
+              "
+              class="cartExitButton"
+            >
+              <img class="trashIcon" src="../assets/trashcan.svg" alt="" />
             </button>
-            <img class="cart-image" :src="getImageUrl(item.image_url)" :alt="item.name" />
+            <img
+              class="cart-image"
+              :src="getImageUrl(item.image_url)"
+              :alt="item.name"
+            />
             <div class="cartNameandPrice">
               <p>{{ item.product_name }}</p>
+              <p>{{ item.size }}</p>
               <p>{{ item.price }} kr</p>
             </div>
             <div class="cartAddRemoveQuantity">
-              <button class="incrementDecrement" @click="handleDecrementOrRemove(item.product_id)"><img src="../assets/minus.svg" alt=""></button>
+              <button
+                class="incrementDecrement"
+                @click="handleDecrementOrRemove(item.product_id, item.size_id)"
+              >
+                <img src="../assets/minus.svg" alt="" />
+              </button>
               <p class="incrementDecrementText">{{ item.quantity }}</p>
-              <button class="incrementDecrement" @click="incrementItemInCart(item.product_id)"><img src="../assets/plus.svg" alt=""></button>
+              <button
+                class="incrementDecrement"
+                @click="
+                  incrementItemInCart({
+                    productId: item.product_id,
+                    sizeId: item.size_id,
+                  })
+                "
+              >
+                <img src="../assets/plus.svg" alt="" />
+              </button>
             </div>
           </div>
-          <p class="totalCart">Totala belopp: {{ cartTotalPrice }} kr</p>
+          <p class="totalCart">
+            Totala belopp: {{ cartTotalPrice.toFixed(2) }} kr
+          </p>
           <button class="checkoutButton">
             <a class="noLinkStyles" href="/checkout">CHECKOUT</a>
           </button>
         </div>
       </div>
-
     </nav>
   </header>
 </template>
@@ -146,27 +182,35 @@ export default {
   },
   methods: {
     ...mapMutations({
-      incrementItemInCart: 'incrementItemInCart',
-      decrementItemInCart: 'decrementItemInCart',
-      removeFromCart: 'removeFromCart',
-      hideCartPopup: 'hideCartPopup',
-      showCartPopup: 'showCartPopup',
+      incrementItemInCart: "incrementItemInCart",
+      decrementItemInCart: "decrementItemInCart",
+      removeFromCart: "removeFromCart",
+      hideCartPopup: "hideCartPopup",
+      showCartPopup: "showCartPopup",
     }),
     toggleCartPopup() {
-    if (this.isCartPopupVisible) {
-      this.hideCartPopup();
-    } else {
-      this.showCartPopup();
-    }
-  },
-  handleDecrementOrRemove(productId) {
+      if (this.isCartPopupVisible) {
+        this.hideCartPopup();
+      } else {
+        this.showCartPopup();
+      }
+    },
+    handleDecrementOrRemove(productId, sizeId) {
+      console.log(productId, sizeId);
       const item = this.$store.state.cart.find(
-        (item) => item.product_id === productId
+        (item) => item.product_id === productId && item.size_id === sizeId
       );
       if (item.quantity === 1) {
-        this.removeFromCart(productId); // Remove the item if quantity is 1
+        console.log("removing" + productId + sizeId);
+        this.removeFromCart({
+          productId: productId,
+          sizeId: sizeId,
+        }); // Remove the item if quantity is 1
       } else {
-        this.decrementItemInCart(productId); // Otherwise, decrement the quantity
+        this.decrementItemInCart({
+          productId: productId,
+          sizeId: sizeId,
+        }); // Otherwise, decrement the quantity
       }
     },
     checkAuthentication() {
@@ -195,7 +239,6 @@ export default {
 .top-bar nav {
   max-width: 1280px;
   margin: 0 auto;
-
 }
 .top-bar ul {
   list-style: none;
@@ -295,7 +338,7 @@ export default {
   display: none;
 }
 
-.cartPopupWrapper{
+.cartPopupWrapper {
   z-index: 99;
   padding: 10px;
   background-color: white;
@@ -308,13 +351,13 @@ export default {
   right: 67px; /* ändra sen? */
 }
 
-.item-content{
+.item-content {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.cart-item{
+.cart-item {
   display: flex;
   width: 100%;
   height: 48px;
@@ -323,14 +366,14 @@ export default {
   align-items: center;
 }
 
-.checkoutButton{
-  font-family: 'Playfair Display', serif;
+.checkoutButton {
+  font-family: "Playfair Display", serif;
   background-color: #202020;
   color: white;
   height: 47px;
 }
 
-.cartAddRemoveQuantity{
+.cartAddRemoveQuantity {
   align-self: flex-end;
   display: flex;
   margin-left: auto;
@@ -340,50 +383,50 @@ export default {
   border: 2px solid black;
 }
 
-.cartAddRemoveQuantity button{
+.cartAddRemoveQuantity button {
   cursor: pointer;
 }
-.noLinkStyles{
+.noLinkStyles {
   color: inherit;
   text-decoration: none;
   cursor: pointer;
 }
-.incrementDecrementText{
+.incrementDecrementText {
   width: 24px;
   text-align: center;
   font-size: 18px;
 }
-.cart-image{
+.cart-image {
   height: 48px;
   width: 48px;
-  object-fit:contain;
+  object-fit: contain;
 }
-.totalCart{
+.totalCart {
   display: flex;
   justify-content: end;
   font-size: 20px;
 }
-.trashIcon{
+.trashIcon {
   height: 24px;
   width: 24px;
 }
-.cartExitButton{
+.cartExitButton {
   all: unset;
   border: none;
 }
-.noBorder{
+.noBorder {
   all: unset;
   cursor: pointer;
   border: none;
 }
-.cartExitButton:hover{
+.cartExitButton:hover {
   cursor: pointer;
 }
-.popupHeader{
+.popupHeader {
   display: flex;
   justify-content: end;
 }
-.incrementDecrement{
+.incrementDecrement {
   all: unset;
   display: flex;
   align-items: center;
@@ -392,7 +435,7 @@ export default {
   height: 20px;
   object-fit: cover;
   align-content: center;
-  border:none;
+  border: none;
 }
 /* Mobile styling (only one link visible at a time) */
 @media (max-width: 768px) {

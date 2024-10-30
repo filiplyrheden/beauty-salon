@@ -6,7 +6,7 @@ import mysql from "mysql2/promise";
 const dbConfig = {
   host: "localhost",
   user: "root", // MySQL username
-  password: "123", // MySQL password
+  password: "", // MySQL password
   // database will be specified later
 };
 
@@ -81,7 +81,6 @@ const tableCreationQueries = [
     stock_quantity INT,
     FOREIGN KEY (product_id) REFERENCES Products(product_id)
 );`,
-
 
   // Table: OrderDetails
   `CREATE TABLE OrderDetails (
@@ -180,6 +179,12 @@ const insertDataQueries = [
   ('Massage Therapies'),
   ('Nail Services'),
   ('Hair Services');`,
+  // Insert into Products
+  `INSERT INTO Products (product_name, description, category_id) VALUES
+  ('Hydrating Facial Cream', 'Deeply moisturizes and revitalizes skin.', 1),
+  ('Organic Shampoo', 'Gentle cleansing with natural ingredients.',  2),
+  ('Matte Liquid Lipstick', 'Long-lasting matte finish in various shades.',  3),
+  ('Revitalizing Hair Mask', 'Nourishes and strengthens hair.', 2);`,
 
   `INSERT INTO ProductSizes (product_id, size, price, stock_quantity) VALUES
     (1, '50 ml', 29.99, 150),

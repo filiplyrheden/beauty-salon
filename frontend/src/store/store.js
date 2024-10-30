@@ -58,39 +58,52 @@ export const store = new Vuex.Store({
     setCart(state, cartItems) {
       state.cart = cartItems; // Assume the cart is already in simplified form
     },
-    addToCart(state, product) {
-      const item = state.cart.find((i) => i.product_id === product.product_id);
+    addToCart(state, { product, size_id }) {
+      const item = state.cart.find(
+        (i) => i.product_id === product.product_id && i.size_id === size_id
+      );
       if (item) {
         item.quantity++;
         state.cartPopupVisible = true;
       } else {
+        console.log("sizeId in store: " + size_id); // For debugging
         state.cart.push({
           product_id: product.product_id,
           product_name: product.product_name,
-          price: product.price,
+          price: product.variants.find((v) => v.size_id === size_id).price,
+          size: product.variants.find((v) => v.size_id === size_id).size,
+          size_id: size_id,
           quantity: 1,
           image_url: product.image_url_primary,
         });
         state.cartPopupVisible = true;
       }
     },
-    incrementItemInCart(state, productId) {
-      console.log("incrementItemInCart" + productId);
-      const item = state.cart.find((i) => i.product_id === productId);
+
+    incrementItemInCart(state, { productId, sizeId }) {
+      console.log("incrementItemInCart" + productId + sizeId);
+      const item = state.cart.find(
+        (i) => i.product_id === productId && i.size_id === sizeId
+      );
       if (item) {
         item.quantity++;
       }
     },
-    decrementItemInCart(state, productId) {
+    decrementItemInCart(state, { productId, sizeId }) {
       console.log("decrement" + productId);
-      const item = state.cart.find((i) => i.product_id === productId);
+      const item = state.cart.find(
+        (i) => i.product_id === productId && i.size_id === sizeId
+      );
       if (item && item.quantity > 1) {
         item.quantity--;
       }
     },
-    
-    removeFromCart(state, productId) {
-      state.cart = state.cart.filter((item) => item.product_id !== productId);
+
+    removeFromCart(state, { productId, sizeId }) {
+      console.log("removeFromCart" + productId + sizeId);
+      state.cart = state.cart.filter(
+        (item) => !(item.product_id === productId && item.size_id === sizeId)
+      );
     },
     clearCart(state) {
       state.cart = [];
