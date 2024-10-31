@@ -5,8 +5,8 @@ import mysql from "mysql2/promise";
 // Replace these with your actual MySQL credentials
 const dbConfig = {
   host: "localhost",
-  user: "root", // MySQL username
-  password: "", // MySQL password
+  user: "lucas", // MySQL username
+  password: "1234", // MySQL password
   // database will be specified later
 };
 
@@ -189,11 +189,21 @@ const insertDataQueries = [
   ('Revitalizing Hair Mask', 'Nourishes and strengthens hair.', 2);`,
 
   `INSERT INTO ProductSizes (product_id, size, price, stock_quantity) VALUES
-    (1, '50 ml', 29.99, 150),
-    (1, '100 ml', 34.99, 100),
-    (2, '250 ml', 15.99, 200),
-    (3, '5 ml', 19.99, 100),
-    (4, '30 ml', 24.99, 75);`, // Insert into Orders
+  (1, '50 ml', 29.99, 150),
+  (1, '100 ml', 34.99, 100),
+  (2, '250 ml', 15.99, 200),
+  (3, '5 ml', 19.99, 100),
+  (4, '30 ml', 24.99, 75);
+  (6, 5, '50 ml', 29.99, 150),
+  (7, 5, '100 ml', 34.99, 100),
+  (8, 6, '250 ml', 15.99, 200),
+  (9, 6, '500 ml', 25.99, 180),
+  (10, 7, '30 ml', 20.99, 90),
+  (11, 7, '60 ml', 35.99, 50),
+  (12, 8, '10 ml', 9.99, 300),
+  (13, 8, '20 ml', 17.99, 200),
+  (14, 8, '50 ml', 29.99, 120);
+  `,
 
   // Insert into Products
   `INSERT INTO Products (product_name, description, stock_quantity, category_id)

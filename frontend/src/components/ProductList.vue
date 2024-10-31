@@ -21,13 +21,18 @@
           <p><strong>Category:</strong> {{ product.category.category_name }}</p>
           <p><strong>Created At:</strong> {{ product.created_at }}</p>
           <p><strong>Sizes:</strong></p>
-          <ul>
-            <li v-for="(variant, index) in product.variants" :key="index">
-              <strong>{{ variant.size }}</strong> - Price: {{ variant.price }} SEK, Stock: {{ variant.stock_quantity }}
-            </li>
-          </ul>
+          <div v-if="product.variants.length > 0">
+            <ul>
+              <li v-for="(variant, index) in product.variants" :key="index">
+                <strong v-if="variant.size">{{ variant.size }}</strong> 
+                <strong v-if="variant.price && variant.stock_quantity"> - Price: {{ variant.price }} SEK, Stock: {{ variant.stock_quantity }}</strong>
+              </li>
+            </ul>
+          </div>
+          <div v-else>
+            <p>No sizes available.</p> <!-- This message will display when there are no variants -->
+          </div>
         </div>
-
         <div class="action-buttons">
           <button class="delete-btn" @click="deleteProduct(product.product_id)">
             <font-awesome-icon :icon="['fas', 'trash']" /> Delete
@@ -48,7 +53,7 @@
             <input v-model="editingProduct.description" id="editDescription" type="text" />
           </div>
 
-          <div class="form-group">
+          <div class="form-group sizesAndPricesWrapper">
             <label for="sizes">Sizes and Prices</label>
             <div v-for="(variant, index) in editingProduct.variants" :key="index" class="size-entry">
               <input 
@@ -72,37 +77,50 @@
               />
               <button @click.prevent="removeSize(index)">Remove</button>
             </div>
-            <button @click.prevent="addSize">Add Size</button>
+            <div class="addSize">
+              <button @click.prevent="addSize">Add New Size</button>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="primaryImage">Primary Image:</label>
-            <input 
-              type="file" 
-              id="primaryImage" 
-              @change="onImageChange($event, 'primary')" 
-              accept="image/*" 
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="secondaryImage">Secondary Image:</label>
-            <input 
-              type="file" 
-              id="secondaryImage" 
-              @change="onImageChange($event, 'secondary')" 
-              accept="image/*" 
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="thirdImage">Third Image:</label>
-            <input 
-              type="file" 
-              id="thirdImage"
-              @change="onImageChange($event, 'third')" 
-              accept="image/*" 
-            />
+          <div class="editingImageWrapper">
+            <div class="form-group">
+              <label for="primaryImage">Primary Image:</label>
+              <div v-if="editingProduct.image_url_primary" class="currentImagePreview">
+                <img :src="getImageUrl(editingProduct.image_url_primary)" alt="Primary Image" class="product-image" />
+              </div>
+              <input
+                type="file"
+                id="primaryImage"
+                @change="onImageChange($event, 'primary')"
+                accept="image/*"
+              />
+            </div>
+  
+            <div class="form-group">
+              <label for="secondaryImage">Secondary Image:</label>
+              <div v-if="editingProduct.image_url_secondary" class="currentImagePreview">
+                <img :src="getImageUrl(editingProduct.image_url_secondary)" alt="Secondary Image" class="product-image" />
+              </div>
+              <input
+                type="file"
+                id="secondaryImage"
+                @change="onImageChange($event, 'secondary')"
+                accept="image/*"
+              />
+            </div>
+  
+            <div class="form-group">
+              <label for="thirdImage">Third Image:</label>
+              <div v-if="editingProduct.image_url_third" class="currentImagePreview">
+                <img :src="getImageUrl(editingProduct.image_url_third)" alt="Third Image" class="product-image" />
+              </div>
+              <input
+                type="file"
+                id="thirdImage"
+                @change="onImageChange($event, 'third')"
+                accept="image/*"
+              />
+            </div>
           </div>
 
           <div class="form-buttons">
@@ -157,10 +175,10 @@ export default {
       }
     },
     getImageUrl(imageName) {
-      return imageName; // Adjust this if necessary for your image handling logic
+      return imageName;
     },
     editProduct(product) {
-      this.editingProduct = JSON.parse(JSON.stringify(product)); // Deep copy to avoid mutating original
+      this.editingProduct = JSON.parse(JSON.stringify(product));
     },
     addSize() {
       this.editingProduct.variants.push({ size: '', price: 0, stock_quantity: 0 });
@@ -283,6 +301,15 @@ ul {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.addSize{
+  margin-top: 10px;
+}
+.sizesAndPricesWrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
 .product-info {
   margin-bottom: 15px;
 }
@@ -333,6 +360,15 @@ button {
   padding: 20px;
   border-radius: 8px;
   margin-top: 15px;
+}
+
+.editingImageWrapper{
+display: flex;
+gap: 20px;
+}
+
+.currentImagePreview img{
+  height: 200px;
 }
 
 .form-group {

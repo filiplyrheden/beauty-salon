@@ -17,11 +17,15 @@ import {
   faLock,
   faTrash,
   faChevronUp,
+  faChevronDown,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { store } from "./store/store.js";
 
 library.add(
+  faChevronDown,
+  faCheck,
   faChevronUp,
   faTrash,
   faBox,

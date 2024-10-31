@@ -240,7 +240,7 @@ app.post(
   createProduct
 ); // Create a new product
 app.put(
-  "/admin/products",
+  "/admin/products/:id",
   authMiddleware,
   adminMiddleware,
   upload.fields([
