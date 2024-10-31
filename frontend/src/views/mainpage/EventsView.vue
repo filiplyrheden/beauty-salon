@@ -31,7 +31,8 @@
 
           <!-- Show message if no events are available -->
           <div v-else-if="events.length === 0" class="no-events">
-            No Events available at the moment.
+            Det finns inga publika events just nu, kontakta mig för att skapa
+            ditt egna skräddarsydda event.
           </div>
 
           <!-- List of events if they are available -->
