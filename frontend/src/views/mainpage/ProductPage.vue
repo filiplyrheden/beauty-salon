@@ -16,7 +16,6 @@
         </div>
         <h1 class="productName">{{ product.product_name }}</h1>
         <!-- <p class="productSmallDescription">Hydrate and brighten damaged skin</p> -->
-        <p class="productPrice">{{ product.price }} kr</p>
         <p class="productDescription">{{ product.description }}</p>
         
         <div class="whichCreamWrapper">
@@ -55,7 +54,7 @@
 
         <div class="selectSizeWrapper" v-if="isSizesPopupVisible">
           <div class="infoHolder" 
-              v-for="(size, index) in product.sizes" 
+              v-for="(size, index) in product.variants" 
               :key="index" 
               @click="() => { changeSize(size); toggleSizesPopup(); }">
             <label class="sizeSelection">{{ size.sizeName }}</label>
@@ -113,9 +112,12 @@ export default {
     this.quantity++;
     } ,
     addItemToCart(product) {
+      console.log(" product that is going to store.js: ");
+      console.log(product);
       this.$store.commit("addToCart", { 
         product, 
-        size_id: this.chosenSize.size_id
+        size_id: this.chosenSize.size_id,
+        quantityFromProductPage: this.quantity,
       });
     },
     decrementProduct() {
@@ -207,8 +209,14 @@ export default {
 }
 .checkoutButton button{
   font-family: "Playfair Display", serif;
+  background-color: #202020;
   width: 100%;
   border: 2px solid black;
+  color: #FDFDFD;
+  padding: 15px;
+}
+.checkoutButton button:hover{
+background-color: rgba(32, 32, 32, 0.8);
 }
 .productStars{
   display: flex;

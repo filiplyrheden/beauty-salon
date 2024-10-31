@@ -265,7 +265,7 @@ export const getProductById = async (productId) => {
     // Combine product details with sizes array
     return { 
       ...product, 
-      sizes: sizeRows 
+      variants: sizeRows 
     };
   } catch (err) {
     console.error("Error fetching product by ID:", err);
