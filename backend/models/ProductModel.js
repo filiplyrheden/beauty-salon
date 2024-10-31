@@ -66,33 +66,49 @@ export const editProduct = async (product) => {
     product_id,
     product_name,
     description,
-    sizes,
+    variants, // Array of size objects with sizeName, price, and quantity
     category_id,
     image_url_primary,
     image_url_secondary,
     image_url_third,
   } = product;
+
   try {
-    const query = `
+    const productQuery = `
       UPDATE Products
       SET product_name = ?, description = ?, category_id = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
       WHERE product_id = ?
     `;
-    const [result] = await db.query(query, [
+    await db.query(productQuery, [
       product_name,
       description,
-      price,
-      stock_quantity,
       category_id,
       image_url_primary,
       image_url_secondary,
       image_url_third,
       product_id,
     ]);
-    return result;
+
+    const deleteSizesQuery = `
+      DELETE FROM ProductSizes WHERE product_id = ?
+    `;
+    await db.query(deleteSizesQuery, [product_id]);
+
+    const sizeValues = variants.map(({ size, price, stock_quantity }) => 
+      `(${product_id}, '${size}', ${price}, ${stock_quantity})`
+    ).join(", ");
+
+    if (variants.length > 0) {
+      const insertSizesQuery = `
+        INSERT INTO ProductSizes (product_id, size, price, stock_quantity)
+        VALUES ${sizeValues}`;
+      await db.query(insertSizesQuery);
+    }
+
+    return { success: true, message: "Product and sizes updated successfully" };
   } catch (err) {
-    console.error("Error updating product:", err);
-    throw err; // Propagate the error to be handled by the controller
+    console.error("Error updating product and sizes:", err);
+    throw err;
   }
 };
 
@@ -103,14 +119,24 @@ export const editProduct = async (product) => {
  */
 export const trashProduct = async (productId) => {
   try {
-    const query = `DELETE FROM Products WHERE product_id = ?`;
-    const [result] = await db.query(query, [productId]);
-    return result;
+    // Delete from ProductSizes first
+    const querySizes = `DELETE FROM ProductSizes WHERE product_id = ?`;
+    const [resultSizes] = await db.query(querySizes, [productId]);
+
+    // Then delete from Products
+    const queryProducts = `DELETE FROM Products WHERE product_id = ?`;
+    const [resultProducts] = await db.query(queryProducts, [productId]);
+
+    return {
+      sizesDeleted: resultSizes,
+      productDeleted: resultProducts,
+    };
   } catch (err) {
     console.error("Error deleting product:", err);
     throw err; // Propagate the error to be handled by the controller
   }
 };
+
 
 // Fetch products and their prices by product IDs
 export const fetchProductsByIds = async (productIds) => {
@@ -195,22 +221,55 @@ GROUP BY
 
 // Fetch a single product and its price by product ID
 export const getProductById = async (productId) => {
-  const query = `
+  // Query to get product details
+  const productQuery = `
     SELECT 
       p.product_id, 
       p.product_name, 
       p.description, 
-      p.price, 
-      p.stock_quantity, 
       p.image_url_primary,
       p.image_url_secondary,
       p.image_url_third,
+      p.category_id,
       c.category_name
     FROM Products p
     INNER JOIN Categories c ON p.category_id = c.category_id
-    WHERE p.product_id = ? LIMIT 1
+    WHERE p.product_id = ? 
+    LIMIT 1
   `;
 
-  const [rows] = await db.query(query, [productId]);
-  return rows[0]; // Return the first row of the result
+  // Query to get the product sizes
+  const sizesQuery = `
+    SELECT 
+      size_id,
+      product_id,
+      size AS sizeName,
+      price,
+      stock_quantity AS quantity
+    FROM ProductSizes
+    WHERE product_id = ?
+  `;
+
+  try {
+    // Fetch product information
+    const [productRows] = await db.query(productQuery, [productId]);
+    const product = productRows[0];
+
+    if (!product) {
+      return null; // Product not found
+    }
+
+    // Fetch associated sizes for the product
+    const [sizeRows] = await db.query(sizesQuery, [productId]);
+
+    // Combine product details with sizes array
+    return { 
+      ...product, 
+      sizes: sizeRows 
+    };
+  } catch (err) {
+    console.error("Error fetching product by ID:", err);
+    throw err;
+  }
 };
+

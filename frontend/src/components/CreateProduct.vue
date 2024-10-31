@@ -170,7 +170,7 @@ export default {
       }
     });
     console.log("Response:", response);
-    this.message = "Product added successfully! Product ID: " + response.data.product_id;
+    this.message = "Product added successfully!";
     this.resetForm();
   } catch (error) {
     console.error("Error adding product:", error);

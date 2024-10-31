@@ -37,11 +37,14 @@
           </div>
           
         </div>
-        
+
         <div class="sizeAndQuantity">
           <div class="size">
-            <p>Välj Storlek</p> <!-- inte fixat än -->
-            <p>^</p>
+            <p v-if="chosenSize.name">{{ chosenSize.name }} (Vald)</p>
+            <p>Välj Storlek</p>
+            <button @click="toggleSizesPopup">
+              <font-awesome-icon :icon="isSizesPopupVisible ? 'chevron-up' : 'chevron-down'" />
+            </button>
           </div>
           <div class="cartAddRemoveQuantity">
               <button class="incrementDecrement" @click="decrementProduct()"><img src="../../assets/minus.svg" alt=""></button>
@@ -49,7 +52,17 @@
               <button class="incrementDecrement" @click="incrementProduct()"><img src="../../assets/plus.svg" alt=""></button>
           </div>
         </div>
-        
+
+        <div class="selectSizeWrapper" v-if="isSizesPopupVisible">
+          <div class="infoHolder" 
+              v-for="(size, index) in product.sizes" 
+              :key="index" 
+              @click="() => { changeSize(size); toggleSizesPopup(); }">
+            <label class="sizeSelection">{{ size.sizeName }}</label>
+            <label class="sizeSelection sizeSelectionPrice">{{ size.price }} kr</label>
+          </div>
+        </div>
+      
         <div class="checkoutButton">
           <button @click="addItemToCart(product)">LÄGG I VARUKORG</button>
         </div>
@@ -67,6 +80,8 @@ export default {
     return {
       quantity: 1, // Default quantity
       product: {},
+      isSizesPopupVisible: false,
+      chosenSize: { name: "", price: 0, size_id: null },
     };
   },
   created() {
@@ -86,18 +101,33 @@ export default {
         console.error("Error fetching product:", error);
       }
     },
+    changeSize(size) {
+      this.chosenSize = { 
+        name: size.sizeName, 
+        price: size.price, 
+        size_id: size.size_id
+      };
+      console.log(this.chosenSize);
+    },
     incrementProduct() {
     this.quantity++;
-  },
-  addItemToCart(product) {
-      this.$store.commit("addToCart", product);
+    } ,
+    addItemToCart(product) {
+      this.$store.commit("addToCart", { 
+        product, 
+        size_id: this.chosenSize.size_id
+      });
     },
-  decrementProduct() {
-    if (this.quantity > 1) {
-      this.quantity--;
-    }
-  },
-  swapImage(type) {
+    decrementProduct() {
+      if (this.quantity > 1) {
+        this.quantity--;
+      }
+    },
+    toggleSizesPopup() {
+      this.isSizesPopupVisible = !this.isSizesPopupVisible;
+      console.log(this.isSizesPopupVisible);
+    },
+    swapImage(type) {
       // Temporary store the primary image
       const tempPrimaryImage = this.product.image_url_primary;
       
@@ -214,8 +244,36 @@ background-color: rgba(32, 32, 32, 0.25);
 padding: 10px;
 }
 .size{
+  width: 50%;
+  align-items: center;
+  justify-content:space-between;
   display: flex;
   gap: 10px;
+}
+.size button{
+  all: unset;
+  cursor: pointer;
+}
+.infoHolder{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 15px;
+  padding: 8px;
+  width: 50%;
+}
+.infoHolder:hover{
+  background-color: rgba(32, 32, 32, 0.8);
+  color: white;
+  cursor: pointer;
+}
+.sizeSelectionPrice{
+  margin-left: auto;
+}
+.selectSizeWrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 .cartAddRemoveQuantity{
   align-self: flex-end;

@@ -137,52 +137,71 @@ export const updateProduct = async (req, res) => {
 
   const existingProduct = await getProductById(productId);
   console.log(
-    "existing product with images that needs to be deleted" + existingProduct
+    "existing product with images that needs to be deleted if there are new images uploaded: ", existingProduct
   );
 
-  if (existingProduct) {
-    const existingImages = [
-      existingProduct.image_url_primary,
-      existingProduct.image_url_secondary,
-      existingProduct.image_url_third,
-    ];
-
-    existingImages.forEach((imagePath) => {
-      if (imagePath) {
-        const fullPath = path.join("uploads", path.basename(imagePath));
-        fs.unlink(fullPath, (err) => {
-          console.log("Deleted image with fullPath: " + fullPath);
-          if (err) {
-            console.error(`Failed to delete image at ${fullPath}:`, err);
-          }
-        });
-      }
-    });
+  // If existingProduct is null, you might want to handle that case too.
+  if (!existingProduct) {
+    return res.status(404).json({ error: "Product not found" });
   }
 
   // Get the file paths for the uploaded images
-  const primaryImagePath = req.files.primaryImage[0].filename;
-  const secondaryImagePath = req.files.secondaryImage[0].filename;
-  const thirdImagePath = req.files.thirdImage[0].filename;
+  const primaryImagePath = files.primaryImage ? files.primaryImage[0].filename : null;
+  const secondaryImagePath = files.secondaryImage ? files.secondaryImage[0].filename : null;
+  const thirdImagePath = files.thirdImage ? files.thirdImage[0].filename : null;
+  console.log("primary image path (new) : " + primaryImagePath);
+  console.log("secondary image path (new) : " + secondaryImagePath);
+  console.log("third image path (new) : " + thirdImagePath);
+  // Array to hold existing image paths for deletion
+  const existingImages = [
+    existingProduct.image_url_primary,
+    existingProduct.image_url_secondary,
+    existingProduct.image_url_third,
+  ];
+  console.log("existing images: ");
+  console.log(existingImages);
 
-  // Construct URLs for both images
-  const primaryImageUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/uploads/${primaryImagePath}`;
-  const secondaryImageUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/uploads/${secondaryImagePath}`;
-  const thirdImageUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/uploads/${thirdImagePath}`;
+// Deleting images only if a new image is NOT uploaded
+if (existingImages) {
+  existingImages.forEach((imagePath, index) => {
+    // Determine if there's a new image for this index
+    const newImagePath = [primaryImagePath, secondaryImagePath, thirdImagePath][index];
 
-  // Add image URLs to service data
+    // Only delete existing image if there is no new image uploaded
+    if (!newImagePath) { // Only proceed if there's no new image path
+      if (imagePath) {
+        const fullPath = path.join("uploads", path.basename(imagePath));
+
+        if (fs.existsSync(fullPath)) { // Check if the file exists
+          fs.unlink(fullPath, (err) => {
+            if (err) {
+              console.error(`Failed to delete image at ${fullPath}:`, err);
+            } else {
+              console.log("Deleted image with fullPath: " + fullPath);
+            }
+          });
+        } else {
+          console.log(`Image does not exist at path: ${fullPath}`);
+        }
+      }
+    }
+  });
+}
+
+  // Construct URLs for uploaded images if they exist
+  const primaryImageUrl = primaryImagePath ? `${req.protocol}://${req.get("host")}/uploads/${primaryImagePath}` : existingProduct.image_url_primary;
+  const secondaryImageUrl = secondaryImagePath ? `${req.protocol}://${req.get("host")}/uploads/${secondaryImagePath}` : existingProduct.image_url_secondary;
+  const thirdImageUrl = thirdImagePath ? `${req.protocol}://${req.get("host")}/uploads/${thirdImagePath}` : existingProduct.image_url_third;
+
+  // Add image URLs to the product data
   const newProductData = {
     ...product,
     image_url_primary: primaryImageUrl,
     image_url_secondary: secondaryImageUrl,
     image_url_third: thirdImageUrl,
   };
+
+  console.log("new product data:", newProductData);
 
   try {
     const result = await editProduct(newProductData);
@@ -196,14 +215,40 @@ export const updateProduct = async (req, res) => {
   }
 };
 
+
 /**
  * Handler to delete a product from the database.
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  */
 export const deleteProduct = async (req, res) => {
-  const productId = req.params.id; // Get product ID from request parameters
+  const productId = req.params.id; 
   console.log("productId inside controller: " + productId);
+
+  const existingProduct = await getProductById(productId);
+
+  const existingImages = [
+    existingProduct.image_url_primary,
+    existingProduct.image_url_secondary,
+    existingProduct.image_url_third,
+  ];
+
+  existingImages.forEach(imagePath => {
+    
+    const fullPath = path.join("uploads", path.basename(imagePath));
+    
+    if (fs.existsSync(fullPath)) { // Check if the file exists
+      fs.unlink(fullPath, (err) => {
+        if (err) {
+          console.error(`Failed to delete image at ${fullPath}:`, err);
+        } else {
+          console.log("Deleted image with fullPath: " + fullPath);
+        }
+      });
+    } else {
+      console.log(`Image does not exist at path: ${fullPath}`);
+    }
+  });
 
   try {
     const result = await trashProduct(productId);
@@ -223,10 +268,7 @@ export const deleteProduct = async (req, res) => {
  * @param {Object} res - Express response object.
  */
 export const GetProductById = async (req, res) => {
-  console.log("hej");
-  const productId = req.params.id; // Get product ID from request parameters
-  console.log("productId inside controller: " + productId);
-
+  const productId = req.params.id;
   try {
     const result = await getProductById(productId);
     if (result.Rows === 0) {
