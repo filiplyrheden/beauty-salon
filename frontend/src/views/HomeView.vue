@@ -168,7 +168,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .carousel__item {
   text-align: center;
   padding: 10px;
@@ -443,9 +443,11 @@ export default {
 }
 .courses {
   max-width: 1280px;
-  width: 910px;
+
   margin: 0 auto;
-  padding: 80px 40px 0px 40px;
+  padding: 0px 40px 0px 40px;
+  height: 100%;
+  margin-top: 80px;
 }
 .courses-title {
   font-family: "Playfair Display", serif !important;
@@ -460,11 +462,9 @@ export default {
 .courses-content {
   display: flex;
   gap: 16px;
-  height: 100%;
 }
 .courses-image {
   width: 50%;
-  height: 100%;
   object-fit: cover;
 }
 .courses-text-content {
