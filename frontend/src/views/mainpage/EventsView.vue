@@ -1,20 +1,62 @@
 <template>
-  <div class="events-and-courses-container">
-    <h1>Our Events</h1>
-
-    <!-- Show loading state for events -->
-    <div v-if="isLoading" class="loading">Loading...</div>
-
-    <!-- Show message if no events are available -->
-    <div v-else-if="events.length === 0" class="no-events">
-      No Events available at the moment.
+  <div>
+    <div class="hero-container">
+      <div class="hero">
+        <img class="hero-image" src="../../assets/events.png" alt="" />
+        <div class="hero-overlay"></div>
+        <h1>EVENT</h1>
+      </div>
     </div>
+    <div class="events-and-courses-container">
+      <div class="events-section">
+        <div class="events-description">
+          <div class="title">
+            Låt Shahad sätta guldkant på din speciella dag!
+          </div>
+          <div class="description">
+            Oavsett om det är en möhippa, födelsedagsfirande eller en kreativ
+            sminkworkshop, erbjuder Shahad skräddarsydda skönhetsupplevelser som
+            gör ditt event minnesvärt. Perfekt för grupper i alla storlekar –
+            varje session anpassas efter dina önskemål med sminktips, tutorials
+            och en härlig atmosfär som alla kommer att uppskatta. Skapa
+            oförglömliga minnen och se fantastiska ut med hjälp av en
+            professionell som vet hur man balanserar stil, kreativitet och
+            glädje!
+          </div>
+          <button>KONTAKTA OSS FÖR ETT SKÄRDDARSYTT EVENT</button>
+        </div>
+        <div class="events">
+          <h2 class="events-title">KOMMANDE EVENTS</h2>
+          <div v-if="isLoading" class="loading">Loading...</div>
 
-    <!-- List of events if they are available -->
-    <div v-else class="events">
-      <div v-for="event in events" :key="event.event_id">
-        <div class="event-item">
-          <div class="event-name">{{ event.name }}</div>
+          <!-- Show message if no events are available -->
+          <div v-else-if="events.length === 0" class="no-events">
+            No Events available at the moment.
+          </div>
+
+          <!-- List of events if they are available -->
+          <div v-else class="all-events">
+            <div
+              v-for="event in events"
+              :key="event.event_id"
+              class="event-item-container"
+            >
+              <div class="event-item">
+                <img
+                  src="../../assets/events.png"
+                  alt="Event bild"
+                  class="event-image"
+                />
+                <div class="event-name">{{ event.name }}</div>
+                <div class="event-description">{{ event.description }}</div>
+              </div>
+              <!-- todo: change to :src="event.image_url" to reflect the images of each event-->
+
+              <a :href="event.booking_link"
+                ><button class="booking-link">BOKA</button></a
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -58,113 +100,125 @@ export default {
   },
 };
 </script>
-
 <style scoped>
-/* Main container for services page */
-.services-container {
-  max-width: 900px;
+.hero-container {
+  width: 100%;
+  height: 60vh;
+}
+.events-and-courses-container {
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: "Arial", sans-serif;
+  display: flex;
 }
-
-/* Title */
-h1 {
-  text-align: center;
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 40px;
+.events {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 32px;
 }
-
-/* Loading state */
-.loading {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #777;
+.all-events {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  flex-wrap: wrap;
 }
-
-/* No services message */
-.no-services {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #f00;
-}
-
-/* Category container */
-.category {
-  margin-bottom: 30px;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
-}
-
-/* Category name styling */
-.category-name {
-  font-size: 1.8rem;
-  color: #0056b3;
-  border-bottom: 2px solid #0056b3;
-  padding-bottom: 5px;
-  margin-bottom: 20px;
-}
-
-/* Services list */
-.services-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Each service item */
-.service-item {
+.event-item-container {
+  width: calc(50% - 8px);
+  min-height: 350px;
+  padding: 8px;
+  background: #f9f9f9;
   display: flex;
   justify-content: space-between;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  flex-direction: column;
+}
+.event-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.event-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+.event-name {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+.events-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px;
+  align-items: center;
+  justify-content: center;
+}
+.events-description {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 50%;
+}
+.hero {
+  max-width: 1280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  margin: 0 auto;
+}
+.hero img {
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+.hero h1 {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  font-size: 8em;
+  font-family: "Playfair Display", serif !important;
+  color: white;
+  letter-spacing: 4%;
+  line-height: 180.78px;
+  font-weight: 600;
 }
 
-/* Hover effect for service item */
-.service-item:hover {
-  transform: translateY(-3px);
+.events-description .title,
+.events-title {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-size: 2em;
+  font-weight: 600;
 }
-
-/* Service name */
-.service-name {
-  font-size: 1.1rem;
-  color: #333;
+button {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: 1px solid black;
+  background: white;
 }
-
-/* Service price */
-.service-price {
-  font-size: 1.1rem;
-  color: #007bff;
-  font-weight: bold;
-}
-.more-info {
-  color: #007bff;
+button:hover {
+  background: black;
+  color: white;
   cursor: pointer;
-}
-.more-info:hover {
-  text-decoration: underline;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .services-container {
-    padding: 15px;
-  }
-
-  .service-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .service-price {
-    margin-top: 5px;
-  }
 }
 </style>
