@@ -170,7 +170,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 32px;
+  padding: 32px 32px 64px 32px;
   align-items: center;
   justify-content: center;
 }
