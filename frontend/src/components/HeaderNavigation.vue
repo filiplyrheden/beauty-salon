@@ -44,7 +44,7 @@
       </router-link>
 
       <ul class="right-links">
-        <li><font-awesome-icon icon="magnifying-glass" /></li>
+        <li><img src="../assets/Search_Magnifying_Glass.svg" alt=""></li>
         <li>
           <router-link v-if="!isLoggedIn" to="/login"
             ><font-awesome-icon icon="user"
@@ -53,17 +53,14 @@
             ><font-awesome-icon icon="user"
           /></router-link>
           <router-link v-if="isLoggedIn && isAdmin" to="/admin"
-            ><font-awesome-icon icon="lock"
-          /></router-link>
+            ><img src="../assets/Lock.svg" alt="">
+          </router-link>
         </li>
 
         <li class="li-styles">
           <button class="noBorder" @click="toggleCartPopup()">
             <!-- if cart is already showing if you click it again it disappears -->
-            <font-awesome-icon
-              icon="shopping-bag"
-              class="menu-icon"
-            ></font-awesome-icon>
+            <img src="../assets/Shopping_Bag.svg" alt="">
           </button>
           <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
         </li>
