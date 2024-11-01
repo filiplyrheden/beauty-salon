@@ -1,42 +1,52 @@
 <template>
-  <div>
-    <h1>Thanks for your order!</h1>
-    <p v-if="isLoading">Loading your order details...</p>
-    <p v-if="!sessionDetails">
-      Something went wrong, please email
-      <a :href="emailLink">orders@example.com</a>.
-    </p>
-    <div v-else-if="sessionDetails">
-      <p>
-        We appreciate your business! Your order
-        <strong>#{{ sessionDetails.order_id }}</strong> is currently
-        <strong>{{ sessionDetails.order_status }}</strong
-        >.
-        <br />
-        You have been charged
-        <strong>{{ formatCurrency(sessionDetails.total_amount) }}</strong
-        >.
-      </p>
-      <p>
-        Order Date: <strong>{{ formatDate(sessionDetails.order_date) }}</strong>
-      </p>
+  <div class="order-confirmation-container">
+    <div class="order-confirmation">
+      <p v-if="isLoading">Loading your order details...</p>
+      <div v-if="!sessionDetails">
+        <h1 class="title">NÅGOT GICK FEL!</h1>
+        <p>
+          Något gick fel, testa att lägga beställningen igen, om felet kvarstår
+          kontakta
+          <a :href="emailLink">info@snbeauty.se</a>.
+        </p>
+      </div>
+      <div v-else-if="sessionDetails" class="order-details">
+        <h1 class="title">TACK FÖR DIN BESTÄLLNING</h1>
+        <p>
+          Vi uppskattar att du handlar hos oss, din beställning
+          <strong>#{{ sessionDetails.order_id }}</strong> är för nuvarande
+          <strong>{{ sessionDetails.order_status }}</strong
+          >.
+          <br />
+          Du har blivit debiterad
+          <strong>{{ formatCurrency(sessionDetails.total_amount) }}</strong
+          >.
+        </p>
+        <p>
+          Order Datum:
+          <strong>{{ formatDate(sessionDetails.order_date) }}</strong>
+        </p>
 
-      <!-- Display products in the order -->
-      <div v-if="sessionDetails.products && sessionDetails.products.length">
-        <h2>Products in your order:</h2>
-        <ul>
-          <li v-for="(product, index) in sessionDetails.products" :key="index">
-            {{ product.product_name }} - {{ product.quantity }} x
-            {{ formatCurrency(product.unit_price) }}
-          </li>
-        </ul>
+        <!-- Display products in the order -->
+        <div v-if="sessionDetails.products && sessionDetails.products.length">
+          <h2 class="sub-title">PRODUKTER I DIN BESTÄLLNING:</h2>
+          <ul>
+            <li
+              v-for="(product, index) in sessionDetails.products"
+              :key="index"
+            >
+              {{ product.product_name }} ({{ product.size }}) -
+              {{ product.quantity }} x
+              {{ formatCurrency(product.unit_price) }}
+            </li>
+          </ul>
+        </div>
+        <p>
+          Om du har några frågor, emaila
+          <a :href="emailLink">info@snbeauty.se</a>.
+        </p>
       </div>
     </div>
-
-    <p>
-      If you have any questions, please email
-      <a :href="emailLink">orders@example.com</a>.
-    </p>
   </div>
 </template>
 
@@ -99,5 +109,49 @@ a {
 }
 a:hover {
   text-decoration: underline;
+}
+
+.order-confirmation-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+.order-confirmation {
+  max-width: 1280px;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border: 1px solid black;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.title {
+  font-family: "Playfair Display", serif;
+  text-align: center;
+  margin-bottom: 32px;
+}
+.sub-title {
+  font-family: "Playfair Display", serif;
+  text-align: center;
+  margin-bottom: 32px;
+  margin-top: 16px;
+}
+ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.order-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+.order-details p {
+  text-align: center;
 }
 </style>
