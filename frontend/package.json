@@ -17,6 +17,7 @@
     "bulma": "^1.0.2",
     "core-js": "^3.8.3",
     "dotenv": "^16.4.5",
+    "mapbox-gl": "^3.7.0",
     "sweetalert2": "^11.14.2",
     "vue": "^3.2.13",
     "vue-router": "^4.4.5",

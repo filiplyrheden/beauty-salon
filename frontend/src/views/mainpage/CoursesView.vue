@@ -1,18 +1,67 @@
 <template>
-  <div class="events-and-courses-container">
-
-    <h1>Our Courses</h1>
-
-    <!-- Show message if no courses are available -->
-    <div v-if="courses.length === 0" class="no-courses">
-      No Courses available at the moment.
+  <div>
+    <div class="hero-container">
+      <div class="hero">
+        <img class="hero-image" src="../../assets/courses.png" alt="" />
+        <div class="hero-overlay"></div>
+        <h1>KURSER</h1>
+      </div>
     </div>
+    <div class="courses-container">
+      <div class="courses-section">
+        <div class="courses-description">
+          <div class="title">
+            Låt Shahad vägleda dig i skönhetsvärlden med professionella kurser!
+          </div>
+          <div class="description">
+            Vill du utveckla dina sminkkunskaper eller kanske ta dina
+            färdigheter till nästa nivå? Shahad erbjuder en rad kurser och
+            utbildningar inom makeup och skönhet – från grundläggande
+            sminkkurser till avancerade tekniker och workshops för både
+            nybörjare och erfarna entusiaster. Varje kurs är noggrant utformad
+            för att ge dig verktygen och kunskapen du behöver för att skapa
+            imponerande looks med självförtroende. Anmäl dig nu via Bokadirekt,
+            eller kontakta oss direkt för en skräddarsydd kurs och fördjupa dig
+            i en värld av färg, teknik och kreativitet!
+          </div>
+          <button>KONTAKTA SHAHAD FÖR EN SKRÄDDARSYDD KURS</button>
+        </div>
+        <div class="courses">
+          <h2 class="courses-title">KOMMANDE KURSER</h2>
+          <div v-if="isLoading" class="loading">Loading...</div>
 
-    <!-- List of courses if they are available -->
-    <div v-else class="courses">
-      <div v-for="course in courses" :key="course.course_id">
-        <div class="course-item">
-          <div class="course-name">{{ course.name }}</div>
+          <!-- Show message if no courses are available -->
+          <div v-else-if="courses.length === 0" class="no-courses">
+            Det finns inga kurser just nu, kontakta mig för att skapa din egna
+            skräddarsydda kurs.
+          </div>
+
+          <!-- List of courses if they are available -->
+          <div v-else class="all-courses">
+            <div
+              v-for="course in courses"
+              :key="course.course_id"
+              class="course-item-container"
+            >
+              <div class="course-item">
+                <img
+                  src="../../assets/courses.png"
+                  alt="kurs bild"
+                  class="course-image"
+                />
+                <div class="course-name">{{ course.name }}</div>
+                <div class="schedule">{{ formatDate(course.schedule) }}</div>
+                <div class="course-description">{{ course.description }}</div>
+              </div>
+              <!-- todo: change to :src="course.image_url" to reflect the images of each course-->
+              <div class="button-price">
+                <a :href="course.booking_link"
+                  ><button class="booking-link">BOKA</button></a
+                >
+                <div class="price">{{ course.price }} kr</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -50,8 +99,17 @@ export default {
         );
       }
     },
-
-
+    formatDate(datetime) {
+      if (!datetime) return "N/A";
+      const options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      };
+      return new Date(datetime).toLocaleDateString(undefined, options);
+    },
   },
   created() {
     this.fetchCourses();
@@ -60,111 +118,133 @@ export default {
 </script>
 
 <style scoped>
-/* Main container for services page */
-.services-container {
-  max-width: 900px;
+.hero-container {
+  width: 100%;
+  height: 60vh;
+}
+.courses-container {
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: "Arial", sans-serif;
+  display: flex;
 }
-
-/* Title */
-h1 {
-  text-align: center;
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 40px;
+.courses {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 32px;
 }
-
-/* Loading state */
-.loading {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #777;
+.all-courses {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  flex-wrap: wrap;
 }
-
-/* No services message */
-.no-services {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #f00;
-}
-
-/* Category container */
-.category {
-  margin-bottom: 30px;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
-}
-
-/* Category name styling */
-.category-name {
-  font-size: 1.8rem;
-  color: #0056b3;
-  border-bottom: 2px solid #0056b3;
-  padding-bottom: 5px;
-  margin-bottom: 20px;
-}
-
-/* Services list */
-.services-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Each service item */
-.service-item {
+.course-item-container {
+  width: calc(50% - 8px);
+  min-height: 350px;
+  padding: 8px;
+  background: #f9f9f9;
   display: flex;
   justify-content: space-between;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  flex-direction: column;
+}
+.course-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.course-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+.course-name {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+.courses-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px;
+  align-items: center;
+  justify-content: center;
+}
+.courses-description {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 50%;
+}
+.button-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hero {
+  max-width: 1280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  margin: 0 auto;
+}
+.hero img {
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  object-position: 50% 30%;
+}
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+.hero h1 {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  font-size: 8em;
+  font-family: "Playfair Display", serif !important;
+  color: white;
+  letter-spacing: 4%;
+  line-height: 180.78px;
+  font-weight: 600;
 }
 
-/* Hover effect for service item */
-.service-item:hover {
-  transform: translateY(-3px);
+.courses-description .title,
+.courses-title {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-size: 2em;
+  font-weight: 600;
 }
-
-/* Service name */
-.service-name {
-  font-size: 1.1rem;
-  color: #333;
+button {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: 1px solid black;
+  background: white;
 }
-
-/* Service price */
-.service-price {
-  font-size: 1.1rem;
-  color: #007bff;
-  font-weight: bold;
-}
-.more-info {
-  color: #007bff;
+button:hover {
+  background: black;
+  color: white;
   cursor: pointer;
 }
-.more-info:hover {
-  text-decoration: underline;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .services-container {
-    padding: 15px;
-  }
-
-  .service-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .service-price {
-    margin-top: 5px;
-  }
+.price {
+  font-weight: 600;
 }
 </style>
