@@ -11,59 +11,81 @@
         </div>
       </div>
       <div class="productInfo">
-        <div class="productStars">
-          <h2 class="productBrand">{{ product.category_name }}</h2>
-        </div>
-        <h1 class="productName">{{ product.product_name }}</h1>
-        <!-- <p class="productSmallDescription">Hydrate and brighten damaged skin</p> -->
-        <p class="productDescription">{{ product.description }}</p>
-        
-        <div class="whichCreamWrapper">
-          <p class="hudtyp">Hudtyp</p>
-          <div class="hudtypWrapper">
-            <label class="creamLabel">Pigmented</label>
-            <label class="creamLabel">Aging</label>
-            <label class="creamLabel">Dry</label>
+        <div class="infoWrapper">
+          <div class="productStars">
+            <h2 class="productBrand">{{ product.category_name }}</h2>
           </div>
-        </div>
-        <div class="whichEffect">
-          <p class="effekt">Effekt</p>
-          <div class="effektWrapper">
-            <label class="effectLabel">Exfoliating</label>
-            <label class="effectLabel">Brightening</label>
-            <label class="effectLabel">Hydrating</label>
-            <label class="effectLabel">Non-foaming</label>
-          </div>
+          <h1 class="productName">{{ product.product_name }}</h1>
+          <!-- <p class="productSmallDescription">Hydrate and brighten damaged skin</p> -->
+          <p class="productDescription">{{ product.description }}</p>
           
+          <div class="whichCreamWrapper">
+            <p class="hudtyp">Hudtyp</p>
+            <div class="hudtypWrapper">
+              <label class="creamLabel">Pigmented</label>
+              <label class="creamLabel">Aging</label>
+              <label class="creamLabel">Dry</label>
+            </div>
+          </div>
+          <div class="whichEffect">
+            <p class="effekt">Effekt</p>
+            <div class="effektWrapper">
+              <label class="effectLabel">Exfoliating</label>
+              <label class="effectLabel">Brightening</label>
+              <label class="effectLabel">Hydrating</label>
+              <label class="effectLabel">Non-foaming</label>
+            </div>
+          </div>
         </div>
 
-        <div class="sizeAndQuantity">
-          <div class="size">
-            <p v-if="chosenSize.name">{{ chosenSize.name }} (Vald)</p>
-            <p>Välj Storlek</p>
-            <button @click="toggleSizesPopup">
-              <font-awesome-icon :icon="isSizesPopupVisible ? 'chevron-up' : 'chevron-down'" />
-            </button>
+        <div class="addProductWrapper">
+          <div class="sizeAndQuantity">
+            <div class="size">
+              <p v-if="chosenSize.name">{{ chosenSize.name }} (Vald)</p>
+              <p>Välj Storlek</p>
+              <button @click="toggleSizesPopup">
+                <font-awesome-icon :icon="isSizesPopupVisible ? 'chevron-up' : 'chevron-down'" />
+              </button>
+            </div>
+            <div class="cartAddRemoveQuantity">
+                <button class="incrementDecrement" @click="decrementProduct()"><img src="../../assets/minus.svg" alt=""></button>
+                <p class="incrementDecrementText">{{ quantity }}</p>
+                <button class="incrementDecrement" @click="incrementProduct()"><img src="../../assets/plus.svg" alt=""></button>
+            </div>
           </div>
-          <div class="cartAddRemoveQuantity">
-              <button class="incrementDecrement" @click="decrementProduct()"><img src="../../assets/minus.svg" alt=""></button>
-              <p class="incrementDecrementText">{{ quantity }}</p>
-              <button class="incrementDecrement" @click="incrementProduct()"><img src="../../assets/plus.svg" alt=""></button>
+  
+          <div class="selectSizeWrapper" v-if="isSizesPopupVisible">
+            <div class="infoHolder" 
+                v-for="(size, index) in product.variants" 
+                :key="index" 
+                @click="() => { changeSize(size); toggleSizesPopup(); }">
+              <label class="sizeSelection">{{ size.sizeName }}</label>
+              <label class="sizeSelection sizeSelectionPrice">{{ size.price }} kr</label>
+            </div>
+          </div>
+          <div :class="{ checkoutButtonDisabled: !chosenSize.name }" class="checkoutButton">
+            <button @click="addItemToCart(product)">LÄGG I VARUKORG</button>
           </div>
         </div>
-
-        <div class="selectSizeWrapper" v-if="isSizesPopupVisible">
-          <div class="infoHolder" 
-              v-for="(size, index) in product.variants" 
-              :key="index" 
-              @click="() => { changeSize(size); toggleSizesPopup(); }">
-            <label class="sizeSelection">{{ size.sizeName }}</label>
-            <label class="sizeSelection sizeSelectionPrice">{{ size.price }} kr</label>
+        <div class="AnvandningIngredienserWrapper">
+          <div class="anvandningWrapper" @click="toggleAnvandningPopup()">
+            <label>
+              <p>Användning</p>
+            </label>
+            <font-awesome-icon :icon="isAnvandningPopupVisible ? 'chevron-up' : 'chevron-down'" />
           </div>
-        </div>
-      
-        <div class="checkoutButton">
-          <button @click="addItemToCart(product)">LÄGG I VARUKORG</button>
+          <div v-if="isAnvandningPopupVisible" class="anvandning">
+            <p>Du använder den såhäe blablalblallalal</p> <!-- tryck in data här senare -->
+          </div>
+          <div class="ingredientsWrapper" @click="toggleIngredienserPopup()">
+            <label>
+              <p>Ingredienser</p>
+            </label>
+            <font-awesome-icon :icon="isIngredienserPopupVisible ? 'chevron-up' : 'chevron-down'" />
+          </div>
+          <div v-if="isIngredienserPopupVisible" class="ingredients">
+            <p>ingredients blablablabla</p> <!-- tryck in data här senare -->
+          </div>
         </div>
       </div>
     </div>
@@ -80,6 +102,8 @@ export default {
       quantity: 1, // Default quantity
       product: {},
       isSizesPopupVisible: false,
+      isAnvandningPopupVisible: false,
+      isIngredienserPopupVisible: false,
       chosenSize: { name: "", price: 0, size_id: null },
     };
   },
@@ -109,8 +133,8 @@ export default {
       console.log(this.chosenSize);
     },
     incrementProduct() {
-    this.quantity++;
-    } ,
+    if (this.quantity < 99) this.quantity++;
+    },
     addItemToCart(product) {
       console.log(" product that is going to store.js: ");
       console.log(product);
@@ -128,6 +152,14 @@ export default {
     toggleSizesPopup() {
       this.isSizesPopupVisible = !this.isSizesPopupVisible;
       console.log(this.isSizesPopupVisible);
+    },
+    toggleAnvandningPopup() {
+      this.isAnvandningPopupVisible = !this.isAnvandningPopupVisible;
+      console.log(this.isAnvandningPopupVisible);
+    },
+    toggleIngredienserPopup() {
+      this.isIngredienserPopupVisible = !this.isIngredienserPopupVisible;
+      console.log(this.isIngredienserPopupVisible);
     },
     swapImage(type) {
       // Temporary store the primary image
@@ -204,7 +236,7 @@ export default {
 .productInfo{
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 72px;
   width: 40%;
 }
 .checkoutButton button{
@@ -214,6 +246,12 @@ export default {
   border: 2px solid black;
   color: #FDFDFD;
   padding: 15px;
+  cursor: pointer;
+}
+.checkoutButtonDisabled button {
+  pointer-events: none;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 .checkoutButton button:hover{
 background-color: rgba(32, 32, 32, 0.8);
@@ -228,6 +266,35 @@ background-color: rgba(32, 32, 32, 0.8);
 }
 .productName{
   font-family: "Playfair Display", serif;
+}
+.infoWrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.ingredientsWrapper{
+display: flex;
+justify-content: space-between;
+}
+.anvandning{
+  padding: 15px;
+}
+.ingredients{
+  padding: 15px;
+}
+.anvandningWrapper{
+display: flex;
+justify-content: space-between;
+}
+.addProductWrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.AnvandningIngredienserWrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 .hudtyp{
   padding-bottom: 5px;
