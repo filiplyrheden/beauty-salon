@@ -2,6 +2,7 @@
   <div id="app">
     <HeaderNav />
     <router-view></router-view>
+    <FooterComponent />
     <!-- This will display the routed components -->
     <PopupComponent
       v-if="isPopupVisible"
@@ -12,16 +13,17 @@
 </template>
 
 <script>
-
 import { mapState } from "vuex";
 import HeaderNav from "./components/HeaderNavigation.vue";
 import PopupComponent from "./components/LogoutPopup.vue";
+import FooterComponent from "./components/FooterComponent.vue";
 
 export default {
   name: "App",
   components: {
     HeaderNav,
     PopupComponent,
+    FooterComponent,
   },
   computed: {
     ...mapState(["isPopupVisible"]),
@@ -56,7 +58,7 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 *,
 *::before,
 *::after {

@@ -116,9 +116,6 @@
         <Button class="events-button">BOKA</Button>
       </div>
     </div>
-    <div class="social-media-container">
-      <div class="social-media"><h2>SOCIAL MEDIER</h2></div>
-    </div>
   </div>
 </template>
 
@@ -442,7 +439,7 @@ export default {
   height: 90vh;
 }
 .courses {
-  max-width: 1280px;
+  max-width: 940px;
 
   margin: 0 auto;
   padding: 0px 40px 0px 40px;
