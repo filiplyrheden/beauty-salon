@@ -1,29 +1,71 @@
 <template>
-  <div>
-    <h2>Your Cart</h2>
-    <div v-if="cartItems.length === 0">
-      Inga varor i din korg, Gå och shoppa! <a href="/shop">link</a>
+  <div classname="cart-container">
+    <div class="cart">
+      <h1>DIN KUNDKORG</h1>
+      <div v-if="cartItems.length === 0">
+        Inga varor i din korg, Gå och shoppa! <a href="/shop">här</a>
+      </div>
+      <div class="items">
+        <div v-for="item in cartItems" :key="item.id" class="item">
+          <!-- TODO: set the image to :src="item.image_url" using a testing image to design page-->
+          <button
+            @click="removeItem(item.product_id, item.size_id)"
+            class="cartExitButton"
+          >
+            <img class="trashIcon" src="../assets/trashcan.svg" alt="" />
+          </button>
+          <img src="../assets/noImage.png" alt="" />
+          <div class="item-info">
+            <div class="item-header">
+              <p>{{ item.product_name }} ( {{ item.size }} )</p>
+              <p>{{ item.price * item.quantity }} kr</p>
+            </div>
+            <p>({{ item.price }} kr/st )</p>
+            <div class="buttons">
+              <button
+                class="incrementDecrement"
+                @click="handleDecrementOrRemove(item.product_id, item.size_id)"
+              >
+                -
+              </button>
+              <p class="incrementDecrementText">{{ item.quantity }}</p>
+              <button
+                class="incrementDecrement"
+                @click="incrementItemInCart(item.product_id, item.size_id)"
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <!-- Button for removing or decrementing item -->
+        </div>
+      </div>
+      <div class="cart-summary">
+        <h3>SUMMA: {{ totalPrice.toFixed(2) }} kr</h3>
+        <button @click="handleCheckout">CHECKA UT</button>
+        <ul>
+          <li><img :src="visa" alt="" /></li>
+          <li><img :src="mastercard" alt="" /></li>
+        </ul>
+        <div>Priser och fraktavgift bekräftas inte förrän i kassan.</div>
+      </div>
     </div>
-    <div v-for="item in cartItems" :key="item.id">
-      <p>{{ item.product_name }} - {{ item.price }} (x{{ item.quantity }})</p>
-      <!-- Button for removing or decrementing item -->
-      <button @click="handleDecrementOrRemove(item.product_id, item.size_id)">
-        {{ item.quantity === 1 ? "Ta bort" : "-" }}
-      </button>
-      <button @click="incrementItemInCart(item.product_id, item.size_id)">
-        +
-      </button>
-    </div>
-    <h3>Total: {{ totalPrice.toFixed(2) }}</h3>
-    <button @click="handleCheckout">Proceed to Checkout</button>
   </div>
 </template>
 
 <script>
 import axiosInstance from "@/services/axiosConfig";
+import visa from "../assets/payment/visa.svg";
+import mastercard from "../assets/payment/mastercard.svg";
 
 export default {
   name: "ShoppingCart",
+  data() {
+    return {
+      visa,
+      mastercard,
+    };
+  },
   computed: {
     cartItems() {
       return this.$store.getters.cartItems;
@@ -96,3 +138,126 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.cart-container {
+  width: 100%;
+}
+.cart {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 32px;
+}
+.items {
+  padding: 32px 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 50%;
+}
+.cart-summary {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.cart-summary h3 {
+  align-self: flex-end;
+  margin-bottom: 16px;
+}
+
+.cart-summary button {
+  width: 100%;
+  padding: 8px 16px;
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 5%;
+  font-weight: 600;
+  background: black;
+  color: white;
+  border: 1px solid black;
+  font-size: 18px;
+  cursor: pointer;
+}
+.cart-summary button:hover {
+  background: white;
+  color: black;
+}
+
+.item {
+  display: flex;
+  height: 100px;
+  width: 100%;
+  gap: 16px;
+}
+.item img {
+  width: 100px;
+  height: 100%;
+  object-fit: cover;
+}
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+.item-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: space-between;
+}
+.buttons {
+  display: flex;
+  height: 28px;
+  width: 72px;
+  align-items: center;
+  border: 2px solid black;
+}
+.incrementDecrement {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  align-content: center;
+  border: none;
+  cursor: pointer;
+}
+.incrementDecrementText {
+  width: 24px;
+  text-align: center;
+  font-size: 18px;
+}
+
+h1 {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-weight: 600;
+  font-size: 32px;
+  margin-bottom: 32px;
+}
+.trashIcon {
+  height: 42px !important;
+  width: 42px !important;
+  object-fit: none !important;
+  cursor: pointer;
+}
+.cartExitButton {
+  all: unset;
+  border: none;
+}
+ul {
+  display: flex;
+  gap: 16px;
+  list-style: none;
+}
+</style>
