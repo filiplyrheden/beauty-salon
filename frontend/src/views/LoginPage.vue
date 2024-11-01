@@ -1,6 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-wrapper">
+      <h1>LOGGA IN</h1>
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
           <input
@@ -22,14 +23,14 @@
             required
             class="input-field"
           />
-          <label for="password" class="label">Password</label>
+          <label for="password" class="label">Lösenord</label>
         </div>
-        <button type="submit" class="submit-button">Login</button>
+        <button type="submit" class="submit-button">LOGGA IN</button>
         <p v-if="message" :class="{ error: isError }">{{ message }}</p>
       </form>
-      <div>
-        Don't have an account yet? Register
-        <router-link to="/register">here</router-link>
+      <div class="no-account">
+        Har du inte ett konto ännu? Registrera dig
+        <router-link to="/register">här</router-link>
       </div>
     </div>
   </div>
@@ -106,7 +107,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: calc(100vh - 112px);
   background-color: #f0f0f0;
 }
 
@@ -115,7 +116,7 @@ export default {
   margin: 0 auto;
   padding: 40px;
   background-color: #f9f9f9;
-  border-radius: 8px;
+  border: 1px solid black;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -128,7 +129,9 @@ export default {
   position: relative;
   margin-bottom: 20px;
 }
-
+.no-account {
+  margin-top: 16px;
+}
 .input-field {
   width: 100%;
   padding: 12px;
@@ -141,33 +144,44 @@ export default {
 }
 
 .input-field:focus {
-  border-color: #007bff;
+  border-color: black;
 }
 
 .label {
   position: absolute;
   top: -20px;
-  left: 12px;
+  left: 0;
   font-size: 14px;
   color: #555;
   transition: all 0.3s ease;
 }
 
 .submit-button {
-  background-color: #007bff;
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-weight: 600;
+  background-color: black;
   color: white;
   padding: 12px;
   font-size: 16px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
+  border: 1px solid black;
   transition: background-color 0.3s ease;
 }
 
 .submit-button:hover {
-  background-color: #0056b3;
+  background-color: white;
+  color: black;
 }
 
+h1 {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 32px;
+}
 .error {
   color: red; /* Style for error messages */
 }

@@ -1,6 +1,7 @@
 <template>
   <div class="register-container">
     <div class="register-wrapper">
+      <h1>REGISTRERA</h1>
       <form @submit.prevent="handleRegister" class="register-form">
         <div class="form-group">
           <input
@@ -22,7 +23,7 @@
             required
             class="input-field"
           />
-          <label for="password" class="label">Password</label>
+          <label for="password" class="label">Lösenord</label>
         </div>
         <div class="form-group">
           <input
@@ -33,7 +34,7 @@
             required
             class="input-field"
           />
-          <label for="firstname" class="label">Firstname</label>
+          <label for="firstname" class="label">Förnamn</label>
         </div>
         <div class="form-group">
           <input
@@ -44,14 +45,14 @@
             required
             class="input-field"
           />
-          <label for="lastname" class="label">Lastname</label>
+          <label for="lastname" class="label">Efternamn</label>
         </div>
-        <button type="submit" class="submit-button">Register</button>
+        <button type="submit" class="submit-button">REGISTRERA</button>
         <p v-if="message" :class="{ error: isError }">{{ message }}</p>
       </form>
       <div>
-        Have an account already? Login
-        <router-link to="/login">here</router-link>
+        Har du ett konto redan? Logga in
+        <router-link to="/login">här</router-link>
       </div>
     </div>
   </div>
@@ -111,7 +112,7 @@ export default {
   margin: 0 auto;
   padding: 40px;
   background-color: #f9f9f9;
-  border-radius: 8px;
+  border: 1px solid black;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -138,20 +139,23 @@ export default {
 }
 
 .input-field:focus {
-  border-color: #007bff;
+  border-color: black;
 }
 
 .label {
   position: absolute;
   top: -20px;
-  left: 12px;
+  left: 0;
   font-size: 14px;
   color: #555;
   transition: all 0.3s ease;
 }
 
 .submit-button {
-  background-color: #007bff;
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-weight: 600;
+  background-color: black;
   color: white;
   padding: 12px;
   font-size: 16px;
@@ -162,10 +166,18 @@ export default {
 }
 
 .submit-button:hover {
-  background-color: #0056b3;
+  background-color: white;
+  color: black;
 }
 
 .error {
   color: red; /* Style for error messages */
+}
+h1 {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 32px;
 }
 </style>
