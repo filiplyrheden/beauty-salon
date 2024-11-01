@@ -166,16 +166,8 @@ export const createOrderByHook = async (
       `,
       [productSizePairs] // Pass array of pairs (product_id, size_id)
     );
-    console.log("fetched products" + fetchedProducts);
     // Calculate total order amount and create order details
     let totalAmount = 0;
-
-    fetchedProducts.forEach((product) => {
-      console.log("fetched Products: " + JSON.stringify(product, null, 2));
-    });
-    products.forEach((product) => {
-      console.log("products: " + JSON.stringify(product, null, 2));
-    });
 
     const orderDetails = products.map((product) => {
       const productData = fetchedProducts.find(
@@ -205,8 +197,6 @@ export const createOrderByHook = async (
     const postal_code = shippingAddress.postal_code;
     const country = shippingAddress.country;
     const city = shippingAddress.city;
-    console.log("address_line1 i createOrderByHook " + address_line1);
-    console.log("city i createOrderByHook " + city);
 
     const [orderResult] = await connection.query(
       "INSERT INTO orders (user_id, order_status, total_amount, order_date, address_line1, address_line2, postal_code, country, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",

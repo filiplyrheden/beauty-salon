@@ -157,10 +157,7 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
   try {
     const { dummyItems } = req.body; // Destructure to easily access line_items
     const { user_id } = req.body;
-    console.log(dummyItems);
     const line_items = await getCheckoutProducts(res, dummyItems);
-    console.log(user_id);
-    console.log(line_items);
     // Ensure line_items is an array and has at least one item
     if (!Array.isArray(dummyItems) || line_items.length === 0) {
       return res.status(400).send("Invalid or missing line items");
@@ -193,7 +190,6 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
 
 app.get("/api/get-session-details", async (req, res) => {
   const { session_id } = req.query;
-  console.log(session_id);
 
   try {
     // Fetch the session details from Stripe
@@ -204,7 +200,6 @@ app.get("/api/get-session-details", async (req, res) => {
 
     // Fetch the order details by user ID
     const order = await showOrderByUserId(user_id);
-    console.log(order);
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }

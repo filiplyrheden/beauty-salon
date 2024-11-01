@@ -38,7 +38,6 @@ library.add(
   faLock,
   faMagnifyingGlass
 );
-
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(router)
