@@ -250,11 +250,13 @@ export default {
 }
 .logout {
   position: absolute;
+  z-index: 50;
   top: 40px;
   left: 40px;
   font-size: 24px;
   color: #a39171;
   text-decoration: none;
   transform: rotate(180deg);
+  cursor: pointer;
 }
 </style>

@@ -15,7 +15,6 @@ export const loginUser = async (req, res) => {
       req.body.password,
       user.password
     );
-    console.log("test");
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -33,17 +32,35 @@ export const loginUser = async (req, res) => {
 
 export const registerUser = async (req, res) => {
   try {
-    console.log("hej");
     const credentials = req.body;
-    const alreadyExists = getUserByEmail(credentials.email);
-    if (alreadyExists == true) {
-      res.status(409).json("User already exists");
+    // Check if user already exists
+    const alreadyExists = await getUserByEmail(credentials.email);
+    if (alreadyExists) {
+      // Use 409 status code for conflicts
+      return res.status(409).json("User already exists");
     }
+
+    // Hash password
     credentials.password = await bcrypt.hash(credentials.password, 10);
-    createUser(credentials);
-    console.log(credentials);
-    res.status(200).json("Successfull registration");
+
+    // Create new user
+    await createUser(credentials); // Ensure this function is properly inserting to the DB
+
+    // Retrieve the created user
+    const user = await getUserByEmail(credentials.email);
+    // Generate JWT token
+    const token = jwt.sign(
+      { email: user.email, userid: user.user_id, role: user.role }, // Payload
+      process.env.JWT_SECRET, // Secret key
+      { expiresIn: process.env.JWT_EXPIRES_IN } // Expiration time
+    );
+    // Send the token in response
+    return res.status(200).json({ token });
   } catch (error) {
+    if (error.code === "ER_DUP_ENTRY") {
+      return res.status(500).json("User already exists");
+    }
+    console.error("Error registering user:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
