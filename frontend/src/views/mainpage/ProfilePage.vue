@@ -412,7 +412,6 @@ table {
 }
 
 thead {
-  background-color: #f8f9fa;
 }
 
 th,

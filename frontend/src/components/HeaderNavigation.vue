@@ -44,7 +44,7 @@
       </router-link>
 
       <ul class="right-links">
-        <li><img src="../assets/Search_Magnifying_Glass.svg" alt=""></li>
+        <li><img src="../assets/Search_Magnifying_Glass.svg" alt="" /></li>
         <li>
           <router-link v-if="!isLoggedIn" to="/login"
             ><font-awesome-icon icon="user"
@@ -53,14 +53,14 @@
             ><font-awesome-icon icon="user"
           /></router-link>
           <router-link v-if="isLoggedIn && isAdmin" to="/admin"
-            ><img src="../assets/Lock.svg" alt="">
+            ><img src="../assets/Lock.svg" alt="" />
           </router-link>
         </li>
 
         <li class="li-styles">
-          <button class="noBorder" @click="toggleCartPopup()">
+          <button class="noBorder" @click="openCart">
             <!-- if cart is already showing if you click it again it disappears -->
-            <img src="../assets/Shopping_Bag.svg" alt="">
+            <img src="../assets/Shopping_Bag.svg" alt="" />
           </button>
           <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
         </li>
@@ -74,55 +74,22 @@
           <!-- Close button -->
         </div>
         <div class="item-content">
-          <div v-for="item in cartItems" :key="item.id" class="cart-item">
-            <button
-              @click="
-                removeFromCart({
-                  productId: item.product_id,
-                  sizeId: item.size_id,
-                })
-              "
-              class="cartExitButton"
-            >
-              <img class="trashIcon" src="../assets/trashcan.svg" alt="" />
-            </button>
+          <div class="title">Tillagd i varukorgen!</div>
+          <div v-if="lastAddedItem" class="cart-item">
             <img
               class="cart-image"
-              :src="getImageUrl(item.image_url)"
-              :alt="item.name"
+              :src="getImageUrl(lastAddedItem.image_url)"
+              :alt="lastAddedItem.name"
             />
             <div class="cartNameandPrice">
-              <p>{{ item.product_name }}</p>
-              <p>{{ item.size }}</p>
-              <p>{{ item.price }} kr</p>
-            </div>
-            <div class="cartAddRemoveQuantity">
-              <button
-                class="incrementDecrement"
-                @click="handleDecrementOrRemove(item.product_id, item.size_id)"
-              >
-                <img src="../assets/minus.svg" alt="" />
-              </button>
-              <p class="incrementDecrementText">{{ item.quantity }}</p>
-              <button
-                class="incrementDecrement"
-                @click="
-                  incrementItemInCart({
-                    productId: item.product_id,
-                    sizeId: item.size_id,
-                  })
-                "
-              >
-                <img src="../assets/plus.svg" alt="" />
-              </button>
+              <p>{{ lastAddedItem.product_name }}</p>
+              <p>{{ lastAddedItem.size }}</p>
+              <p>{{ lastAddedItem.price }} kr</p>
             </div>
           </div>
           <p class="totalCart">
             Totala belopp: {{ cartTotalPrice.toFixed(2) }} kr
           </p>
-          <button class="checkoutButton">
-            <a class="noLinkStyles" href="/checkout">CHECKOUT</a>
-          </button>
         </div>
       </div>
     </nav>
@@ -151,7 +118,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(["isLoggedIn", "isAdmin"]),
+    ...mapState(["isLoggedIn", "isAdmin", "isCartVisible"]),
+
+    lastAddedItem() {
+      return this.$store.getters.lastAddedItem;
+    },
     cartCount() {
       return this.$store.getters.cartCount;
     },
@@ -168,6 +139,7 @@ export default {
       return this.topBarLinks[this.currentTopBarLinkIndex];
     },
   },
+
   created() {
     this.checkAuthentication();
   },
@@ -184,10 +156,16 @@ export default {
       removeFromCart: "removeFromCart",
       hideCartPopup: "hideCartPopup",
       showCartPopup: "showCartPopup",
+      showCart: "showCart",
     }),
+    openCart() {
+      this.showCart();
+    },
+
     toggleCartPopup() {
       if (this.isCartPopupVisible) {
         this.hideCartPopup();
+        this.$store.commit("clearLastAddedItem");
       } else {
         this.showCartPopup();
       }
@@ -353,7 +331,11 @@ export default {
   flex-direction: column;
   gap: 20px;
 }
-
+.item-content .title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 18px;
+}
 .cart-item {
   display: flex;
   width: 100%;
@@ -401,7 +383,7 @@ export default {
 .totalCart {
   display: flex;
   justify-content: end;
-  font-size: 20px;
+  font-size: 16px;
 }
 .trashIcon {
   height: 24px;
