@@ -38,6 +38,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 99;
 }
 .popup {
   border: 1px solid black;
@@ -55,7 +56,7 @@ export default {
   letter-spacing: 4%;
   font-weight: 600;
   font-size: 24px;
-  margin-bottom: 32px;
+  margin-bottom: 8px;
 }
 
 button {
