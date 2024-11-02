@@ -174,7 +174,8 @@ export default {
   right: 0;
   height: 100%;
   width: 35%;
-  background-color: #fff;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   padding: 20px;

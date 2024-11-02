@@ -1,5 +1,8 @@
 <template>
   <div class="page-reviews-container">
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
     <h1>Produkt recensioner</h1>
 
     <!-- Loading Indicator -->
@@ -29,7 +32,7 @@
         </div>
         <!-- Name -->
         <div class="form-group">
-          <label for="name">Review text:</label>
+          <label for="name">Recensions text:</label>
           <input
             v-model="form.review_text"
             type="text"
@@ -42,7 +45,7 @@
         <!-- Buttons -->
         <div class="button-group">
           <button type="submit">
-            {{ isEditing ? "Updatera" : "Lägg till" }} Review
+            {{ isEditing ? "Updatera" : "Lägg till" }} Recension
           </button>
           <button type="button" v-if="isEditing" @click="cancelEdit">
             Avbryt
@@ -58,9 +61,9 @@
         <thead>
           <tr>
             <th>Rating</th>
-            <th>Review Text</th>
-            <th>Product ID</th>
-            <th>Written By</th>
+            <th>Recensions Text</th>
+            <th>Produkt ID</th>
+            <th>Skriven av</th>
             <th>Åtgärder</th>
           </tr>
         </thead>
@@ -71,8 +74,8 @@
             <td>{{ review.product_id }}</td>
             <td>{{ review.user_id }}</td>
             <td>
-              <button @click="editReview(review)">Edit</button>
-              <button @click="deleteReview(review.id)">Delete</button>
+              <button @click="editReview(review)">Ändra</button>
+              <button @click="deleteReview(review.id)">Ta bort</button>
             </td>
           </tr>
         </tbody>

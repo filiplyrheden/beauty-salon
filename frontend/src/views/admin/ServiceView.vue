@@ -1,5 +1,8 @@
 <template>
   <div class="service-container">
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
     <h1>Behandlingar</h1>
 
     <!-- Loading Indicator -->
