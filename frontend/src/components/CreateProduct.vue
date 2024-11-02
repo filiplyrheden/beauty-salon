@@ -1,13 +1,20 @@
 <template>
   <div class="create-product">
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
     <h2>Add New Product</h2>
-    <form id="uploadForm" @submit.prevent="saveProduct" enctype="multipart/form-data">
+    <form
+      id="uploadForm"
+      @submit.prevent="saveProduct"
+      enctype="multipart/form-data"
+    >
       <div class="form-group">
         <label for="productName">Product Name</label>
-        <input 
-          type="text" 
-          id="productName" 
-          v-model="productName" 
+        <input
+          type="text"
+          id="productName"
+          v-model="productName"
           required
           placeholder="Enter product name"
         />
@@ -15,9 +22,9 @@
 
       <div class="form-group">
         <label for="description">Description</label>
-        <textarea 
-          id="description" 
-          v-model="description" 
+        <textarea
+          id="description"
+          v-model="description"
           required
           placeholder="Enter product description"
         ></textarea>
@@ -25,10 +32,10 @@
 
       <div class="form-group">
         <label for="categoryId">Category ID</label>
-        <input 
-          type="number" 
-          id="categoryId" 
-          v-model="categoryId" 
+        <input
+          type="number"
+          id="categoryId"
+          v-model="categoryId"
           required
           placeholder="Enter category ID"
         />
@@ -38,23 +45,23 @@
       <div class="form-group">
         <label for="sizes">Sizes and Prices</label>
         <div v-for="(size, index) in sizes" :key="index" class="size-entry">
-          <input 
-            v-model="size.sizeName" 
-            type="text" 
-            placeholder="Size (e.g., 50 ml)" 
+          <input
+            v-model="size.sizeName"
+            type="text"
+            placeholder="Size (e.g., 50 ml)"
             required
           />
-          <input 
-            v-model.number="size.price" 
-            type="number" 
-            step="0.01" 
-            placeholder="Price (SEK)" 
+          <input
+            v-model.number="size.price"
+            type="number"
+            step="0.01"
+            placeholder="Price (SEK)"
             required
           />
-          <input 
-            v-model.number="size.quantity" 
-            type="number" 
-            placeholder="Quantity (10, 20, 30)" 
+          <input
+            v-model.number="size.quantity"
+            type="number"
+            placeholder="Quantity (10, 20, 30)"
             required
           />
           <button @click.prevent="removeSize(index)">Remove</button>
@@ -63,57 +70,59 @@
       </div>
 
       <div class="form-group">
-      <label for="primaryImage">Primary Image:</label>
-      <input 
-        type="file" 
-        id="primaryImage" 
-        @change="onImageChange($event, 'primary')" 
-        accept="image/*" 
-      />
-    </div>
+        <label for="primaryImage">Primary Image:</label>
+        <input
+          type="file"
+          id="primaryImage"
+          @change="onImageChange($event, 'primary')"
+          accept="image/*"
+        />
+      </div>
 
-    <div class="form-group">
-      <label for="secondaryImage">Secondary Image:</label>
-      <input 
-        type="file" 
-        id="secondaryImage" 
-        @change="onImageChange($event, 'secondary')" 
-        accept="image/*" 
-      />
-    </div>
+      <div class="form-group">
+        <label for="secondaryImage">Secondary Image:</label>
+        <input
+          type="file"
+          id="secondaryImage"
+          @change="onImageChange($event, 'secondary')"
+          accept="image/*"
+        />
+      </div>
 
-    <div class="form-group">
-      <label for="thirdImage">Third Image:</label>
-      <input 
-        type="file" 
-        id="thirdImage"
-        @change="onImageChange($event, 'third')" 
-        accept="image/*" 
-      />
-    </div>
+      <div class="form-group">
+        <label for="thirdImage">Third Image:</label>
+        <input
+          type="file"
+          id="thirdImage"
+          @change="onImageChange($event, 'third')"
+          accept="image/*"
+        />
+      </div>
 
       <button type="submit" class="submit-btn">Add Product</button>
     </form>
 
-    <div v-if="message" 
-         :class="['message', message.includes('Error') ? 'error-message' : 'success-message']">
+    <div
+      v-if="message"
+      :class="[
+        'message',
+        message.includes('Error') ? 'error-message' : 'success-message',
+      ]"
+    >
       {{ message }}
     </div>
   </div>
 </template>
 
-
 <script>
-import axiosInstance from '@/services/axiosConfig';
+import axiosInstance from "@/services/axiosConfig";
 
 export default {
   data() {
     return {
       productName: "",
       description: "",
-      sizes: [
-        { sizeName: "", price: "", quantity: "" }
-      ],
+      sizes: [{ sizeName: "", price: "", quantity: "" }],
       primaryImageFile: null,
       secondaryImageFile: null,
       thirdImageFile: null,
@@ -128,60 +137,60 @@ export default {
     removeSize(index) {
       this.sizes.splice(index, 1);
     },
-  // Method to handle image changes
-  onImageChange(event, imageType) {
-    const file = event.target.files[0];
+    // Method to handle image changes
+    onImageChange(event, imageType) {
+      const file = event.target.files[0];
 
-    if (imageType === 'primary') {
-      this.primaryImageFile = file;
-    } else if (imageType === 'secondary') {
-      this.secondaryImageFile = file;
-    } else if (imageType === 'third') {
-      this.thirdImageFile = file;
-    }
-  },
-
-  // Save new product
-  async saveProduct() {
-  // Create a new FormData object
-  const formData = new FormData();
-
-  // Append product details to the FormData
-  formData.append("product_name", this.productName);
-  formData.append("description", this.description);
-  formData.append("sizes", JSON.stringify(this.sizes));
-  formData.append("category_id", parseInt(this.categoryId));
-
-  // Append image files to the FormData
-  if (this.primaryImageFile) {
-  formData.append("primaryImage", this.primaryImageFile);
-  }
-  if (this.secondaryImageFile) {
-    formData.append("secondaryImage", this.secondaryImageFile);
-  }
-  if (this.thirdImageFile) {
-    formData.append("thirdImage", this.thirdImageFile);
-  }
-
-  try {
-    const response = await axiosInstance.post(`admin/products`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
+      if (imageType === "primary") {
+        this.primaryImageFile = file;
+      } else if (imageType === "secondary") {
+        this.secondaryImageFile = file;
+      } else if (imageType === "third") {
+        this.thirdImageFile = file;
       }
-    });
-    console.log("Response:", response);
-    this.message = "Product added successfully!";
-    this.resetForm();
-  } catch (error) {
-    console.error("Error adding product:", error);
-    if (error.response && error.response.data) {
-      this.message = "Error adding product: " + error.response.data.error;
-    } else {
-      this.message = "Error adding product: " + error.message || "Internal Server Error";
-    }
-  }
-},
+    },
 
+    // Save new product
+    async saveProduct() {
+      // Create a new FormData object
+      const formData = new FormData();
+
+      // Append product details to the FormData
+      formData.append("product_name", this.productName);
+      formData.append("description", this.description);
+      formData.append("sizes", JSON.stringify(this.sizes));
+      formData.append("category_id", parseInt(this.categoryId));
+
+      // Append image files to the FormData
+      if (this.primaryImageFile) {
+        formData.append("primaryImage", this.primaryImageFile);
+      }
+      if (this.secondaryImageFile) {
+        formData.append("secondaryImage", this.secondaryImageFile);
+      }
+      if (this.thirdImageFile) {
+        formData.append("thirdImage", this.thirdImageFile);
+      }
+
+      try {
+        const response = await axiosInstance.post(`admin/products`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log("Response:", response);
+        this.message = "Product added successfully!";
+        this.resetForm();
+      } catch (error) {
+        console.error("Error adding product:", error);
+        if (error.response && error.response.data) {
+          this.message = "Error adding product: " + error.response.data.error;
+        } else {
+          this.message =
+            "Error adding product: " + error.message || "Internal Server Error";
+        }
+      }
+    },
 
     // Reset form fields
     resetForm() {
@@ -193,7 +202,7 @@ export default {
       this.thirdImageFile = null;
       this.categoryId = "";
     },
-  }
+  },
 };
 </script>
 

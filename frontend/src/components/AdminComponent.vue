@@ -1,80 +1,86 @@
 <template>
   <div class="admin-dashboard">
-    <a @click="handleLogout">Logout</a>
+    <a class="logout" @click="handleLogout"
+      ><font-awesome-icon icon="arrow-right-from-bracket"
+    /></a>
     <div class="dashboard-header">
-      <h1>Beauty Salon Administration</h1>
+      <h1>SN BEAUTY Administratörspanel</h1>
     </div>
 
     <div class="menu-grid">
       <div class="menu-item" style="--animation-order: 1">
         <a href="/admin/products" class="menu-link">
           <font-awesome-icon icon="box" class="menu-icon" />
-          <h3 class="menu-title">Products</h3>
-          <p class="menu-description">Manage your beauty product inventory</p>
+          <h3 class="menu-title">Produkter</h3>
+          <p class="menu-description">
+            Lägg till, ta bort och uppdatera produkter
+          </p>
         </a>
       </div>
 
       <div class="menu-item" style="--animation-order: 2">
         <a href="/admin/events" class="menu-link">
           <font-awesome-icon icon="calendar" class="menu-icon" />
-          <h3 class="menu-title">Events</h3>
-          <p class="menu-description">Schedule and manage salon events</p>
+          <h3 class="menu-title">Evenemang</h3>
+          <p class="menu-description">Skapa och hantera evenemang</p>
         </a>
       </div>
 
       <div class="menu-item" style="--animation-order: 3">
         <a href="/admin/product-reviews" class="menu-link">
           <font-awesome-icon icon="star" class="menu-icon" />
-          <h3 class="menu-title">Product Reviews</h3>
-          <p class="menu-description">Monitor customer product feedback</p>
+          <h3 class="menu-title">Produktrecensioner</h3>
+          <p class="menu-description">Granska och hantera produktrecensioner</p>
         </a>
       </div>
 
       <div class="menu-item" style="--animation-order: 4">
         <a href="/admin/courses" class="menu-link">
           <font-awesome-icon icon="graduation-cap" class="menu-icon" />
-          <h3 class="menu-title">Courses</h3>
-          <p class="menu-description">Manage beauty training courses</p>
+          <h3 class="menu-title">Kurser</h3>
+          <p class="menu-description">Skapa och administrera nya kurser</p>
         </a>
       </div>
 
       <div class="menu-item" style="--animation-order: 5">
         <a href="/admin/services" class="menu-link">
           <font-awesome-icon icon="spa" class="menu-icon" />
-          <h3 class="menu-title">Services</h3>
-          <p class="menu-description">Update salon service offerings</p>
+          <h3 class="menu-title">Behandlingar</h3>
+          <p class="menu-description">Uppdatera våra salongstjänster</p>
         </a>
       </div>
 
       <div class="menu-item" style="--animation-order: 6">
         <a href="/admin/service-categories" class="menu-link">
           <font-awesome-icon icon="tags" class="menu-icon" />
-          <h3 class="menu-title">Service Categories</h3>
-          <p class="menu-description">Organize service categories</p>
+          <h3 class="menu-title">Behandlings kategorier</h3>
+          <p class="menu-description">
+            Organisera och kategorisera behandlingar
+          </p>
         </a>
       </div>
 
       <div class="menu-item" style="--animation-order: 7">
         <a href="/admin/page-reviews" class="menu-link">
           <font-awesome-icon icon="comments" class="menu-icon" />
-          <h3 class="menu-title">Page Reviews</h3>
-          <p class="menu-description">Manage website testimonials</p>
+          <h3 class="menu-title">Sidor med recensioner</h3>
+          <p class="menu-description">Hantera kundomdömen och vittnesmål</p>
         </a>
       </div>
 
       <div class="menu-item" style="--animation-order: 8">
         <a href="/admin/product-categories" class="menu-link">
           <font-awesome-icon icon="layer-group" class="menu-icon" />
-          <h3 class="menu-title">Product Categories</h3>
-          <p class="menu-description">Organize product inventory</p>
+          <h3 class="menu-title">Produktkategorier</h3>
+          <p class="menu-description">Organisera och hantera produktlager</p>
         </a>
       </div>
 
       <div class="menu-item" style="--animation-order: 9">
         <a href="/admin/orders" class="menu-link">
           <font-awesome-icon icon="shopping-bag" class="menu-icon" />
-          <h3 class="menu-title">Orders</h3>
-          <p class="menu-description">Track and manage customer orders</p>
+          <h3 class="menu-title">Beställningar</h3>
+          <p class="menu-description">Följ och hantera kundbeställningar</p>
         </a>
       </div>
     </div>
@@ -102,6 +108,7 @@ export default {
   margin: 0 auto;
   padding: 40px 20px;
   background: linear-gradient(to bottom right, #faf7f2, #fff);
+  position: relative;
 }
 
 .dashboard-header {
@@ -240,5 +247,14 @@ export default {
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a39171' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   opacity: 0.5;
   z-index: -1;
+}
+.logout {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  font-size: 24px;
+  color: #a39171;
+  text-decoration: none;
+  transform: rotate(180deg);
 }
 </style>

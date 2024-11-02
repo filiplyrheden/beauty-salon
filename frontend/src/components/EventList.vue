@@ -10,7 +10,10 @@
             <button @click="editEvent(event)" class="action-btn edit-btn">
               <font-awesome-icon :icon="['fas', 'edit']" />
             </button>
-            <button @click="deleteEvent(event.event_id)" class="action-btn delete-btn">
+            <button
+              @click="deleteEvent(event.event_id)"
+              class="action-btn delete-btn"
+            >
               <font-awesome-icon :icon="['fas', 'trash']" />
             </button>
           </div>
@@ -33,19 +36,30 @@
             </div>
             <div class="detail-group">
               <label>Booking:</label>
-              <a :href="event.booking_link" target="_blank" class="booking-link">
+              <a
+                :href="event.booking_link"
+                target="_blank"
+                class="booking-link"
+              >
                 <font-awesome-icon :icon="['fas', 'external-link-alt']" />
                 Booking link
               </a>
             </div>
           </div>
           <div class="event-image-container">
-            <img :src="getImageUrl(event.image_url)" :alt="event.name" class="event-image" />
+            <img
+              :src="getImageUrl(event.image_url)"
+              :alt="event.name"
+              class="event-image"
+            />
           </div>
         </div>
 
         <!-- Edit Form -->
-        <div v-if="editingEvent && editingEvent.event_id === event.event_id" class="edit-form">
+        <div
+          v-if="editingEvent && editingEvent.event_id === event.event_id"
+          class="edit-form"
+        >
           <h4 class="edit-form-title">Edit Event</h4>
           <div class="form-group">
             <label for="editName">Name:</label>
@@ -53,7 +67,11 @@
           </div>
           <div class="form-group">
             <label for="editDescription">Description:</label>
-            <input v-model="editingEvent.description" id="editDescription" type="text" />
+            <input
+              v-model="editingEvent.description"
+              id="editDescription"
+              type="text"
+            />
           </div>
           <div class="form-group">
             <label for="editPrice">Price:</label>
@@ -61,11 +79,20 @@
           </div>
           <div class="form-group">
             <label for="editImage">New Image:</label>
-            <input type="file" @change="onFileChange" id="editImage" accept="image/*" />
+            <input
+              type="file"
+              @change="onFileChange"
+              id="editImage"
+              accept="image/*"
+            />
           </div>
           <div class="form-group">
             <label for="editBookingLink">Booking Link:</label>
-            <input v-model="editingEvent.booking_link" id="editBookingLink" type="text" />
+            <input
+              v-model="editingEvent.booking_link"
+              id="editBookingLink"
+              type="text"
+            />
           </div>
           <div class="form-actions">
             <button @click="saveEvent(editingEvent)" class="save-btn">
@@ -84,7 +111,7 @@
 </template>
 
 <script>
-import axiosInstance from '@/services/axiosConfig';
+import axiosInstance from "@/services/axiosConfig";
 
 export default {
   name: "EventList",
@@ -105,13 +132,14 @@ export default {
       return `http://localhost:3000${imageName}`;
     },
     deleteEvent(eventId) {
-      if (confirm('Are you sure you want to delete this event?')) {
-        axiosInstance.delete(`/admin/events/${eventId}`)
-          .then(response => {
+      if (confirm("Are you sure you want to delete this event?")) {
+        axiosInstance
+          .delete(`/admin/events/${eventId}`)
+          .then((response) => {
             console.log("Event deleted successfully:", response.data);
-            this.$emit('event-deleted', eventId);
+            this.$emit("event-deleted", eventId);
           })
-          .catch(error => {
+          .catch((error) => {
             console.error("Error deleting event:", error);
           });
       }
@@ -124,35 +152,36 @@ export default {
     },
     saveEvent(event) {
       const formData = new FormData();
-      formData.append('name', event.name);
-      formData.append('description', event.description);
-      formData.append('price', event.price);
-      formData.append('booking_link', event.booking_link);
-      
+      formData.append("name", event.name);
+      formData.append("description", event.description);
+      formData.append("price", event.price);
+      formData.append("booking_link", event.booking_link);
+
       if (this.selectedFile) {
-        formData.append('image', this.selectedFile);
+        formData.append("image", this.selectedFile);
       }
 
-      axiosInstance.put(`/admin/events/${event.event_id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then(response => {
-        console.log("Event saved successfully:", response.data);
-        alert(event.name + " saved successfully!");
-        this.selectedFile = null;
-        this.editingEvent = null;
-      })
-      .catch(error => {
-        console.error("Error saving event:", error);
-      });
+      axiosInstance
+        .put(`/admin/events/${event.event_id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("Event saved successfully:", response.data);
+          alert(event.name + " saved successfully!");
+          this.selectedFile = null;
+          this.editingEvent = null;
+        })
+        .catch((error) => {
+          console.error("Error saving event:", error);
+        });
     },
     cancelEdit() {
       this.editingEvent = null;
       this.selectedFile = null;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -321,7 +350,8 @@ export default {
   margin-top: 1rem;
 }
 
-.save-btn, .cancel-btn {
+.save-btn,
+.cancel-btn {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;

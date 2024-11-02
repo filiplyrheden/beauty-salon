@@ -1,5 +1,8 @@
 <template>
   <div class="order-container">
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
     <h1>Orders</h1>
 
     <!-- Loading Indicator -->
@@ -21,9 +24,9 @@
           <label for="name">Order Status:</label>
 
           <select name="status" id="status" v-model="form.order_status">
-            <option value="Pending">Pending</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Cancelled">Cancelled</option>
+            <option value="Bekräftad">Bekräftad</option>
+            <option value="Skickad">Skickad</option>
+            <option value="Avbryten">Avbryten</option>
           </select>
         </div>
         <!-- Buttons -->
@@ -100,8 +103,8 @@
             <td>{{ order.total_amount }}</td>
             <td>{{ formatDate(order.order_date) }}</td>
             <td>
-              <button @click="editOrder(order)">Edit</button>
-              <button @click="deleteOrder(order.order_id)">Delete</button>
+              <button @click="editOrder(order)">Ändra</button>
+              <button @click="deleteOrder(order.order_id)">Ta bort</button>
             </td>
           </tr>
         </tbody>
