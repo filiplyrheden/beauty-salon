@@ -19,6 +19,7 @@ import {
   faChevronUp,
   faChevronDown,
   faCheck,
+  faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { store } from "./store/store.js";
@@ -26,6 +27,7 @@ import { store } from "./store/store.js";
 library.add(
   faChevronDown,
   faCheck,
+  faTag,
   faChevronUp,
   faTrash,
   faBox,

@@ -77,6 +77,14 @@
           <p class="menu-description">Track and manage customer orders</p>
         </a>
       </div>
+
+      <div class="menu-item" style="--animation-order: 10">
+        <a href="/admin/productproperties" class="menu-link">
+          <font-awesome-icon icon="tag" class="menu-icon" />
+          <h3 class="menu-title">Product Properties</h3>
+          <p class="menu-description">Track and manage Product Properties</p>
+        </a>
+      </div>
     </div>
   </div>
 </template>

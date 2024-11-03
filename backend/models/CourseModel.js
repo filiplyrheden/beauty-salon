@@ -9,7 +9,7 @@ export const getCourses = async () => {
     const [rows] = await db.query("SELECT * FROM Courses"); // Adjust the SQL query as needed
     return rows;
   } catch (err) {
-    console.error("Error fetching courses:", err);
+    console.error("Error fetching Courses:", err);
     throw err; // Propagate the error to be handled by the controller
   }
 };
@@ -20,14 +20,14 @@ export const getCourseById = async (id) => {
       id,
     ]);
 
-    // If no course is found with the provided ID
+    // If no Course is found with the provided ID
     if (rows.length === 0) {
       return null;
     }
 
-    return rows[0]; // Return the first (and only) course found
+    return rows[0]; // Return the first (and only) Course found
   } catch (err) {
-    console.error("Error fetching course by ID:", err);
+    console.error("Error fetching Course by ID:", err);
     throw err;
   }
 };
@@ -42,10 +42,10 @@ export const createCourse = async (courseData) => {
       [name, description, schedule, price, image_url, booking_link] // Add image_url to the query
     );
 
-    // Return the newly created course ID or some acknowledgment
+    // Return the newly created Course ID or some acknowledgment
     return { course_id: result.insertId, ...courseData };
   } catch (err) {
-    console.error("Error creating course:", err);
+    console.error("Error creating Course:", err);
     throw err;
   }
 };
@@ -62,12 +62,12 @@ export const updateCourse = async (id, courseData) => {
 
     // Check if the course was found and updated
     if (result.affectedRows === 0) {
-      return null; // No course was found with the provided ID
+      return null; // No Course was found with the provided ID
     }
-    courseData.course_id = id; // Include the course ID in the returned data
-    return { id, ...courseData }; // Return the updated course data
+    courseData.course_id = id; // Include the Cpurse ID in the returned data
+    return { id, ...courseData }; // Return the updated Course data
   } catch (err) {
-    console.error("Error updating course:", err);
+    console.error("Error updating Course:", err);
     throw err;
   }
 };
@@ -78,14 +78,14 @@ export const deleteCourse = async (id) => {
       id,
     ]);
 
-    // Check if a course was deleted
+    // Check if a Property was deleted
     if (result.affectedRows === 0) {
-      return null; // No course was found with the provided ID
+      return null; // No Property was found with the provided ID
     }
 
     return { message: "Course deleted successfully" };
   } catch (err) {
-    console.error("Error deleting course:", err);
+    console.error("Error deleting Course:", err);
     throw err;
   }
 };

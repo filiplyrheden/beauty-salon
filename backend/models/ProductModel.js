@@ -2,7 +2,7 @@ import db from "../config/database.js";
 
 /**
  * Fetch all products from the database.
- * @returns {Promise<Array>} An array of products.
+ * @returns {Promise<Array>} 
  */
 export const getProducts = async () => {
   try {
@@ -10,7 +10,7 @@ export const getProducts = async () => {
     return rows;
   } catch (err) {
     console.error("Error fetching products:", err);
-    throw err; // Propagate the error to be handled by the controller
+    throw err; 
   }
 };
 
@@ -19,22 +19,31 @@ export const insertProduct = async (product) => {
     product_name,
     description,
     sizes, // Assuming this is an array of objects
+    usage_products,
+    ingredients,
+    properties, // Assuming this is an array of objects with { name: "Property Name" }
     category_id,
+    featured,
     image_url_primary,
     image_url_secondary,
     image_url_third,
   } = product;
 
   try {
+    const featuredValue = featured ? 1 : 0;
+
     // Step 1: Insert into the Products table
     const productQuery = `
-      INSERT INTO Products (product_name, description, category_id, image_url_primary, image_url_secondary, image_url_third)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO Products (product_name, description, usage_products, ingredients, category_id, featured, image_url_primary, image_url_secondary, image_url_third)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [productResult] = await db.query(productQuery, [
       product_name,
       description,
+      usage_products,
+      ingredients,
       category_id,
+      featuredValue,
       image_url_primary,
       image_url_secondary,
       image_url_third,
@@ -43,20 +52,29 @@ export const insertProduct = async (product) => {
     const productId = productResult.insertId;
 
     // Step 2: Insert sizes into the ProductSizes table
-      const sizeValues = sizes.map(({ sizeName, price, quantity }) => 
-        `(${productId}, '${sizeName}', ${price}, ${quantity})`
-      ).join(", ");
+    const sizeValues = sizes.map(({ sizeName, price, quantity }) => 
+      `(${productId}, '${sizeName}', ${price}, ${quantity})`
+    ).join(", ");
 
     const sizeQuery = `
       INSERT INTO ProductSizes (product_id, size, price, stock_quantity)
       VALUES ${sizeValues}
     `;
+    await db.query(sizeQuery);
 
-    await db.query(sizeQuery); // Execute the insert query
+    const propertiesValues = properties.map(({ name }) => 
+      `(${productId}, '${name}')`
+    ).join(", ");
+
+    const propertiesQuery = `
+      INSERT INTO ProductProperties (product_id, name)
+      VALUES ${propertiesValues}
+    `;
+    await db.query(propertiesQuery);
 
     return productResult;
   } catch (err) {
-    console.error("Error inserting product and sizes:", err);
+    console.error("Error inserting product, sizes, and properties:", err);
     throw err;
   }
 };
@@ -66,8 +84,11 @@ export const editProduct = async (product) => {
     product_id,
     product_name,
     description,
-    variants, // Array of size objects with sizeName, price, and quantity
+    variants,
+    usage_products,
+    ingredients,
     category_id,
+    featuredValue,
     image_url_primary,
     image_url_secondary,
     image_url_third,
@@ -76,13 +97,16 @@ export const editProduct = async (product) => {
   try {
     const productQuery = `
       UPDATE Products
-      SET product_name = ?, description = ?, category_id = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
+      SET product_name = ?, description = ?, usage_products = ?, ingredients = ?, category_id = ?, featured = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
       WHERE product_id = ?
     `;
     await db.query(productQuery, [
       product_name,
       description,
+      usage_products,
+      ingredients,
       category_id,
+      featuredValue,
       image_url_primary,
       image_url_secondary,
       image_url_third,
@@ -119,21 +143,22 @@ export const editProduct = async (product) => {
  */
 export const trashProduct = async (productId) => {
   try {
-    // Delete from ProductSizes first
     const querySizes = `DELETE FROM ProductSizes WHERE product_id = ?`;
     const [resultSizes] = await db.query(querySizes, [productId]);
 
-    // Then delete from Products
     const queryProducts = `DELETE FROM Products WHERE product_id = ?`;
     const [resultProducts] = await db.query(queryProducts, [productId]);
 
+    const queryProperties = `DELETE FROM ProductProperties WHERE product_id = ?`;
+    const [resultProperties] = await db.query(queryProperties, [productId]);
     return {
+      propertiesDeleted: resultProperties,
       sizesDeleted: resultSizes,
       productDeleted: resultProducts,
     };
   } catch (err) {
     console.error("Error deleting product:", err);
-    throw err; // Propagate the error to be handled by the controller
+    throw err;
   }
 };
 
@@ -174,39 +199,50 @@ export const fetchCheckoutProductsByIds = async (items) => {
 
 export const getProductsWithInfo = async () => {
   const [rows] = await db.query(`
-  
     SELECT 
-    p.product_id,
-    p.product_name,
-    p.description,
-    p.created_at,
-    p.image_url_primary,
-    p.image_url_secondary,
-    p.image_url_third,
-    JSON_OBJECT(
-        'category_id', c.category_id,
-        'category_name', c.category_name,
-        'parent_category_id', c.parent_category_id
-    ) AS category,
-    JSON_ARRAYAGG(
-        CASE 
-            WHEN ps.size_id IS NOT NULL THEN JSON_OBJECT(
-                'size_id', ps.size_id,
-                'size', ps.size,
-                'price', ps.price,
-                'stock_quantity', ps.stock_quantity
-            )
-        END
-    ) AS variants
-FROM 
-    Products p
-LEFT JOIN
-    Categories c ON p.category_id = c.category_id
-LEFT JOIN 
-    ProductSizes ps ON p.product_id = ps.product_id
-GROUP BY 
-    p.product_id;
-
+      p.product_id,
+      p.product_name,
+      p.description,
+      p.usage_products,
+      p.ingredients,
+      p.featured,
+      p.created_at,
+      p.image_url_primary,
+      p.image_url_secondary,
+      p.image_url_third,
+      JSON_OBJECT(
+          'category_id', c.category_id,
+          'category_name', c.category_name,
+          'parent_category_id', c.parent_category_id
+      ) AS category,
+      JSON_ARRAYAGG(
+          CASE 
+              WHEN ps.size_id IS NOT NULL THEN JSON_OBJECT(
+                  'size_id', ps.size_id,
+                  'size', ps.size,
+                  'price', ps.price,
+                  'stock_quantity', ps.stock_quantity
+              )
+          END
+      ) AS variants,
+      JSON_ARRAYAGG(
+          CASE
+              WHEN pp.property_id IS NOT NULL THEN JSON_OBJECT(
+                  'property_id', pp.property_id,
+                  'name', pp.name
+              )
+          END
+      ) AS properties
+    FROM 
+      Products p
+    LEFT JOIN
+      Categories c ON p.category_id = c.category_id
+    LEFT JOIN 
+      ProductSizes ps ON p.product_id = ps.product_id
+    LEFT JOIN
+      ProductProperties pp ON p.product_id = pp.product_id
+    GROUP BY 
+      p.product_id;
   `);
 
   // Post-process the rows to ensure variants is an empty object if there are no sizes
@@ -215,11 +251,14 @@ GROUP BY
     if (!row.variants || row.variants.length === 0) {
       row.variants = {}; // Set to empty object if there are no variants
     }
+    if (!row.properties || row.properties.length === 0) {
+      row.properties = {};
+    }
     return row;
   });
 };
 
-// Fetch a single product and its price by product ID
+// Fetch a single product and its details, including price, sizes, and properties by product ID
 export const getProductById = async (productId) => {
   // Query to get product details
   const productQuery = `
@@ -230,6 +269,9 @@ export const getProductById = async (productId) => {
       p.image_url_primary,
       p.image_url_secondary,
       p.image_url_third,
+      p.usage_products,
+      p.ingredients,
+      p.featured,
       p.category_id,
       c.category_name
     FROM Products p
@@ -250,6 +292,15 @@ export const getProductById = async (productId) => {
     WHERE product_id = ?
   `;
 
+  // Query to get the product properties
+  const propertiesQuery = `
+    SELECT 
+      property_id,
+      name
+    FROM ProductProperties
+    WHERE product_id = ?
+  `;
+
   try {
     // Fetch product information
     const [productRows] = await db.query(productQuery, [productId]);
@@ -262,10 +313,14 @@ export const getProductById = async (productId) => {
     // Fetch associated sizes for the product
     const [sizeRows] = await db.query(sizesQuery, [productId]);
 
-    // Combine product details with sizes array
+    // Fetch associated properties for the product
+    const [propertyRows] = await db.query(propertiesQuery, [productId]);
+
+    // Combine product details with sizes and properties arrays
     return { 
       ...product, 
-      variants: sizeRows 
+      variants: sizeRows,
+      properties: propertyRows
     };
   } catch (err) {
     console.error("Error fetching product by ID:", err);
