@@ -18,8 +18,10 @@ import {
   faTrash,
   faChevronUp,
   faChevronDown,
+  faChevronLeft,
   faCheck,
   faTag,
+  faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { store } from "./store/store.js";
@@ -42,7 +44,9 @@ library.add(
   faShoppingBag,
   faUser,
   faLock,
-  faMagnifyingGlass
+  faMagnifyingGlass,
+  faArrowRightFromBracket,
+  faChevronLeft
 );
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)

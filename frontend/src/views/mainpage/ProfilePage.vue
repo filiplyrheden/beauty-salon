@@ -2,24 +2,36 @@
   <div class="profile-container">
     <!-- Loading Indicator -->
     <div>
-      <h1>Profil</h1>
+      <h1>PROFIL</h1>
 
       <!-- Loading Indicator -->
       <div v-if="isLoading" class="loading-overlay">
         <div class="spinner"></div>
       </div>
 
-      <a v-else @click="handleLogout">Logout</a>
+      <a class="logout" v-else @click="handleLogout">LOGOUT</a>
 
       <!-- User Profile -->
       <div v-if="!isEditing" class="form-container">
         <div class="profile-data">
-          <p><strong>Förnamn:</strong> {{ form.firstName || "Ej Angivet" }}</p>
-          <p><strong>Efternamn:</strong> {{ form.lastName || "Ej Angivet" }}</p>
-          <p><strong>Email:</strong> {{ form.email || "Ej Angivet" }}</p>
-          <p><strong>Telefon:</strong> {{ form.phone || "Ej Angivet" }}</p>
+          <p>
+            <span class="label-tag">FÖRNAMN:</span>
+            {{ form.firstName || "Ej Angivet" }}
+          </p>
+          <p>
+            <span class="label-tag">EFTERNAMN:</span>
+            {{ form.lastName || "Ej Angivet" }}
+          </p>
+          <p>
+            <span class="label-tag">EMAIL:</span>
+            {{ form.email || "Ej Angivet" }}
+          </p>
+          <p>
+            <span class="label-tag">TELEFON:</span>
+            {{ form.phone || "Ej Angivet" }}
+          </p>
         </div>
-        <button @click="editProfile">Redigera</button>
+        <button class="editButtonProfile" @click="editProfile">Redigera</button>
       </div>
 
       <!-- Edit User Profile Form -->
@@ -28,23 +40,23 @@
         <form @submit.prevent="updateProfile" enctype="multipart/form-data">
           <!-- First Name -->
           <div class="form-group">
-            <label for="firstName">Förnamn:</label>
+            <label for="firstName">FÖRNAMN:</label>
             <input v-model="form.firstName" type="text" id="firstName" />
           </div>
 
           <!-- Last Name -->
           <div class="form-group">
-            <label for="lastName">Efternamn:</label>
+            <label for="lastName">EFTERNAMN:</label>
             <input v-model="form.lastName" type="text" id="lastName" />
           </div>
 
           <!-- Email -->
           <div class="form-group">
-            <label for="email">Email:</label>
+            <label for="email">EMAIL:</label>
             <input v-model="form.email" type="email" id="email" />
           </div>
           <div class="form-group">
-            <label for="address">Telefon:</label>
+            <label for="address">TELEFON:</label>
             <input v-model="form.phone" type="text" id="address" />
           </div>
 
@@ -60,7 +72,7 @@
     <!-- Order List -->
     <!-- Order List -->
     <div class="list-container">
-      <h2>Alla Ordrar</h2>
+      <h2>ALLA ORDRAR</h2>
 
       <!-- Display message if no orders are found -->
       <div v-if="orders.length === 0" class="no-orders">
@@ -292,12 +304,46 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  position: relative;
 }
 
 h1,
 h2 {
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
   text-align: center;
   margin-bottom: 20px;
+}
+.profile-data {
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+.label-tag,
+label {
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  margin-right: 6px;
+}
+.editButtonProfile {
+  margin-top: 32px;
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: 1px solid black;
+  cursor: pointer;
+  background-color: white;
+}
+.editButtonProfile:hover {
+  background-color: black;
+  color: white;
+}
+.logout {
+  position: absolute;
+  top: 32px;
+  left: 22px;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .form-container,
@@ -305,8 +351,8 @@ h2 {
   background-color: #fff;
   padding: 20px;
   margin-bottom: 40px;
-  border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid black;
 }
 
 .form-group {
@@ -324,8 +370,7 @@ h2 {
 .form-group textarea {
   flex: 1;
   padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid black;
 }
 
 .button-group {
@@ -337,7 +382,6 @@ h2 {
   margin-right: 10px;
   padding: 8px 16px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
 }
 .form-group select {
@@ -368,7 +412,6 @@ table {
 }
 
 thead {
-  background-color: #f8f9fa;
 }
 
 th,

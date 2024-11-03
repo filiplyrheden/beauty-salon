@@ -1,7 +1,12 @@
 <template>
-  <div classname="cart-container">
+  <transition name="slide">
     <div class="cart">
-      <h1>DIN KUNDKORG</h1>
+      <div class="cart-header">
+        <button class="cartCloseButton" @click="hideCart">
+          <img src="../assets/exit.svg" alt="" />
+        </button>
+        <h1>DIN KUNDKORG</h1>
+      </div>
       <div v-if="cartItems.length === 0">
         Inga varor i din korg, Gå och shoppa! <a href="/shop">här</a>
       </div>
@@ -17,24 +22,34 @@
           <img src="../assets/noImage.png" alt="" />
           <div class="item-info">
             <div class="item-header">
-              <p>{{ item.product_name }} ( {{ item.size }} )</p>
-              <p>{{ item.price * item.quantity }} kr</p>
+              <p>{{ item.product_name }}</p>
+              <div class="info">
+                <p>( {{ item.size }} )</p>
+                <p></p>
+                <p>({{ item.price }} kr/st )</p>
+              </div>
             </div>
-            <p>({{ item.price }} kr/st )</p>
-            <div class="buttons">
-              <button
-                class="incrementDecrement"
-                @click="handleDecrementOrRemove(item.product_id, item.size_id)"
-              >
-                -
-              </button>
-              <p class="incrementDecrementText">{{ item.quantity }}</p>
-              <button
-                class="incrementDecrement"
-                @click="incrementItemInCart(item.product_id, item.size_id)"
-              >
-                +
-              </button>
+            <div class="product-footer">
+              <div class="buttons">
+                <button
+                  class="incrementDecrement"
+                  @click="
+                    handleDecrementOrRemove(item.product_id, item.size_id)
+                  "
+                >
+                  -
+                </button>
+                <p class="incrementDecrementText">{{ item.quantity }}</p>
+                <button
+                  class="incrementDecrement"
+                  @click="incrementItemInCart(item.product_id, item.size_id)"
+                >
+                  +
+                </button>
+              </div>
+              <p class="total-item">
+                {{ (item.price * item.quantity).toFixed(2) }} kr
+              </p>
             </div>
           </div>
           <!-- Button for removing or decrementing item -->
@@ -50,13 +65,14 @@
         <div>Priser och fraktavgift bekräftas inte förrän i kassan.</div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
 import axiosInstance from "@/services/axiosConfig";
 import visa from "../assets/payment/visa.svg";
 import mastercard from "../assets/payment/mastercard.svg";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "ShoppingCart",
@@ -67,6 +83,8 @@ export default {
     };
   },
   computed: {
+    ...mapState(["isCartVisible"]),
+
     cartItems() {
       return this.$store.getters.cartItems;
     },
@@ -75,6 +93,12 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      hideCart: "hideCart",
+    }),
+    closeCart() {
+      this.hideCart();
+    },
     addItemToCart(product) {
       this.$store.commit("addToCart", product);
     },
@@ -140,32 +164,56 @@ export default {
 </script>
 
 <style scoped>
-.cart-container {
-  width: 100%;
-}
 .cart {
-  max-width: 1280px;
-  margin: 0 auto;
+  border-left: 1px solid black;
   display: flex;
   flex-direction: column;
+  padding: 32px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 35%;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+}
+.cartCloseButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background-color: transparent;
+}
+.cart-header {
+  height: 10%;
+  display: flex;
   justify-content: center;
   align-items: center;
-  padding: 32px;
 }
 .items {
   padding: 32px 0px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 50%;
+  width: 100%;
+  height: 65%;
+  overflow: scroll;
+}
+.total-item {
+  font-weight: 600;
 }
 .cart-summary {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 100%;
   justify-content: center;
   align-items: center;
   gap: 8px;
+  height: 25%;
 }
 .cart-summary h3 {
   align-self: flex-end;
@@ -196,14 +244,25 @@ export default {
   gap: 16px;
 }
 .item img {
-  width: 100px;
+  width: 75px;
   height: 100%;
   object-fit: cover;
+}
+.info {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 400;
+}
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .item-header {
   display: flex;
   justify-content: space-between;
   font-weight: 600;
+  flex-direction: column;
 }
 .item-info {
   flex-grow: 1;
@@ -243,11 +302,10 @@ h1 {
   letter-spacing: 4%;
   font-weight: 600;
   font-size: 32px;
-  margin-bottom: 32px;
 }
 .trashIcon {
-  height: 42px !important;
-  width: 42px !important;
+  height: 24px !important;
+  width: 24px !important;
   object-fit: none !important;
   cursor: pointer;
 }
@@ -259,5 +317,20 @@ ul {
   display: flex;
   gap: 16px;
   list-style: none;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+.slide-enter-from,
+.slide-leave-to {
+  width: 0;
+  opacity: 0;
+}
+.slide-enter-to,
+.slide-leave-from {
+  width: 35%;
+  opacity: 1;
 }
 </style>

@@ -1,5 +1,8 @@
 <template>
   <div class="course-container">
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
     <h1>Kurser</h1>
 
     <!-- Loading Indicator -->
@@ -128,12 +131,12 @@
               />
             </td>
             <td>
-              <a :href="course.booking_link" target="_blank">Book Now</a>
+              <a :href="course.booking_link" target="_blank">länk</a>
             </td>
 
             <td>
-              <button @click="editCourse(course)">Edit</button>
-              <button @click="deleteCourse(course.course_id)">Delete</button>
+              <button @click="editCourse(course)">Ändra</button>
+              <button @click="deleteCourse(course.course_id)">Ta bort</button>
             </td>
           </tr>
         </tbody>

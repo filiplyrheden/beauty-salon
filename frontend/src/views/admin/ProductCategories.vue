@@ -1,5 +1,8 @@
 <template>
-  <div class="service-categories-container">
+  <div class="service-category-container">
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
     <h1>Produkt Kategorier</h1>
 
     <!-- Loading Indicator -->
@@ -81,9 +84,9 @@
             </td>
 
             <td>
-              <button @click="editCategory(category)">Edit</button>
+              <button @click="editCategory(category)">Ändra</button>
               <button @click="deleteCategory(category.category_id)">
-                Delete
+                Ta Bort
               </button>
             </td>
           </tr>

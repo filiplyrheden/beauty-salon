@@ -187,34 +187,29 @@ router.beforeEach(async (to, from, next) => {
   next(); // Allow the navigation to continue
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  await store.dispatch("checkAuth");
+
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
-  const isAuthenticated = !!localStorage.getItem("token"); // JWT for auth
-  const token = localStorage.getItem("token");
+  const isAuthenticated = store.state.isLoggedIn;
+  const isAdmin = store.state.isAdmin;
 
   if (to.path === "/login" && isAuthenticated) {
-    // Redirect authenticated users away from /login
-    return next("/"); // Return immediately after redirection
+    return next("/"); // Redirect authenticated users away from login page
   }
 
   if (requiresAuth && !isAuthenticated) {
-    // Store the intended destination as a query parameter
+    // If user isn't authenticated, redirect to login page
     return next({ path: "/login", query: { redirect: to.fullPath } });
   }
 
-  if (requiresAdmin) {
-    if (!token) {
-      return next({ path: "/login", query: { redirect: to.fullPath } }); // Include redirect for admin too
-    }
-    // Decode JWT to get role
-    const decodedToken = JSON.parse(atob(token.split(".")[1]));
-    if (decodedToken.role !== "admin") {
-      return next("/403"); // Return immediately if user is not an admin
-    }
+  if (requiresAdmin && !isAdmin) {
+    // If user isn't admin, redirect to a "403 Forbidden" or home page
+    return next("/403");
   }
 
-  return next(); // Only proceed after all checks are passed
+  next(); // Allow navigation if all checks are passed
 });
 
 export default router;

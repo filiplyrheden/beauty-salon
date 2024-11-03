@@ -2,7 +2,13 @@
   <div id="app">
     <HeaderNav />
     <router-view></router-view>
+    <FooterComponent />
     <!-- This will display the routed components -->
+    <ShoppingCart
+      v-show="isCartVisible"
+      :isVisible="isCartVisible"
+      @close="closeCart"
+    />
     <PopupComponent
       v-if="isPopupVisible"
       :isVisible="isPopupVisible"
@@ -12,23 +18,29 @@
 </template>
 
 <script>
-
 import { mapState } from "vuex";
 import HeaderNav from "./components/HeaderNavigation.vue";
 import PopupComponent from "./components/LogoutPopup.vue";
+import FooterComponent from "./components/FooterComponent.vue";
+import ShoppingCart from "./components/ShoppingCart.vue";
 
 export default {
   name: "App",
   components: {
     HeaderNav,
     PopupComponent,
+    FooterComponent,
+    ShoppingCart,
   },
   computed: {
-    ...mapState(["isPopupVisible"]),
+    ...mapState(["isPopupVisible", "isCartVisible"]),
   },
   methods: {
     closePopup() {
       this.$store.dispatch("closePopup");
+    },
+    closeCart() {
+      this.$store.dispatch("closeCart");
     },
   },
 
@@ -56,7 +68,7 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 *,
 *::before,
 *::after {

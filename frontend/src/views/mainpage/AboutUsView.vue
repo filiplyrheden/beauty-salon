@@ -140,7 +140,7 @@ export default {
   display: flex;
   gap: 16px;
   width: 50%;
-  padding: 32px;
+  padding: 32px 32px 64px 32px;
 }
 .information-description {
   display: flex;

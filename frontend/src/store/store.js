@@ -10,8 +10,13 @@ export const store = new Vuex.Store({
     userId: null,
     cart: [],
     cartPopupVisible: false,
+    isCartVisible: false,
+    lastAddedItem: null,
   },
   mutations: {
+    clearLastAddedItem(state) {
+      state.lastAddedItem = null;
+    },
     showCartPopup(state) {
       state.cartPopupVisible = true;
     },
@@ -23,6 +28,12 @@ export const store = new Vuex.Store({
     },
     hidePopup(state) {
       state.isPopupVisible = false;
+    },
+    showCart(state) {
+      state.isCartVisible = true;
+    },
+    hideCart(state) {
+      state.isCartVisible = false;
     },
     login(state) {
       state.isLoggedIn = true;
@@ -59,21 +70,21 @@ export const store = new Vuex.Store({
       state.cart = cartItems; // Assume the cart is already in simplified form
     },
     addToCart(state, { product, size_id, quantityFromProductPage }) {
-      console.log(quantityFromProductPage);
-      console.log(product);
       const item = state.cart.find(
         (i) => i.product_id === product.product_id && i.size_id === size_id
       );
+
       if (item) {
-        if(quantityFromProductPage) {
+        if (quantityFromProductPage) {
           item.quantity += quantityFromProductPage;
-          } else {
+        } else {
           item.quantity++;
         }
+        state.lastAddedItem = item;
         state.cartPopupVisible = true;
       } else {
         console.log("sizeId in store: " + size_id); // For debugging
-        state.cart.push({
+        const newItem = {
           product_id: product.product_id,
           product_name: product.product_name,
           price: product.variants.find((v) => v.size_id === size_id).price,
@@ -81,9 +92,17 @@ export const store = new Vuex.Store({
           size_id: size_id,
           quantity: quantityFromProductPage || 1,
           image_url: product.image_url_primary,
-        });
+        };
+
+        state.cart.push(newItem);
+        state.lastAddedItem = newItem;
         state.cartPopupVisible = true;
       }
+
+      // Start a 5-second timer to close the popup
+      setTimeout(() => {
+        state.cartPopupVisible = false;
+      }, 5000);
     },
 
     incrementItemInCart(state, { productId, sizeId }) {
@@ -127,6 +146,7 @@ export const store = new Vuex.Store({
       }, 0);
     },
     cartPopup: (state) => state.cartPopupVisible,
+    lastAddedItem: (state) => state.lastAddedItem,
   },
   actions: {
     checkTokenExpiration({ commit }) {

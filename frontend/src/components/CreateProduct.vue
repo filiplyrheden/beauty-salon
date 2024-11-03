@@ -1,5 +1,8 @@
 <template>
   <div class="create-product">
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
     <h2>Add New Product</h2>
     <form id="uploadForm" @submit.prevent="saveProduct" enctype="multipart/form-data">
       <!-- Existing Fields -->
@@ -39,23 +42,23 @@
       <div class="form-group">
         <label for="sizes">Storlekar och Priser</label>
         <div v-for="(size, index) in sizes" :key="index" class="size-entry">
-          <input 
-            v-model="size.sizeName" 
-            type="text" 
-            placeholder="Size (e.g., 50 ml)" 
+          <input
+            v-model="size.sizeName"
+            type="text"
+            placeholder="Size (e.g., 50 ml)"
             required
           />
-          <input 
-            v-model.number="size.price" 
-            type="number" 
-            step="0.01" 
-            placeholder="Price (SEK)" 
+          <input
+            v-model.number="size.price"
+            type="number"
+            step="0.01"
+            placeholder="Price (SEK)"
             required
           />
-          <input 
-            v-model.number="size.quantity" 
-            type="number" 
-            placeholder="Quantity (10, 20, 30)" 
+          <input
+            v-model.number="size.quantity"
+            type="number"
+            placeholder="Quantity (10, 20, 30)"
             required
           />
           <button @click.prevent="removeSize(index)">Ta Bort</button>
@@ -147,15 +150,20 @@
       <button type="submit" class="submit-btn">Add Product</button>
     </form>
 
-    <div v-if="message" 
-         :class="['message', message.includes('Error') ? 'error-message' : 'success-message']">
+    <div
+      v-if="message"
+      :class="[
+        'message',
+        message.includes('Error') ? 'error-message' : 'success-message',
+      ]"
+    >
       {{ message }}
     </div>
   </div>
 </template>
 
 <script>
-import axiosInstance from '@/services/axiosConfig';
+import axiosInstance from "@/services/axiosConfig";
 
 export default {
   data() {
@@ -246,7 +254,7 @@ export default {
       this.thirdImageFile = null;
       this.categoryId = "";
     },
-  }
+  },
 };
 </script>
 
