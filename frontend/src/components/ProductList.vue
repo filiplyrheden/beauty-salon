@@ -30,7 +30,7 @@
             </ul>
           </div>
           <div v-else>
-            <p>No sizes available.</p> <!-- This message will display when there are no variants -->
+            <p>No sizes available.</p>
           </div>
         </div>
         <div class="action-buttons">
@@ -82,6 +82,43 @@
             </div>
           </div>
 
+          <div class="form-group">
+            <label for="property">Egenskaper</label>
+            <div v-for="(property, index) in editingProduct.properties" :key="index" class="property-entry">
+              <input 
+                v-model="editingProduct.properties[index]"
+                type="text" 
+                placeholder="Property name" 
+                required
+              />
+              <button @click.prevent="removeProperty(index)">Ta bort</button>
+            </div>
+            <button @click.prevent="addProperty">Lägg till Egenskap</button>
+          </div>
+
+          <div class="form-group">
+            <label for="usageProducts">Användarinstruktioner</label>
+            <textarea 
+              id="usageProducts" 
+              v-model="editingProduct.usageProducts" 
+              placeholder="Enter usage instructions"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="ingredients">Ingredienser</label>
+            <div v-for="(ingredient, index) in editingProduct.ingredients" :key="index" class="ingredient-entry">
+              <input 
+                v-model="editingProduct.ingredients[index]"
+                type="text" 
+                placeholder="Ingredient name" 
+                required
+              />
+              <button @click.prevent="removeIngredient(index)">Ta Bort</button>
+            </div>
+            <button @click.prevent="addIngredient">Lägg Till Ingrediens</button>
+          </div>
+
           <div class="editingImageWrapper">
             <div class="form-group">
               <label for="primaryImage">Primary Image:</label>
@@ -122,6 +159,14 @@
               />
             </div>
           </div>
+
+          <div class="form-group">
+            <label for="featured">Ska denna produkten vara på landningssidan?</label>
+            <input 
+              type="checkbox"
+              v-model="editingProduct.featured"
+            />
+          </div>    
 
           <div class="form-buttons">
             <button class="save-btn" @click="saveProduct(editingProduct)">Save Changes</button>
@@ -177,6 +222,24 @@ export default {
     getImageUrl(imageName) {
       return imageName;
     },
+    addProperty() {
+      if (!this.editingProduct.properties) {
+        this.editingProduct.properties = [];
+      }
+      this.editingProduct.properties.push('');
+    },
+    removeProperty(index) {
+      this.editingProduct.properties.splice(index, 1);
+    },
+    addIngredient() {
+      if (!this.editingProduct.ingredients) {
+        this.editingProduct.ingredients = [];
+      }
+      this.editingProduct.ingredients.push('');
+    },
+    removeIngredient(index) {
+      this.editingProduct.ingredients.splice(index, 1);
+    },
     editProduct(product) {
       this.editingProduct = JSON.parse(JSON.stringify(product));
     },
@@ -193,6 +256,10 @@ export default {
       formData.append("description", product.description);
       formData.append("category_id", product.category.category_id);
       formData.append("product_id", product.product_id);
+      formData.append("featured", this.featured);
+      formData.append("properties", JSON.stringify(this.properties));
+      formData.append("usage_products", this.usageProducts); // Add usage instructions
+      formData.append("ingredients", JSON.stringify(this.ingredients)); // Add ingredients
 
       // Append sizes
       product.variants.forEach((variant, index) => {

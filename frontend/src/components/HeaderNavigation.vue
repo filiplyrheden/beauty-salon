@@ -47,8 +47,8 @@
         <li><img src="../assets/Search_Magnifying_Glass.svg" alt="" /></li>
         <li>
           <router-link v-if="!isLoggedIn" to="/login"
-            ><font-awesome-icon icon="user"
-          /></router-link>
+            ><img src="../assets/User.svg" alt="">
+          </router-link>
           <router-link v-if="isLoggedIn && !isAdmin" to="/user/profil"
             ><font-awesome-icon icon="user"
           /></router-link>

@@ -20,20 +20,10 @@
           <p class="productDescription">{{ product.description }}</p>
           
           <div class="whichCreamWrapper">
-            <p class="hudtyp">Hudtyp</p>
+            <p class="hudtyp">Produkt Egenskaper</p>
             <div class="hudtypWrapper">
-              <label class="creamLabel">Pigmented</label>
-              <label class="creamLabel">Aging</label>
-              <label class="creamLabel">Dry</label>
-            </div>
-          </div>
-          <div class="whichEffect">
-            <p class="effekt">Effekt</p>
-            <div class="effektWrapper">
-              <label class="effectLabel">Exfoliating</label>
-              <label class="effectLabel">Brightening</label>
-              <label class="effectLabel">Hydrating</label>
-              <label class="effectLabel">Non-foaming</label>
+              <label class="creamLabel" v-for="(properties, index) in product.properties"
+              :key="index">{{ properties.name }}</label>
             </div>
           </div>
         </div>
@@ -75,7 +65,7 @@
             <font-awesome-icon :icon="isAnvandningPopupVisible ? 'chevron-up' : 'chevron-down'" />
           </div>
           <div v-if="isAnvandningPopupVisible" class="anvandning">
-            <p>Du använder den såhäe blablalblallalal</p> <!-- tryck in data här senare -->
+            <p>{{ product.usage_products }}</p>
           </div>
           <div class="ingredientsWrapper" @click="toggleIngredienserPopup()">
             <label>
@@ -84,7 +74,7 @@
             <font-awesome-icon :icon="isIngredienserPopupVisible ? 'chevron-up' : 'chevron-down'" />
           </div>
           <div v-if="isIngredienserPopupVisible" class="ingredients">
-            <p>ingredients blablablabla</p> <!-- tryck in data här senare -->
+            <p>{{ product.ingredients }}</p>
           </div>
         </div>
       </div>

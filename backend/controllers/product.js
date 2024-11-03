@@ -78,7 +78,6 @@ export const createProduct = async (req, res) => {
   console.log(product);
   console.log(files);
 
-
   if (typeof product.sizes === 'string') {
     try {
       product.sizes = JSON.parse(product.sizes);
@@ -87,6 +86,19 @@ export const createProduct = async (req, res) => {
       return res.status(400).json({ error: "Invalid sizes format" });
     }
   }
+
+  console.log(product.properties);
+
+  if (typeof product.properties === 'string') {
+    try {
+      product.properties = JSON.parse(product.properties);
+    } catch (error) {
+      console.error("Error parsing sizes:", error);
+      return res.status(400).json({ error: "Invalid sizes format" });
+    }
+  }
+
+  console.log(product.properties);
 
     // Get the file paths for the uploaded images
     const primaryImagePath = req.files.primaryImage[0].filename;

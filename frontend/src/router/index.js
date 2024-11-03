@@ -24,6 +24,7 @@ import CheckOutPage from "../views/ecommerce/CheckOutView.vue";
 import EventsPage from "../views/mainpage/EventsView.vue";
 import CoursesPage from "../views/mainpage/CoursesView.vue";
 import Product from "@/views/mainpage/ProductPage.vue";
+import ProductProperties from "@/views/admin/ProductProperties.vue";
 
 const routes = [
   {
@@ -103,6 +104,11 @@ const routes = [
     path: "/products/:id",
     name: "Individual Product View",
     component: Product,
+  },
+  {
+    path: "/admin/productproperties",
+    name: "Product Properties View",
+    component: ProductProperties,
   },
   {
     path: "/admin/courses",

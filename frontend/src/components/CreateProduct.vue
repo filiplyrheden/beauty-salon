@@ -4,38 +4,35 @@
       ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
     >
     <h2>Add New Product</h2>
-    <form
-      id="uploadForm"
-      @submit.prevent="saveProduct"
-      enctype="multipart/form-data"
-    >
+    <form id="uploadForm" @submit.prevent="saveProduct" enctype="multipart/form-data">
+      <!-- Existing Fields -->
       <div class="form-group">
-        <label for="productName">Product Name</label>
-        <input
-          type="text"
-          id="productName"
-          v-model="productName"
+        <label for="productName">Produktnamn</label>
+        <input 
+          type="text" 
+          id="productName" 
+          v-model="productName" 
           required
           placeholder="Enter product name"
         />
       </div>
 
       <div class="form-group">
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          v-model="description"
+        <label for="description">Beskrivning</label>
+        <textarea 
+          id="description" 
+          v-model="description" 
           required
           placeholder="Enter product description"
         ></textarea>
       </div>
 
       <div class="form-group">
-        <label for="categoryId">Category ID</label>
-        <input
-          type="number"
-          id="categoryId"
-          v-model="categoryId"
+        <label for="categoryId">Category ID ÄNDRA</label>
+        <input 
+          type="number" 
+          id="categoryId" 
+          v-model="categoryId" 
           required
           placeholder="Enter category ID"
         />
@@ -43,7 +40,7 @@
 
       <!-- Sizes Section -->
       <div class="form-group">
-        <label for="sizes">Sizes and Prices</label>
+        <label for="sizes">Storlekar och Priser</label>
         <div v-for="(size, index) in sizes" :key="index" class="size-entry">
           <input
             v-model="size.sizeName"
@@ -64,39 +61,90 @@
             placeholder="Quantity (10, 20, 30)"
             required
           />
-          <button @click.prevent="removeSize(index)">Remove</button>
+          <button @click.prevent="removeSize(index)">Ta Bort</button>
         </div>
-        <button @click.prevent="addSize">Add Size</button>
+        <button @click.prevent="addSize">Lägg Till Storlek</button>
       </div>
 
+      <!-- Usage Products Section -->
       <div class="form-group">
-        <label for="primaryImage">Primary Image:</label>
-        <input
-          type="file"
-          id="primaryImage"
-          @change="onImageChange($event, 'primary')"
-          accept="image/*"
+        <label for="usageProducts">Användarinstruktioner</label>
+        <textarea 
+          id="usageProducts" 
+          v-model="usageProducts" 
+          placeholder="Enter usage instructions"
+        ></textarea>
+      </div>
+
+      <!-- Ingredients Section -->
+      <div class="form-group">
+        <label for="ingredients">Ingredienser</label>
+        <div v-for="(ingredient, index) in ingredients" :key="index" class="ingredient-entry">
+          <input 
+            v-model="ingredients[index]"
+            type="text" 
+            placeholder="Ingredient name" 
+            required
+          />
+          <button @click.prevent="removeIngredient(index)">Ta Bort</button>
+        </div>
+        <button @click.prevent="addIngredient">Lägg Till Ingrediens</button>
+      </div>
+
+
+      <!-- Image Fields and Submit Button -->
+      <div class="form-group">
+        <label for="primaryImage">Första Bilden:</label>
+        <input 
+          type="file" 
+          id="primaryImage" 
+          @change="onImageChange($event, 'primary')" 
+          accept="image/*" 
         />
       </div>
 
       <div class="form-group">
-        <label for="secondaryImage">Secondary Image:</label>
-        <input
-          type="file"
-          id="secondaryImage"
-          @change="onImageChange($event, 'secondary')"
-          accept="image/*"
+        <label for="secondaryImage">Andra Bilden:</label>
+        <input 
+          type="file" 
+          id="secondaryImage" 
+          @change="onImageChange($event, 'secondary')" 
+          accept="image/*" 
         />
       </div>
 
       <div class="form-group">
-        <label for="thirdImage">Third Image:</label>
-        <input
-          type="file"
+        <label for="thirdImage">Tredje Bilden:</label>
+        <input 
+          type="file" 
           id="thirdImage"
-          @change="onImageChange($event, 'third')"
-          accept="image/*"
+          @change="onImageChange($event, 'third')" 
+          accept="image/*" 
         />
+      </div>
+      <!-- Ingredients Section -->
+      <div class="form-group">
+        <label for="property">Egenskaper</label>
+        <div v-for="(property, index) in properties" :key="index" class="property-entry">
+          <input 
+            v-model="properties[index]"
+            type="text" 
+            placeholder="Property name" 
+            required
+          />
+          <button @click.prevent="removeProperty(index)">Ta bort</button>
+        </div>
+        <button @click.prevent="addProperty">Lägg till Egenskap</button>
+      </div>
+
+      <div class="form-group">
+        <label for="featured">Ska denna produkten vara på landningssidan?</label>
+        <input 
+        :value="true"
+        type="radio"
+        id="featured"
+        v-model="featured"
+        >
       </div>
 
       <button type="submit" class="submit-btn">Add Product</button>
@@ -122,12 +170,18 @@ export default {
     return {
       productName: "",
       description: "",
-      sizes: [{ sizeName: "", price: "", quantity: "" }],
+      sizes: [
+        { sizeName: "", price: "", quantity: "" }
+      ],
+      usageProducts: "",
+      ingredients: [""],
+      properties: [""],
+      featured: false,
       primaryImageFile: null,
       secondaryImageFile: null,
       thirdImageFile: null,
       categoryId: "",
-      message: "", // For success or error messages
+      message: "",
     };
   },
   methods: {
@@ -137,66 +191,64 @@ export default {
     removeSize(index) {
       this.sizes.splice(index, 1);
     },
-    // Method to handle image changes
+    addIngredient() {
+      this.ingredients.push("");
+    },
+    removeIngredient(index) {
+      this.ingredients.splice(index, 1);
+    },
+    addProperty() {
+      this.properties.push("");
+    },
+    removeProperty(index) {
+      this.properties.splice(index, 1);
+    },
     onImageChange(event, imageType) {
       const file = event.target.files[0];
 
-      if (imageType === "primary") {
+      if (imageType === 'primary') {
         this.primaryImageFile = file;
-      } else if (imageType === "secondary") {
+      } else if (imageType === 'secondary') {
         this.secondaryImageFile = file;
-      } else if (imageType === "third") {
+      } else if (imageType === 'third') {
         this.thirdImageFile = file;
       }
     },
-
-    // Save new product
     async saveProduct() {
-      // Create a new FormData object
       const formData = new FormData();
-
-      // Append product details to the FormData
       formData.append("product_name", this.productName);
       formData.append("description", this.description);
       formData.append("sizes", JSON.stringify(this.sizes));
+      formData.append("usage_products", this.usageProducts);
+      formData.append("ingredients", JSON.stringify(this.ingredients));
       formData.append("category_id", parseInt(this.categoryId));
+      formData.append("featured", this.featured);
+      formData.append("properties", JSON.stringify(this.properties));
 
-      // Append image files to the FormData
-      if (this.primaryImageFile) {
-        formData.append("primaryImage", this.primaryImageFile);
-      }
-      if (this.secondaryImageFile) {
-        formData.append("secondaryImage", this.secondaryImageFile);
-      }
-      if (this.thirdImageFile) {
-        formData.append("thirdImage", this.thirdImageFile);
-      }
+      if (this.primaryImageFile) formData.append("primaryImage", this.primaryImageFile);
+      if (this.secondaryImageFile) formData.append("secondaryImage", this.secondaryImageFile);
+      if (this.thirdImageFile) formData.append("thirdImage", this.thirdImageFile);
 
       try {
         const response = await axiosInstance.post(`admin/products`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" }
         });
         console.log("Response:", response);
         this.message = "Product added successfully!";
         this.resetForm();
       } catch (error) {
         console.error("Error adding product:", error);
-        if (error.response && error.response.data) {
-          this.message = "Error adding product: " + error.response.data.error;
-        } else {
-          this.message =
-            "Error adding product: " + error.message || "Internal Server Error";
-        }
+        this.message = error.response?.data?.error || error.message || "Internal Server Error";
       }
     },
-
-    // Reset form fields
     resetForm() {
       this.productName = "";
       this.description = "";
       this.sizes = [{ sizeName: "", price: 0, quantity: 0 }];
+      this.usageProducts = "";
+      this.ingredients = [""];
+      this.properties = [""];
+      this.featured = false;
       this.primaryImageFile = null;
       this.secondaryImageFile = null;
       this.thirdImageFile = null;

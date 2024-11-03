@@ -48,8 +48,10 @@ const tableCreationQueries = [
     product_id INT AUTO_INCREMENT PRIMARY KEY,
     product_name VARCHAR(255),
     description TEXT,
-    stock_quantity INT,
     category_id INT,
+    featured boolean,
+    usage_products TEXT,
+    ingredients TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     image_url_primary TEXT,
     image_url_secondary TEXT,
@@ -80,7 +82,14 @@ const tableCreationQueries = [
     price DECIMAL(10,2),
     stock_quantity INT,
     FOREIGN KEY (product_id) REFERENCES Products(product_id)
-);`,
+    );`,
+
+  `CREATE TABLE ProductProperties (
+    property_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
+    name TEXT,
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+    );`,
 
   // Table: OrderDetails
   `CREATE TABLE OrderDetails (
@@ -164,6 +173,7 @@ const insertDataQueries = [
   VALUES
   ('admin', 'Emily', 'Blossom', 'emily.blossom@beautywellness.com', 'hashed_password1', "123-456-7890"),
   ('customer', 'Sophia', 'Grace', 'sophia.grace@example.com', 'hashed_password2', "123-456-7890"),
+  ('admin', 'Lucas', 'A', 'lucas@1.se', '$2b$10$18wHqr3Wqp91iaAbUIIxPuuMFZxku4.IYuWU0z06K9TjGMthMbvh2', "123-456-7890"),
   ('customer', 'Liam', 'Johnson', 'liam.johnson@example.com', 'hashed_password3', "123-456-7890");`,
 
   // Insert into Categories
@@ -181,37 +191,38 @@ const insertDataQueries = [
   ('Massage Therapies'),
   ('Nail Services'),
   ('Hair Services');`,
+
   // Insert into Products
-  `INSERT INTO Products (product_name, description, category_id) VALUES
-  ('Hydrating Facial Cream', 'Deeply moisturizes and revitalizes skin.', 1),
-  ('Organic Shampoo', 'Gentle cleansing with natural ingredients.',  2),
-  ('Matte Liquid Lipstick', 'Long-lasting matte finish in various shades.',  3),
-  ('Revitalizing Hair Mask', 'Nourishes and strengthens hair.', 2);`,
+  `INSERT INTO Products (product_name, description, category_id, featured, usage_products, ingredients)
+  VALUES
+  ('Hydrating Facial Cream', 'Deeply moisturizes and revitalizes skin.', 1, TRUE, 'Apply a small amount to the face and neck twice daily after cleansing.', 'Aqua, Glycerin, Hyaluronic Acid, Vitamin E, Shea Butter'),
+  ('Organic Shampoo', 'Gentle cleansing with natural ingredients.', 2, TRUE, 'Massage into wet hair, lather, and rinse thoroughly. Use daily or as needed.', 'Water, Aloe Vera, Coconut Oil, Jojoba Oil, Lavender Essential Oil'),
+  ('Matte Liquid Lipstick', 'Long-lasting matte finish in various shades.', 3, FALSE, 'Apply directly to lips starting at the center and moving outwards. Allow to dry for a matte finish.', 'Isododecane, Dimethicone, Red 7 Lake, Candelilla Wax, Vitamin E'),
+  ('Revitalizing Hair Mask', 'Nourishes and strengthens hair.', 2, FALSE, 'Apply generously to damp hair, leave for 10-15 minutes, then rinse thoroughly. Use weekly for best results.', 'Water, Argan Oil, Avocado Oil, Keratin, Coconut Extract');`,
 
   `INSERT INTO ProductSizes (product_id, size, price, stock_quantity) VALUES
   (1, '50 ml', 29.99, 150),
   (1, '100 ml', 34.99, 100),
   (2, '250 ml', 15.99, 200),
   (3, '5 ml', 19.99, 100),
-  (4, '30 ml', 24.99, 75);
-  (6, 5, '50 ml', 29.99, 150),
-  (7, 5, '100 ml', 34.99, 100),
-  (8, 6, '250 ml', 15.99, 200),
-  (9, 6, '500 ml', 25.99, 180),
-  (10, 7, '30 ml', 20.99, 90),
-  (11, 7, '60 ml', 35.99, 50),
-  (12, 8, '10 ml', 9.99, 300),
-  (13, 8, '20 ml', 17.99, 200),
-  (14, 8, '50 ml', 29.99, 120);
-  `,
+  (4, '30 ml', 24.99, 75);`,
 
-  // Insert into Products
-  `INSERT INTO Products (product_name, description, stock_quantity, category_id)
-  VALUES
-  ('Hydrating Facial Cream', 'Deeply moisturizes and revitalizes skin.', 150, 1),
-  ('Organic Shampoo', 'Gentle cleansing with natural ingredients.', 200, 2),
-  ('Matte Liquid Lipstick', 'Long-lasting matte finish in various shades.', 100, 3),
-  ('Revitalizing Hair Mask', 'Nourishes and strengthens hair.',80, 2);`,
+  `INSERT INTO ProductProperties (product_id, name) VALUES
+  (1, 'Color: Red'),
+  (1, 'Size: Medium'),
+  (1, 'Material: Cotton'),
+  (2, 'Color: Blue'),
+  (2, 'Size: Large'),
+  (2, 'Weight: 1.5kg'),
+  (3, 'Material: Leather'),
+  (3, 'Size: Small'),
+  (3, 'Color: Black'),
+  (4, 'Dimensions: 30x40 cm'),
+  (4, 'Weight: 2kg'),
+  (5, 'Color: Green'),
+  (5, 'Material: Plastic'),
+  (5, 'Size: Extra Large');`,
+
 
   // Insert into Orders
   `INSERT INTO Orders (user_id, order_status, total_amount, address_line1, address_line2, postal_code, country, city)

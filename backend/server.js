@@ -80,6 +80,8 @@ import {
 } from "./controllers/order.js";
 import { sendCode, resetPassword } from "./controllers/reset-password.js";
 import { getOrderById } from "./models/orderModel.js";
+import { createNewProperty, deletePropertyById, showProperties, updatePropertyById } from "./controllers/productproperties.js";
+import { deleteProperty } from "./models/productPropertyModel.js";
 
 dotenv.config();
 const app = express();
@@ -414,7 +416,11 @@ app.delete("/user/:id", authMiddleware, adminMiddleware, deleteUserById); // Del
 // Routes for singular Product
 app.get("/product/:id", GetProductById);
 
-// This is your test secret API key.
+// Routes for product Properties
+app.get("/productproperties", authMiddleware, adminMiddleware, showProperties);
+app.post("/productproperties", authMiddleware, adminMiddleware, createNewProperty);
+app.delete("/productproperties/:id", authMiddleware, adminMiddleware, deletePropertyById);
+app.put("/productproperties/:id", authMiddleware, adminMiddleware, updatePropertyById);
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
