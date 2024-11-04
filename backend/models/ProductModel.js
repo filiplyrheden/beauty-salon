@@ -14,6 +14,62 @@ export const getProducts = async () => {
   }
 };
 
+export const getFeaturedProducts = async () => {
+  try {
+    const [rows] = await db.query(`SELECT 
+  p.product_id,
+  p.product_name,
+  p.description,
+  p.usage_products,
+  p.ingredients,
+  p.featured,
+  p.created_at,
+  p.image_url_primary,
+  p.image_url_secondary,
+  p.image_url_third,
+  JSON_OBJECT(
+      'category_id', c.category_id,
+      'category_name', c.category_name,
+      'parent_category_id', c.parent_category_id
+  ) AS category,
+  JSON_ARRAYAGG(
+      CASE 
+          WHEN ps.size_id IS NOT NULL THEN JSON_OBJECT(
+              'size_id', ps.size_id,
+              'size', ps.size,
+              'price', ps.price,
+              'stock_quantity', ps.stock_quantity
+          )
+      END
+  ) AS variants,
+  JSON_ARRAYAGG(
+      CASE
+          WHEN pp.property_id IS NOT NULL THEN JSON_OBJECT(
+              'property_id', pp.property_id,
+              'name', pp.name
+          )
+      END
+  ) AS properties
+FROM 
+  Products p
+LEFT JOIN
+  Categories c ON p.category_id = c.category_id
+LEFT JOIN 
+  ProductSizes ps ON p.product_id = ps.product_id
+LEFT JOIN
+  ProductProperties pp ON p.product_id = pp.product_id
+WHERE 
+  p.featured = 1
+GROUP BY 
+  p.product_id;
+`);
+    return rows;
+  } catch (err) {
+    console.error("Error fetching products:", err);
+    throw err; 
+  }
+};
+
 export const insertProduct = async (product) => {
   const {
     product_name,
@@ -21,7 +77,7 @@ export const insertProduct = async (product) => {
     sizes, // Assuming this is an array of objects
     usage_products,
     ingredients,
-    properties, // Assuming this is an array of objects with { name: "Property Name" }
+    properties, // Expected structure: [{ name: 'Skin Type', property_id: 1 }, ...]
     category_id,
     featured,
     image_url_primary,
@@ -51,26 +107,33 @@ export const insertProduct = async (product) => {
 
     const productId = productResult.insertId;
 
+    console.log("Properties inside the model:", properties);
+
     // Step 2: Insert sizes into the ProductSizes table
-    const sizeValues = sizes.map(({ sizeName, price, quantity }) => 
-      `(${productId}, '${sizeName}', ${price}, ${quantity})`
-    ).join(", ");
+    const sizeValues = sizes.map(({ sizeName, price, quantity }) => [
+      productId,
+      sizeName,
+      price,
+      quantity,
+    ]);
 
     const sizeQuery = `
       INSERT INTO ProductSizes (product_id, size, price, stock_quantity)
-      VALUES ${sizeValues}
+      VALUES ${sizes.map(() => "(?, ?, ?, ?)").join(", ")}
     `;
-    await db.query(sizeQuery);
+    await db.query(sizeQuery, sizeValues.flat());
 
-    const propertiesValues = properties.map(({ name }) => 
-      `(${productId}, '${name}')`
-    ).join(", ");
+    // Step 3: Insert properties into the ProductPropertiesJoinTable
+    const propertiesValues = properties.map(({ name, property_id }) => [
+      productId,
+      property_id,
+    ]);
 
     const propertiesQuery = `
-      INSERT INTO ProductProperties (product_id, name)
-      VALUES ${propertiesValues}
+      INSERT INTO ProductPropertiesJoinTable (product_id, property_id)
+      VALUES ${properties.map(() => "(?, ?)").join(", ")}
     `;
-    await db.query(propertiesQuery);
+    await db.query(propertiesQuery, propertiesValues.flat());
 
     return productResult;
   } catch (err) {
@@ -149,10 +212,7 @@ export const trashProduct = async (productId) => {
     const queryProducts = `DELETE FROM Products WHERE product_id = ?`;
     const [resultProducts] = await db.query(queryProducts, [productId]);
 
-    const queryProperties = `DELETE FROM ProductProperties WHERE product_id = ?`;
-    const [resultProperties] = await db.query(queryProperties, [productId]);
     return {
-      propertiesDeleted: resultProperties,
       sizesDeleted: resultSizes,
       productDeleted: resultProducts,
     };
@@ -215,34 +275,25 @@ export const getProductsWithInfo = async () => {
           'category_name', c.category_name,
           'parent_category_id', c.parent_category_id
       ) AS category,
-      JSON_ARRAYAGG(
-          CASE 
-              WHEN ps.size_id IS NOT NULL THEN JSON_OBJECT(
-                  'size_id', ps.size_id,
-                  'size', ps.size,
-                  'price', ps.price,
-                  'stock_quantity', ps.stock_quantity
-              )
-          END
-      ) AS variants,
-      JSON_ARRAYAGG(
-          CASE
-              WHEN pp.property_id IS NOT NULL THEN JSON_OBJECT(
-                  'property_id', pp.property_id,
-                  'name', pp.name
-              )
-          END
-      ) AS properties
+      (SELECT JSON_ARRAYAGG(
+          JSON_OBJECT(
+              'size_id', ps.size_id,
+              'size', ps.size,
+              'price', ps.price,
+              'stock_quantity', ps.stock_quantity)
+      ) FROM ProductSizes ps WHERE ps.product_id = p.product_id) AS variants,
+      (SELECT JSON_ARRAYAGG(
+          JSON_OBJECT(
+              'property_id', pp.property_id,
+              'name', pp.name
+          )
+      ) FROM ProductPropertiesJoinTable ppjt
+      INNER JOIN ProductProperties pp ON ppjt.property_id = pp.property_id
+      WHERE ppjt.product_id = p.product_id) AS properties
     FROM 
       Products p
     LEFT JOIN
       Categories c ON p.category_id = c.category_id
-    LEFT JOIN 
-      ProductSizes ps ON p.product_id = ps.product_id
-    LEFT JOIN
-      ProductProperties pp ON p.product_id = pp.product_id
-    GROUP BY 
-      p.product_id;
   `);
 
   // Post-process the rows to ensure variants is an empty object if there are no sizes
@@ -251,9 +302,11 @@ export const getProductsWithInfo = async () => {
     if (!row.variants || row.variants.length === 0) {
       row.variants = {}; // Set to empty object if there are no variants
     }
+
     if (!row.properties || row.properties.length === 0) {
       row.properties = {};
     }
+    
     return row;
   });
 };
@@ -295,10 +348,11 @@ export const getProductById = async (productId) => {
   // Query to get the product properties
   const propertiesQuery = `
     SELECT 
-      property_id,
-      name
-    FROM ProductProperties
-    WHERE product_id = ?
+      ppjt.property_id,
+      pp.name
+    FROM ProductPropertiesJoinTable ppjt
+    INNER JOIN ProductProperties pp ON ppjt.property_id = pp.property_id
+    WHERE ppjt.product_id = ?
   `;
 
   try {
@@ -327,4 +381,3 @@ export const getProductById = async (productId) => {
     throw err;
   }
 };
-

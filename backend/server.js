@@ -22,6 +22,7 @@ import {
   updateProduct,
   deleteProduct,
   getCheckoutProducts,
+  showFeaturedProducts,
 } from "./controllers/product.js";
 import {
   showCourses,
@@ -81,7 +82,6 @@ import {
 import { sendCode, resetPassword } from "./controllers/reset-password.js";
 import { getOrderById } from "./models/orderModel.js";
 import { createNewProperty, deletePropertyById, showProperties, updatePropertyById } from "./controllers/productproperties.js";
-import { deleteProperty } from "./models/productPropertyModel.js";
 
 dotenv.config();
 const app = express();
@@ -225,6 +225,7 @@ app.use("/uploads", express.static(path.join(__dirnameFull, "uploads")));
 app.get("/products", showProducts); // Get all products
 app.get("/allproducts", showallProducts); // Get all products with additional info
 app.get("/admin/products", authMiddleware, adminMiddleware, showProducts); // Get all products for admin
+app.get("/featuredproducts", showFeaturedProducts);
 app.post(
   "/admin/products",
   authMiddleware,

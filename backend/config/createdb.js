@@ -86,10 +86,17 @@ const tableCreationQueries = [
 
   `CREATE TABLE ProductProperties (
     property_id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT,
-    name TEXT,
-    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+    name TEXT
     );`,
+
+  `CREATE TABLE ProductPropertiesJoinTable (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
+    property_id INT,
+    FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE CASCADE,
+    FOREIGN KEY (property_id) REFERENCES ProductProperties(property_id) ON DELETE CASCADE,
+    UNIQUE (product_id, property_id)  -- This ensures a property can't be duplicated for a single product
+  );`,
 
   // Table: OrderDetails
   `CREATE TABLE OrderDetails (
@@ -207,22 +214,10 @@ const insertDataQueries = [
   (3, '5 ml', 19.99, 100),
   (4, '30 ml', 24.99, 75);`,
 
-  `INSERT INTO ProductProperties (product_id, name) VALUES
-  (1, 'Color: Red'),
-  (1, 'Size: Medium'),
-  (1, 'Material: Cotton'),
-  (2, 'Color: Blue'),
-  (2, 'Size: Large'),
-  (2, 'Weight: 1.5kg'),
-  (3, 'Material: Leather'),
-  (3, 'Size: Small'),
-  (3, 'Color: Black'),
-  (4, 'Dimensions: 30x40 cm'),
-  (4, 'Weight: 2kg'),
-  (5, 'Color: Green'),
-  (5, 'Material: Plastic'),
-  (5, 'Size: Extra Large');`,
-
+  `INSERT INTO ProductProperties (name) VALUES
+  ('Skin Type'),
+  ('Texture'),
+  ('Scent');`,
 
   // Insert into Orders
   `INSERT INTO Orders (user_id, order_status, total_amount, address_line1, address_line2, postal_code, country, city)

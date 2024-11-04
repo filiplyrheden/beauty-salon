@@ -16,6 +16,7 @@
             <h2 class="productBrand">{{ product.category_name }}</h2>
           </div>
           <h1 class="productName">{{ product.product_name }}</h1>
+          <h4 v-if="!chosenSize.price == 0">Pris: {{ chosenSize.price }} kr</h4>
           <!-- <p class="productSmallDescription">Hydrate and brighten damaged skin</p> -->
           <p class="productDescription">{{ product.description }}</p>
           
@@ -47,7 +48,7 @@
           <div class="selectSizeWrapper" v-if="isSizesPopupVisible">
             <div class="infoHolder" 
                 v-for="(size, index) in product.variants" 
-                :key="index" 
+                :key="index"  
                 @click="() => { changeSize(size); toggleSizesPopup(); }">
               <label class="sizeSelection">{{ size.sizeName }}</label>
               <label class="sizeSelection sizeSelectionPrice">{{ size.price }} kr</label>
@@ -79,13 +80,20 @@
         </div>
       </div>
     </div>
+    <div class="productCWrapper">
+      <ProductCarousel></ProductCarousel>
+    </div>
   </div>
 </template>
 
 <script>
+import ProductCarousel from '@/components/ProductCarousel.vue';
 import axiosInstance from '@/services/axiosConfig';
 
 export default {
+  components: {
+    ProductCarousel,
+  },
   name: 'ProductView',
   data() {
     return {
@@ -187,6 +195,8 @@ export default {
   align-self: center;
 }
 .productWrapper{
+  padding-top: 20px;
+  padding-bottom: 20px;
   padding-left: 72px;
   padding-right: 72px;
   height: 100%;
@@ -194,6 +204,13 @@ export default {
   display: flex;
   justify-content:center;
   gap: 30px;
+}
+.productCWrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 100px;
+  padding-bottom: 100px;
 }
 .productImages{
   display: flex;

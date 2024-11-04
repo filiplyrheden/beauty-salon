@@ -22,12 +22,20 @@ import {
   faCheck,
   faTag,
   faArrowRightFromBracket,
+  faCancel,
+  faTimes,
+  faEdit,
+  faSave,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { store } from "./store/store.js";
 
 library.add(
+  faSave,
   faChevronDown,
+  faTimes,
+  faEdit,
+  faCancel,
   faCheck,
   faTag,
   faChevronUp,

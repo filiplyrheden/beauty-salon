@@ -109,8 +109,9 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axiosInstance.get(`/allproducts`);
+        const response = await axiosInstance.get(`/featuredproducts`);
         // Initialize selectedSize for each product
+        console.log(response);
         this.products = response.data.map((product) => {
           const defaultSizeId = product.variants
             ? product.variants[0].size_id
