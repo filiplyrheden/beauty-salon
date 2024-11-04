@@ -29,6 +29,8 @@
         try {
           const response = await axiosInstance.get(`/admin/products`);
           this.productItems = response.data; // Assign API response to items
+          console.log(" productItems in parent container");
+          console.log(this.productItems);
         } catch (error) {
           console.error("Error fetching products:", error); // Log error for debugging
         }

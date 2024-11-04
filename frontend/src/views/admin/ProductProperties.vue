@@ -18,17 +18,6 @@
             <label for="name">Namn för egenskap:</label>
             <input v-model="form.name" type="text" id="name" required />
           </div>
-
-          <div class="form-group">
-            <label for="product">Välj Produkt</label>
-            <select v-model="form.product_id" id="product" required>
-                <option disabled value="">Välj en produkt</option>
-                <option v-for="product in products" :key="product.product_id" :value="product.product_id">
-                {{ product.product_name }}
-                </option>
-            </select>
-          </div>
-
   
           <!-- Buttons -->
           <div class="button-group">
@@ -49,15 +38,11 @@
           <thead>
             <tr>
               <th>Egenskapsnamn</th>
-              <th>Produkt ID</th>
-              <th>Egenskaps ID</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="property in properties" :key="property.property_id">
               <td>{{ property.name }}</td>
-              <td>{{ property.product_id }}</td>
-              <td>{{  property.property_id }}</td>
               
               <td>
                 <button @click="editProperty(property)">Edit</button>
@@ -77,19 +62,16 @@
     name: "PropertyView",
     data() {
       return {
-        products: [],
         properties: [],
         form: {
           property_id: null, // Used for editing
           name: "",
-          product_id: null,
         },
         isEditing: false,
         isLoading: false, // For loading indicator
       };
     },
     created() {
-      this.fetchProducts();
       this.fetchProperties();
     },
     methods: {
@@ -111,27 +93,6 @@
           Swal.fire(
             "Error",
             "Failed to fetch properties. Please try again later.",
-            "error"
-          );
-        } finally {
-          this.isLoading = false;
-        }
-      },
-      async fetchProducts() {
-        this.isLoading = true;
-        try {
-          const response = await axiosInstance.get(`/products`);
-          this.products = response.data.map((product) => ({
-            ...product,
-          }));
-        } catch (error) {
-          console.error(
-            "Error fetching products:",
-            error.response || error.message
-          );
-          Swal.fire(
-            "Error",
-            "Failed to fetch products. Please try again later.",
             "error"
           );
         } finally {
@@ -179,7 +140,6 @@
             `/productproperties/${this.form.property_id}`, // Use the correct endpoint
             {
               name: this.form.name,
-              product_id: this.form.product_id,
             }
           );
   
@@ -254,7 +214,6 @@
         this.form = {
           property_id: null,
           name: "",
-          product_id: ""
         };
       },
   

@@ -79,16 +79,12 @@
       <!-- Ingredients Section -->
       <div class="form-group">
         <label for="ingredients">Ingredienser</label>
-        <div v-for="(ingredient, index) in ingredients" :key="index" class="ingredient-entry">
-          <input 
-            v-model="ingredients[index]"
-            type="text" 
-            placeholder="Ingredient name" 
-            required
-          />
-          <button @click.prevent="removeIngredient(index)">Ta Bort</button>
-        </div>
-        <button @click.prevent="addIngredient">Lägg Till Ingrediens</button>
+        <textarea 
+          id="ingredients" 
+          v-model="ingredients" 
+          required
+          placeholder="Skriv in alla ingredienser separerade med kommatecken (t.ex. Vatten, Glycerin, Doft)."
+        ></textarea>
       </div>
 
 
@@ -122,19 +118,23 @@
           accept="image/*" 
         />
       </div>
-      <!-- Ingredients Section -->
+
+      <!-- Properties Section -->
       <div class="form-group">
         <label for="property">Egenskaper</label>
-        <div v-for="(property, index) in properties" :key="index" class="property-entry">
-          <input 
-            v-model="properties[index]"
-            type="text" 
-            placeholder="Property name" 
-            required
-          />
-          <button @click.prevent="removeProperty(index)">Ta bort</button>
-        </div>
+        <select v-model="selectedProperty">
+          <option value="" disabled selected>Välj en egenskap</option>
+          <option v-for="(property, index) in propertiesOnLoad" :key="index" :value="property.property_id">
+            {{ property.name }}
+          </option>
+        </select>
         <button @click.prevent="addProperty">Lägg till Egenskap</button>
+        <ul>
+          <li v-for="(property, index) in properties" :key="index">
+            {{ property.name }}
+            <button @click.prevent="removeProperty(index)">Remove</button>
+          </li>
+        </ul>
       </div>
 
       <div class="form-group">
@@ -164,6 +164,7 @@
 
 <script>
 import axiosInstance from "@/services/axiosConfig";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -174,17 +175,40 @@ export default {
         { sizeName: "", price: "", quantity: "" }
       ],
       usageProducts: "",
-      ingredients: [""],
-      properties: [""],
+      ingredients: "",
+      properties: [],
       featured: false,
       primaryImageFile: null,
       secondaryImageFile: null,
       thirdImageFile: null,
       categoryId: "",
       message: "",
+      propertiesOnLoad: "",
+      selectedProperty: "",
     };
   },
+  created() {
+    this.fetchProductProperties()
+  },
   methods: {
+    async fetchProductProperties() {
+      try {
+        const response = await axiosInstance.get(`/productproperties`);
+        this.propertiesOnLoad = response.data.map((propertiesOnLoad) => ({
+          ...propertiesOnLoad,
+        }));
+      } catch (error) {
+        console.error(
+          "Error fetching Proeduct Properties:",
+          error.response || error.message
+        );
+        Swal.fire(
+          "Fel",
+          "Fel vid hämtning av Event: Misslyckades med att hämta Event. Försök igen senare",
+          "error"
+        );
+      }
+    },
     addSize() {
       this.sizes.push({ sizeName: "", price: 0, quantity: 0 });
     },
@@ -198,7 +222,39 @@ export default {
       this.ingredients.splice(index, 1);
     },
     addProperty() {
-      this.properties.push("");
+      if (this.selectedProperty) {
+        // Check if the property is already in the properties array
+        const propertyExists = this.properties.some(
+          (property) => property.property_id === this.selectedProperty
+        );
+
+        if (propertyExists) {
+          // Show an error message using SweetAlert
+          Swal.fire(
+            "Fel",
+            "Egenskapen har redan lagts till.",
+            "error"
+          );
+          return; // Exit the function if the property already exists
+        }
+
+        console.log(this.selectedProperty);
+
+        // Find the selected property object from propertiesOnLoad
+        const selectedPropertyObject = this.propertiesOnLoad.find(
+          (property) => property.property_id === this.selectedProperty
+        );
+        console.log(selectedPropertyObject);
+
+        if (selectedPropertyObject) {
+          this.properties.push({
+            name: selectedPropertyObject.name,
+            property_id: selectedPropertyObject.property_id,
+          });
+          this.selectedProperty = ""; // Reset selected property after adding
+          console.log(this.properties);
+        }
+      }
     },
     removeProperty(index) {
       this.properties.splice(index, 1);
@@ -220,7 +276,7 @@ export default {
       formData.append("description", this.description);
       formData.append("sizes", JSON.stringify(this.sizes));
       formData.append("usage_products", this.usageProducts);
-      formData.append("ingredients", JSON.stringify(this.ingredients));
+      formData.append("ingredients", this.ingredients);
       formData.append("category_id", parseInt(this.categoryId));
       formData.append("featured", this.featured);
       formData.append("properties", JSON.stringify(this.properties));
@@ -246,13 +302,14 @@ export default {
       this.description = "";
       this.sizes = [{ sizeName: "", price: 0, quantity: 0 }];
       this.usageProducts = "";
-      this.ingredients = [""];
-      this.properties = [""];
+      this.ingredients = "";
+      this.properties = []; // Reset properties to an empty array
       this.featured = false;
       this.primaryImageFile = null;
       this.secondaryImageFile = null;
       this.thirdImageFile = null;
       this.categoryId = "";
+      this.selectedProperty = "";
     },
   },
 };

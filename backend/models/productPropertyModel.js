@@ -33,13 +33,13 @@ export const getPropertyById = async (id) => {
 };
 
 export const createProperty = async (propertyData) => {
-  const { name, product_id } =
+  const { name} =
     propertyData;
 
   try {
     const [result] = await db.query(
-      "INSERT INTO ProductProperties (name, product_id) VALUES (?, ?)",
-      [name, product_id]
+      "INSERT INTO ProductProperties (name) VALUES (?)",
+      [name]
     );
 
     // Return the newly created property ID or some acknowledgment

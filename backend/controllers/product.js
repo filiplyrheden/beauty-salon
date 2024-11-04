@@ -6,6 +6,7 @@ import {
   getProductById,
   getProductsWithInfo,
   fetchCheckoutProductsByIds,
+  getFeaturedProducts,
 } from "../models/ProductModel.js";
 import path from "path";
 import fs from "fs";
@@ -31,6 +32,17 @@ export const showallProducts = async (req, res) => {
     res.status(200).json(products);
   } catch (err) {
     console.error("Error in showProductsWithInfo:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const showFeaturedProducts = async (req, res) => {
+  try {
+    const products = await getFeaturedProducts();
+    console.log("featured products inside product controller: " + products);
+    res.status(200).json(products);
+  } catch (err) {
+    console.error("Error in showFeaturedProducts:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -87,8 +99,6 @@ export const createProduct = async (req, res) => {
     }
   }
 
-  console.log(product.properties);
-
   if (typeof product.properties === 'string') {
     try {
       product.properties = JSON.parse(product.properties);
@@ -143,7 +153,7 @@ export const updateProduct = async (req, res) => {
   const product = req.body;
   console.log(product);
   console.log("---------------------------------");
-  const files = req.files;
+  const files = req.files || {}; // Ensure files is an object to avoid undefined
   const productId = product.product_id;
   console.log(files);
 
@@ -152,18 +162,19 @@ export const updateProduct = async (req, res) => {
     "existing product with images that needs to be deleted if there are new images uploaded: ", existingProduct
   );
 
-  // If existingProduct is null, you might want to handle that case too.
   if (!existingProduct) {
     return res.status(404).json({ error: "Product not found" });
   }
 
-  // Get the file paths for the uploaded images
-  const primaryImagePath = files.primaryImage ? files.primaryImage[0].filename : null;
-  const secondaryImagePath = files.secondaryImage ? files.secondaryImage[0].filename : null;
-  const thirdImagePath = files.thirdImage ? files.thirdImage[0].filename : null;
+  // Check if files exist before trying to access them
+  const primaryImagePath = files.primaryImage ? files.primaryImage[0]?.filename : null;
+  const secondaryImagePath = files.secondaryImage ? files.secondaryImage[0]?.filename : null;
+  const thirdImagePath = files.thirdImage ? files.thirdImage[0]?.filename : null;
+  
   console.log("primary image path (new) : " + primaryImagePath);
   console.log("secondary image path (new) : " + secondaryImagePath);
   console.log("third image path (new) : " + thirdImagePath);
+
   // Array to hold existing image paths for deletion
   const existingImages = [
     existingProduct.image_url_primary,
@@ -173,32 +184,32 @@ export const updateProduct = async (req, res) => {
   console.log("existing images: ");
   console.log(existingImages);
 
-// Deleting images only if a new image is NOT uploaded
-if (existingImages) {
-  existingImages.forEach((imagePath, index) => {
-    // Determine if there's a new image for this index
-    const newImagePath = [primaryImagePath, secondaryImagePath, thirdImagePath][index];
+  // Deleting images only if a new image is uploaded
+  if (existingImages) {
+    existingImages.forEach((imagePath, index) => {
+      // Determine if there's a new image for this index
+      const newImagePath = [primaryImagePath, secondaryImagePath, thirdImagePath][index];
 
-    // Only delete existing image if there is no new image uploaded
-    if (!newImagePath) { // Only proceed if there's no new image path
-      if (imagePath) {
-        const fullPath = path.join("uploads", path.basename(imagePath));
+      // Only delete existing image if there is a new image uploaded
+      if (newImagePath) { // Proceed only if there's a new image path
+        if (imagePath) {
+          const fullPath = path.join("uploads", path.basename(imagePath));
 
-        if (fs.existsSync(fullPath)) { // Check if the file exists
-          fs.unlink(fullPath, (err) => {
-            if (err) {
-              console.error(`Failed to delete image at ${fullPath}:`, err);
-            } else {
-              console.log("Deleted image with fullPath: " + fullPath);
-            }
-          });
-        } else {
-          console.log(`Image does not exist at path: ${fullPath}`);
+          if (fs.existsSync(fullPath)) { // Check if the file exists
+            fs.unlink(fullPath, (err) => {
+              if (err) {
+                console.error(`Failed to delete image at ${fullPath}:`, err);
+              } else {
+                console.log("Deleted image with fullPath: " + fullPath);
+              }
+            });
+          } else {
+            console.log(`Image does not exist at path: ${fullPath}`);
+          }
         }
       }
-    }
-  });
-}
+    });
+  }
 
   // Construct URLs for uploaded images if they exist
   const primaryImageUrl = primaryImagePath ? `${req.protocol}://${req.get("host")}/uploads/${primaryImagePath}` : existingProduct.image_url_primary;
@@ -226,6 +237,7 @@ if (existingImages) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 /**
