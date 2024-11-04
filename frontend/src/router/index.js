@@ -180,6 +180,16 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+
+  // Add scrollBehavior to reset the scroll position on route change
+  scrollBehavior(to, from, savedPosition) {
+    // Scroll to saved position if available, else reset to top
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
 });
 
 router.beforeEach(async (to, from, next) => {

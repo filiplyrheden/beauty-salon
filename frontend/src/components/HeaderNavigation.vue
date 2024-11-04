@@ -1,5 +1,6 @@
 <template>
-  <header class="header-nav">
+  <header :class="['header-nav', { sticky: isSticky }]">
+    <div :class="{ 'header-nav-placeholder': isSticky }"></div>
     <!-- Top bar section -->
     <div class="top-bar">
       <nav>
@@ -47,7 +48,7 @@
         <li><img src="../assets/Search_Magnifying_Glass.svg" alt="" /></li>
         <li>
           <router-link v-if="!isLoggedIn" to="/login"
-            ><img src="../assets/User.svg" alt="">
+            ><img src="../assets/User.svg" alt="" />
           </router-link>
           <router-link v-if="isLoggedIn && !isAdmin" to="/user/profil"
             ><font-awesome-icon icon="user"
@@ -114,7 +115,8 @@ export default {
         { name: "Köp hudvård online", path: "/shop" },
         { name: "Vasaplatsen - Göteborg", path: "/om-mig" },
       ],
-      currentTopBarLinkIndex: 0, // For cycling top bar links on mobile
+      currentTopBarLinkIndex: 0,
+      isSticky: false,
     };
   },
   computed: {
@@ -145,9 +147,11 @@ export default {
   },
   mounted() {
     this.startLinkRotation();
+    window.addEventListener("scroll", this.handleScroll);
   },
   beforeUnmount() {
     clearInterval(this.linkRotationInterval);
+    window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
     ...mapMutations({
@@ -187,6 +191,9 @@ export default {
           sizeId: sizeId,
         }); // Otherwise, decrement the quantity
       }
+    },
+    handleScroll() {
+      this.isSticky = window.scrollY > 0; // Make sticky when scrolling down
     },
     checkAuthentication() {
       this.$store.dispatch("checkAuth");
@@ -416,6 +423,24 @@ export default {
   align-content: center;
   border: none;
 }
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+.header-nav {
+  background-color: white;
+}
+.header-nav-placeholder {
+  height: 0;
+  transition: height 0.3s ease;
+}
+.header-nav-placeholder.sticky {
+  height: 80px; /* Match the height of your header */
+}
+
 /* Mobile styling (only one link visible at a time) */
 @media (max-width: 768px) {
   .mobile-top-bar {

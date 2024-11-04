@@ -429,6 +429,9 @@ h3 {
   width: 25%;
   padding: 10px;
   height: fit-content;
+  position: sticky;
+  top: 130px;
+  margin-bottom: 26%;
 }
 .filter {
   align-self: flex-end;
