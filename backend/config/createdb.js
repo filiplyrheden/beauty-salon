@@ -5,8 +5,8 @@ import mysql from "mysql2/promise";
 // Replace these with your actual MySQL credentials
 const dbConfig = {
   host: "localhost",
-  user: "lucas", // MySQL username
-  password: "1234", // MySQL password
+  user: "root", // MySQL username
+  password: "", // MySQL password
   // database will be specified later
 };
 
@@ -133,6 +133,7 @@ const tableCreationQueries = [
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10,2),
+    schedule DATETIME,
     image_url VARCHAR(255),
     booking_link VARCHAR(255),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -241,10 +242,10 @@ const insertDataQueries = [
   ('Hair Coloring', 'Expert hair coloring services with premium products.', 120, 80.00, 4, 'http://beautywellness.com/book/hair-coloring');`,
 
   // Insert into Events
-  `INSERT INTO Events (name, description, price, image_url, booking_link)
+  `INSERT INTO Events (name, description, price, schedule, image_url, booking_link)
   VALUES
-  ('Summer Glow Workshop', 'Learn skincare routines for radiant summer skin.', 49.99, 'http://example.com/images/event_summer_glow.jpg', 'http://beautywellness.com/book/event/summer-glow'),
-  ('Wellness Retreat Weekend', 'A weekend of relaxation and rejuvenation.', 299.99, 'http://example.com/images/event_retreat.jpg', 'http://beautywellness.com/book/event/wellness-retreat');`,
+  ('Summer Glow Workshop', 'Learn skincare routines for radiant summer skin.', 49.99, '2024-12-05 09:00:00', 'http://example.com/images/event_summer_glow.jpg', 'http://beautywellness.com/book/event/summer-glow'),
+  ('Wellness Retreat Weekend', 'A weekend of relaxation and rejuvenation.', 299.99,'2025-01-15 10:00:00', 'http://example.com/images/event_retreat.jpg', 'http://beautywellness.com/book/event/wellness-retreat');`,
 
   // Insert into Courses
   `INSERT INTO Courses (name, description, price, schedule, image_url, booking_link)
