@@ -124,7 +124,7 @@ export const insertProduct = async (product) => {
     await db.query(sizeQuery, sizeValues.flat());
 
     // Step 3: Insert properties into the ProductPropertiesJoinTable
-    const propertiesValues = properties.map(({ name, property_id }) => [
+    const propertiesValues = properties.map(({ property_id }) => [
       productId,
       property_id,
     ]);
@@ -155,7 +155,10 @@ export const editProduct = async (product) => {
     image_url_primary,
     image_url_secondary,
     image_url_third,
+    properties,
   } = product;
+
+  console.log(properties);
 
   try {
     const productQuery = `
@@ -192,7 +195,22 @@ export const editProduct = async (product) => {
       await db.query(insertSizesQuery);
     }
 
-    return { success: true, message: "Product and sizes updated successfully" };
+    const deletePropertiesQuery = `
+      DELETE FROM ProductPropertiesJoinTable WHERE product_id = ?
+    `;
+    await db.query(deletePropertiesQuery, [product_id]);
+
+    const propertiesValues = properties.map(({ property_id }) => 
+      `(${property_id}, ${product_id})`
+    ).join(", ");
+
+    if(properties.length > 0) {
+      const insertPropertiesQuery = `INSERT INTO ProductPropertiesJoinTable (property_id, product_id)
+      VALUES ${propertiesValues}`;
+    await db.query(insertPropertiesQuery);
+    }
+
+    return { success: true, message: "Product, sizes and properties updated successfully" };
   } catch (err) {
     console.error("Error updating product and sizes:", err);
     throw err;
