@@ -6,7 +6,7 @@ import mysql from "mysql2/promise";
 const dbConfig = {
   host: "localhost",
   user: "root", // MySQL username
-  password: "", // MySQL password
+  password: "123", // MySQL password
   // database will be specified later
 };
 
@@ -94,8 +94,7 @@ const tableCreationQueries = [
     product_id INT,
     property_id INT,
     FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE CASCADE,
-    FOREIGN KEY (property_id) REFERENCES ProductProperties(property_id) ON DELETE CASCADE,
-    UNIQUE (product_id, property_id)  -- This ensures a property can't be duplicated for a single product
+    FOREIGN KEY (property_id) REFERENCES ProductProperties(property_id) ON DELETE CASCADE
   );`,
 
   // Table: OrderDetails
@@ -108,7 +107,7 @@ const tableCreationQueries = [
     size_id INT,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE SET NULL,
-    FOREIGN KEY (size_id) REFERENCES productSizes(size_id) ON DELETE SET NULL
+    FOREIGN KEY (size_id) REFERENCES ProductSizes(size_id) ON DELETE SET NULL
   );`,
 
   // Table: Services
