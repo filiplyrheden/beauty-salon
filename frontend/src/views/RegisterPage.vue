@@ -86,7 +86,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/register",
+          "https://exarbete-production.up.railway.app/register",
           registerData
         );
         this.message = "Registration successful!";

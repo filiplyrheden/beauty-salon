@@ -60,7 +60,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/login",
+          "https://exarbete-production.up.railway.app/login",
           loginData
         );
         this.message = "Login successful!";
