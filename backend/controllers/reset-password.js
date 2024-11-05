@@ -33,7 +33,7 @@ export const sendCode = async (req, res) => {
             },
         });
 
-        const resetURL = `http://localhost:8080/reset-password/${resetToken}`;
+        const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
         await transporter.sendMail({
             from: 'lucas@ackerberg.se', // Use your registered Mailjet email

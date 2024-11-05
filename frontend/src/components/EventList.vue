@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     getImageUrl(imageName) {
-      return `http://https://exarbete-production.up.railway.app/${imageName}`;
+      return `${process.env.VUE_APP_API_BASE_URL}/${imageName}`;
     },
     deleteEvent(eventId) {
       if (confirm("Are you sure you want to delete this event?")) {
