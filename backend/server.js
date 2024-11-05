@@ -112,7 +112,8 @@ async function getCheckoutSession(sessionId) {
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const YOUR_DOMAIN = "http://localhost:8080";
+const YOUR_DOMAIN =
+  "http://https://exarbete-git-main-karlsson2s-projects.vercel.app/";
 
 app.post(
   "/webhook",
@@ -187,7 +188,10 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
       cancel_url: `${YOUR_DOMAIN}/cancel`,
     });
     // Set CORS header and respond with the session URL
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "https://exarbete-git-main-karlsson2s-projects.vercel.app/"
+    );
     res.status(303).json({ url: session.url });
   } catch (error) {
     console.error("Error creating Stripe checkout session:", error); // More detailed error log
