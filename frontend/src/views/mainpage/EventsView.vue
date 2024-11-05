@@ -49,13 +49,18 @@
                   class="event-image"
                 />
                 <div class="event-name">{{ event.name }}</div>
+                <div class="event-description">
+                  {{ formatDate(event.schedule) }}
+                </div>
                 <div class="event-description">{{ event.description }}</div>
               </div>
               <!-- todo: change to :src="event.image_url" to reflect the images of each event-->
-
-              <a :href="event.booking_link"
-                ><button class="booking-link">BOKA</button></a
-              >
+              <div class="buttons">
+                <a :href="event.booking_link"
+                  ><button class="booking-link">BOKA</button></a
+                >
+                <div class="price">{{ event.price }} kr</div>
+              </div>
             </div>
           </div>
         </div>
@@ -95,6 +100,17 @@ export default {
         );
       }
     },
+    formatDate(datetime) {
+      if (!datetime) return "N/A";
+      const options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      };
+      return new Date(datetime).toLocaleDateString(undefined, options);
+    },
   },
   created() {
     this.fetchEvents();
@@ -102,6 +118,14 @@ export default {
 };
 </script>
 <style scoped>
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.price {
+  font-weight: 500;
+}
 .hero-container {
   width: 100%;
   height: 60vh;
@@ -126,6 +150,7 @@ export default {
   flex-wrap: wrap;
 }
 .event-item-container {
+  gap: 16px;
   width: calc(50% - 8px);
   min-height: 350px;
   padding: 8px;
