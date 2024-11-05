@@ -71,3 +71,4 @@ coverage/
 *.gz
 *.rar
 *.7z
+*.Identifier
