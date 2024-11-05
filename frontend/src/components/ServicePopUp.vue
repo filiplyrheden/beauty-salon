@@ -2,8 +2,6 @@
   <div v-if="isVisible" class="popup-overlay">
     <div class="popup">
       <h2>{{ service.name }}</h2>
-      <p><strong>Time:</strong> {{ service.time }} min</p>
-      <p><strong>Price:</strong> {{ service.price }} SEK</p>
       <p><strong>Description:</strong> {{ service.description }}</p>
       <button @click="closePopup">Close</button>
     </div>
@@ -45,20 +43,30 @@ export default {
 .popup {
   background: white;
   padding: 20px;
-  border-radius: 10px;
+  border: 1px solid black;
   text-align: left;
   width: 400px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
+h2 {
+  font-family: "Playfair Display", serif;
+  margin-bottom: 16px;
+}
+p {
+  margin-bottom: 16px;
+}
 button {
-  background-color: #007bff;
+  width: 100%;
+  background-color: black;
   color: white;
+  border: 1px solid black;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
   margin-top: 10px;
 }
 button:hover {
-  background-color: #0056b3;
+  background-color: white;
+  color: black;
 }
 </style>
