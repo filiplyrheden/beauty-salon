@@ -81,7 +81,12 @@ import {
 } from "./controllers/order.js";
 import { sendCode, resetPassword } from "./controllers/reset-password.js";
 import { getOrderById } from "./models/orderModel.js";
-import { createNewProperty, deletePropertyById, showProperties, updatePropertyById } from "./controllers/productproperties.js";
+import {
+  createNewProperty,
+  deletePropertyById,
+  showProperties,
+  updatePropertyById,
+} from "./controllers/productproperties.js";
 
 dotenv.config();
 const app = express();
@@ -92,7 +97,7 @@ const PORT = 3000;
 app.options("*", cors()); // Allow preflight requests for all routes
 app.use(
   cors({
-    origin: "http://localhost:8080",
+    origin: "https://exarbete-karlsson2s-projects.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -419,9 +424,24 @@ app.get("/product/:id", GetProductById);
 
 // Routes for product Properties
 app.get("/productproperties", authMiddleware, adminMiddleware, showProperties);
-app.post("/productproperties", authMiddleware, adminMiddleware, createNewProperty);
-app.delete("/productproperties/:id", authMiddleware, adminMiddleware, deletePropertyById);
-app.put("/productproperties/:id", authMiddleware, adminMiddleware, updatePropertyById);
+app.post(
+  "/productproperties",
+  authMiddleware,
+  adminMiddleware,
+  createNewProperty
+);
+app.delete(
+  "/productproperties/:id",
+  authMiddleware,
+  adminMiddleware,
+  deletePropertyById
+);
+app.put(
+  "/productproperties/:id",
+  authMiddleware,
+  adminMiddleware,
+  updatePropertyById
+);
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
