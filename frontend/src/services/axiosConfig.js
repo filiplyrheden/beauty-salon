@@ -2,11 +2,15 @@ import axios from "axios";
 
 // Create an Axios instance
 const axiosInstance = axios.create({
-  baseURL: process.env.VUE_APP_API_BASE_URL || "http://localhost:3000",
+  baseURL:
+    process.env.VUE_APP_API_BASE_URL ||
+    "https://exarbete-production.up.railway.app",
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+console.log("axiosInstance: ", axiosInstance.baseURL);
 
 // Add a request interceptor to include the Authorization token
 axiosInstance.interceptors.request.use(

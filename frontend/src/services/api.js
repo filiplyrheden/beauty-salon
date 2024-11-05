@@ -1,8 +1,10 @@
 // src/services/api.js
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/', // Backend URL
+  baseURL:
+    process.env.VUE_APP_API_BASE_URL ||
+    "https://exarbete-production.up.railway.app/", // Backend URL
 });
 
 export default api;

@@ -2,7 +2,7 @@ import db from "../config/database.js";
 
 /**
  * Fetch all products from the database.
- * @returns {Promise<Array>} 
+ * @returns {Promise<Array>}
  */
 export const getProducts = async () => {
   try {
@@ -10,7 +10,7 @@ export const getProducts = async () => {
     return rows;
   } catch (err) {
     console.error("Error fetching products:", err);
-    throw err; 
+    throw err;
   }
 };
 
@@ -42,14 +42,14 @@ export const getFeaturedProducts = async () => {
           )
       END
   ) AS variants,
-  JSON_ARRAYAGG(
-      CASE
-          WHEN pp.property_id IS NOT NULL THEN JSON_OBJECT(
+  (SELECT JSON_ARRAYAGG(
+          JSON_OBJECT(
               'property_id', pp.property_id,
               'name', pp.name
           )
-      END
-  ) AS properties
+      ) FROM ProductPropertiesJoinTable ppjt
+      INNER JOIN ProductProperties pp ON ppjt.property_id = pp.property_id
+      WHERE ppjt.product_id = p.product_id) AS properties
 FROM 
   Products p
 LEFT JOIN
@@ -57,7 +57,7 @@ LEFT JOIN
 LEFT JOIN 
   ProductSizes ps ON p.product_id = ps.product_id
 LEFT JOIN
-  ProductProperties pp ON p.product_id = pp.product_id
+  ProductPropertiesJoinTable ppjt ON p.product_id = ppjt.product_id
 WHERE 
   p.featured = 1
 GROUP BY 
@@ -66,7 +66,7 @@ GROUP BY
     return rows;
   } catch (err) {
     console.error("Error fetching products:", err);
-    throw err; 
+    throw err;
   }
 };
 
@@ -124,7 +124,7 @@ export const insertProduct = async (product) => {
     await db.query(sizeQuery, sizeValues.flat());
 
     // Step 3: Insert properties into the ProductPropertiesJoinTable
-    const propertiesValues = properties.map(({ name, property_id }) => [
+    const propertiesValues = properties.map(({ property_id }) => [
       productId,
       property_id,
     ]);
@@ -155,7 +155,10 @@ export const editProduct = async (product) => {
     image_url_primary,
     image_url_secondary,
     image_url_third,
+    properties,
   } = product;
+
+  console.log(properties);
 
   try {
     const productQuery = `
@@ -181,9 +184,12 @@ export const editProduct = async (product) => {
     `;
     await db.query(deleteSizesQuery, [product_id]);
 
-    const sizeValues = variants.map(({ size, price, stock_quantity }) => 
-      `(${product_id}, '${size}', ${price}, ${stock_quantity})`
-    ).join(", ");
+    const sizeValues = variants
+      .map(
+        ({ size, price, stock_quantity }) =>
+          `(${product_id}, '${size}', ${price}, ${stock_quantity})`
+      )
+      .join(", ");
 
     if (variants.length > 0) {
       const insertSizesQuery = `
@@ -192,7 +198,25 @@ export const editProduct = async (product) => {
       await db.query(insertSizesQuery);
     }
 
-    return { success: true, message: "Product and sizes updated successfully" };
+    const deletePropertiesQuery = `
+      DELETE FROM ProductPropertiesJoinTable WHERE product_id = ?
+    `;
+    await db.query(deletePropertiesQuery, [product_id]);
+
+    const propertiesValues = properties
+      .map(({ property_id }) => `(${property_id}, ${product_id})`)
+      .join(", ");
+
+    if (properties.length > 0) {
+      const insertPropertiesQuery = `INSERT INTO ProductPropertiesJoinTable (property_id, product_id)
+      VALUES ${propertiesValues}`;
+      await db.query(insertPropertiesQuery);
+    }
+
+    return {
+      success: true,
+      message: "Product, sizes and properties updated successfully",
+    };
   } catch (err) {
     console.error("Error updating product and sizes:", err);
     throw err;
@@ -221,7 +245,6 @@ export const trashProduct = async (productId) => {
     throw err;
   }
 };
-
 
 // Fetch products and their prices by product IDs
 export const fetchProductsByIds = async (productIds) => {
@@ -306,7 +329,7 @@ export const getProductsWithInfo = async () => {
     if (!row.properties || row.properties.length === 0) {
       row.properties = {};
     }
-    
+
     return row;
   });
 };
@@ -371,10 +394,10 @@ export const getProductById = async (productId) => {
     const [propertyRows] = await db.query(propertiesQuery, [productId]);
 
     // Combine product details with sizes and properties arrays
-    return { 
-      ...product, 
+    return {
+      ...product,
       variants: sizeRows,
-      properties: propertyRows
+      properties: propertyRows,
     };
   } catch (err) {
     console.error("Error fetching product by ID:", err);

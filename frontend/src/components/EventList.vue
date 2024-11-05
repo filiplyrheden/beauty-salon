@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     getImageUrl(imageName) {
-      return `http://localhost:3000${imageName}`;
+      return `http://https://exarbete-production.up.railway.app/${imageName}`;
     },
     deleteEvent(eventId) {
       if (confirm("Are you sure you want to delete this event?")) {

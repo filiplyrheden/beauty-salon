@@ -29,6 +29,17 @@
       </div>
 
       <div>
+        <label for="schedule">Tid:</label>
+        <input
+          v-model="schedule"
+          id="schedule"
+          type="datetime-local"
+          required
+          ref="scheduleInput"
+        />
+      </div>
+
+      <div>
         <label for="image">Image:</label>
         <input
           type="file"
@@ -63,6 +74,7 @@ export default {
       imageFile: null, // Store the image file
       bookingLink: "",
       message: "", // For success or error messages
+      schedule: "",
     };
   },
   methods: {
@@ -79,6 +91,7 @@ export default {
       formData.append("price", parseFloat(this.eventPrice));
       formData.append("image", this.imageFile); // Add the image file to form data
       formData.append("booking_link", this.bookingLink);
+      formData.append("schedule", this.schedule);
 
       try {
         const response = await axiosInstance.post("/admin/events", formData, {
@@ -109,6 +122,7 @@ export default {
       this.eventPrice = "";
       this.imageFile = null; // Reset the image file
       this.bookingLink = "";
+      this.schedule = "";
     },
   },
 };

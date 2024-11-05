@@ -20,18 +20,26 @@ export const getEvents = async () => {
  * @param {string} event.name - The name of the event.
  * @param {string} event.description - The description of the event.
  * @param {number} event.price - The price of the event.
+ *  * @param {number} event.schedule - The time of the event.
  * @param {string} event.image_url - The URL of the event image.
  * @param {string} event.booking_link - The booking link for the event.
  * @returns {Promise<Object>} The result of the insert operation.
  */
 export const insertEvent = async (event) => {
-  const { name, description, price, image_url, booking_link } = event;
+  const { name, description, price, schedule, image_url, booking_link } = event;
   try {
     const query = `
-      INSERT INTO Events (name, description, price, image_url, booking_link)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO Events (name, description, price, schedule, image_url, booking_link)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
-    const [result] = await db.query(query, [name, description, price, image_url, booking_link]);
+    const [result] = await db.query(query, [
+      name,
+      description,
+      price,
+      schedule,
+      image_url,
+      booking_link,
+    ]);
     return result;
   } catch (err) {
     console.error("Error inserting event:", err);
@@ -55,10 +63,18 @@ export const editEvent = async (eventId, event) => {
   try {
     const query = `
       UPDATE Events
-      SET name = ?, description = ?, price = ?, image_url = ?, booking_link = ?
+      SET name = ?, description = ?, price = ?, schedule = ?, image_url = ?, booking_link = ?
       WHERE event_id = ?
     `;
-    const [result] = await db.query(query, [name, description, price, image_url, booking_link, eventId]);
+    const [result] = await db.query(query, [
+      name,
+      description,
+      price,
+      schedule,
+      image_url,
+      booking_link,
+      eventId,
+    ]);
     return result;
   } catch (err) {
     console.error("Error updating event:", err);

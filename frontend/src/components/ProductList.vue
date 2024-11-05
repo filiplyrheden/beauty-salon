@@ -1,7 +1,7 @@
 <template>
   <div class="product-list">
     <h2>Produkt Lista:</h2>
-    <ul>
+    <ul class="productListWrapper" >
       <li v-for="product in items" :key="product.product_id" class="product-card">
         <div class="product-info">
           <div class="image-container-wrapper">
@@ -231,12 +231,22 @@ export default {
     },
     addProperty() {
       if (this.selectedProperty) {
-        const property = this.propertiesOnLoad.find(p => p.property_id === this.selectedProperty);
-        if (!this.editingProduct.properties.find(p => p.property_id === property.property_id)) {
-          this.editingProduct.properties.push(property);
+        // Check if properties is an array; if not, initialize it as an array
+        if (Array.isArray(this.editingProduct.properties)) {
+          const property = this.propertiesOnLoad.find(p => p.property_id === this.selectedProperty);
+          // Check if the property is already in the array
+          if (!this.editingProduct.properties.find(p => p.property_id === property.property_id)) {
+            this.editingProduct.properties.push(property);
+          } else {
+            Swal.fire("Property already added");
+          }
         } else {
-          Swal.fire("Property already added");
+          // Initialize properties as an array and add the selected property
+          this.editingProduct.properties = [];
+          const property = this.propertiesOnLoad.find(p => p.property_id === this.selectedProperty);
+          this.editingProduct.properties.push(property);
         }
+        // Reset selectedProperty after adding
         this.selectedProperty = '';
       }
     },
@@ -270,10 +280,14 @@ export default {
         formData.append(`variants[${i}][stock_quantity]`, variant.stock_quantity);
       });
 
-      this.editingProduct.properties.forEach((property, i) => {
+      if (Array.isArray(this.editingProduct.properties)) {
+        this.editingProduct.properties.forEach((property, i) => {
         formData.append(`properties[${i}][name]`, property.name);
         formData.append(`properties[${i}][property_id]`, property.property_id);
-      });
+        });
+      } else {
+        console.warn("Properties is not an array:", this.editingProduct.properties);
+      }
 
       axiosInstance.put(`admin/products/${this.editingProduct.product_id}`, formData).then(() => {
         Swal.fire("Product saved successfully");
@@ -379,6 +393,10 @@ fieldset{
   padding: 20px;
   border-radius: 5px;
   background-color: #f9f9f9;
+}
+
+.productListWrapper{
+  width: 600px;
 }
 
 .form-group {

@@ -81,7 +81,12 @@ import {
 } from "./controllers/order.js";
 import { sendCode, resetPassword } from "./controllers/reset-password.js";
 import { getOrderById } from "./models/orderModel.js";
-import { createNewProperty, deletePropertyById, showProperties, updatePropertyById } from "./controllers/productproperties.js";
+import {
+  createNewProperty,
+  deletePropertyById,
+  showProperties,
+  updatePropertyById,
+} from "./controllers/productproperties.js";
 
 dotenv.config();
 const app = express();
@@ -92,7 +97,7 @@ const PORT = 3000;
 app.options("*", cors()); // Allow preflight requests for all routes
 app.use(
   cors({
-    origin: "http://localhost:8080",
+    origin: "https://exarbete-karlsson2s-projects.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -107,7 +112,8 @@ async function getCheckoutSession(sessionId) {
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const YOUR_DOMAIN = "http://localhost:8080";
+const YOUR_DOMAIN =
+  "http://https://exarbete-git-main-karlsson2s-projects.vercel.app/";
 
 app.post(
   "/webhook",
@@ -182,7 +188,10 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
       cancel_url: `${YOUR_DOMAIN}/cancel`,
     });
     // Set CORS header and respond with the session URL
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "https://exarbete-git-main-karlsson2s-projects.vercel.app/"
+    );
     res.status(303).json({ url: session.url });
   } catch (error) {
     console.error("Error creating Stripe checkout session:", error); // More detailed error log
@@ -419,9 +428,24 @@ app.get("/product/:id", GetProductById);
 
 // Routes for product Properties
 app.get("/productproperties", authMiddleware, adminMiddleware, showProperties);
-app.post("/productproperties", authMiddleware, adminMiddleware, createNewProperty);
-app.delete("/productproperties/:id", authMiddleware, adminMiddleware, deletePropertyById);
-app.put("/productproperties/:id", authMiddleware, adminMiddleware, updatePropertyById);
+app.post(
+  "/productproperties",
+  authMiddleware,
+  adminMiddleware,
+  createNewProperty
+);
+app.delete(
+  "/productproperties/:id",
+  authMiddleware,
+  adminMiddleware,
+  deletePropertyById
+);
+app.put(
+  "/productproperties/:id",
+  authMiddleware,
+  adminMiddleware,
+  updatePropertyById
+);
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
