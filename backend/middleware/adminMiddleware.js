@@ -1,9 +1,9 @@
 import db from "../config/database.js";
 
 const adminMiddleware = async (req, res, next) => {
-  console.log("hej req user:", req.user); // Make sure req.user is properly logged
+  console.log("User in AdminMiddleware:", req.user); // Make sure req.user is properly logged
   const userId = req.user.userid; // Ensure this is correctly set in the userMiddleware
-  console.log("User ID:", userId);
+  console.log("User ID in AdminMiddleware:", userId);
 
   try {
     const [user] = await db.query("SELECT * FROM Users WHERE user_id = ?", [

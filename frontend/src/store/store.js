@@ -180,6 +180,7 @@ export const store = new Vuex.Store({
 
     startTokenExpirationCheck({ dispatch, commit }) {
       console.log("Starta räkning");
+      dispatch("checkTokenExpiration");
       const intervalId = setInterval(() => {
         dispatch("checkTokenExpiration");
       }, 1 * 60 * 1000); // 1 minute

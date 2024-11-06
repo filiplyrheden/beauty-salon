@@ -56,8 +56,6 @@ export const resetPassword = async (req, res) => {
 
     // Find user by token and check if the token is still valid
     const user = await getUserByResettoken(token);
-    console.log("Detta är usern");
-    console.log(user);
     if (!user) return res.status(400).json({ message: 'Token is invalid or expired' });
 
     try {
