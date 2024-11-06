@@ -8,29 +8,11 @@
     </div>
 
     <div class="menu-grid">
-      <div class="menu-item" style="--animation-order: 1">
-        <a href="/admin/products" class="menu-link">
-          <font-awesome-icon icon="box" class="menu-icon" />
-          <h3 class="menu-title">Produkter</h3>
-          <p class="menu-description">
-            Lägg till, ta bort och uppdatera produkter
-          </p>
-        </a>
-      </div>
-
       <div class="menu-item" style="--animation-order: 2">
         <a href="/admin/events" class="menu-link">
           <font-awesome-icon icon="calendar" class="menu-icon" />
           <h3 class="menu-title">Evenemang</h3>
           <p class="menu-description">Skapa och hantera evenemang</p>
-        </a>
-      </div>
-
-      <div class="menu-item" style="--animation-order: 3">
-        <a href="/admin/product-reviews" class="menu-link">
-          <font-awesome-icon icon="star" class="menu-icon" />
-          <h3 class="menu-title">Produktrecensioner</h3>
-          <p class="menu-description">Granska och hantera produktrecensioner</p>
         </a>
       </div>
 
@@ -46,7 +28,7 @@
         <a href="/admin/services" class="menu-link">
           <font-awesome-icon icon="spa" class="menu-icon" />
           <h3 class="menu-title">Behandlingar</h3>
-          <p class="menu-description">Uppdatera våra salongstjänster</p>
+          <p class="menu-description">Uppdatera salongstjänster</p>
         </a>
       </div>
 
@@ -63,16 +45,8 @@
       <div class="menu-item" style="--animation-order: 7">
         <a href="/admin/page-reviews" class="menu-link">
           <font-awesome-icon icon="comments" class="menu-icon" />
-          <h3 class="menu-title">Sidor med recensioner</h3>
+          <h3 class="menu-title">Kundomdömen</h3>
           <p class="menu-description">Hantera kundomdömen och vittnesmål</p>
-        </a>
-      </div>
-
-      <div class="menu-item" style="--animation-order: 8">
-        <a href="/admin/product-categories" class="menu-link">
-          <font-awesome-icon icon="layer-group" class="menu-icon" />
-          <h3 class="menu-title">Produktkategorier</h3>
-          <p class="menu-description">Organisera och hantera produktlager</p>
         </a>
       </div>
 
@@ -83,12 +57,39 @@
           <p class="menu-description">Följ och hantera kundbeställningar</p>
         </a>
       </div>
+      <div class="menu-item" style="--animation-order: 1">
+        <a href="/admin/products" class="menu-link">
+          <font-awesome-icon icon="box" class="menu-icon" />
+          <h3 class="menu-title">Produkter</h3>
+          <p class="menu-description">
+            Lägg till, ta bort och uppdatera produkter
+          </p>
+        </a>
+      </div>
 
+      <div class="menu-item" style="--animation-order: 8">
+        <a href="/admin/product-categories" class="menu-link">
+          <font-awesome-icon icon="layer-group" class="menu-icon" />
+          <h3 class="menu-title">Produktkategorier</h3>
+          <p class="menu-description">
+            Organisera och hantera produktkategorier
+          </p>
+        </a>
+      </div>
       <div class="menu-item" style="--animation-order: 10">
         <a href="/admin/productproperties" class="menu-link">
           <font-awesome-icon icon="tag" class="menu-icon" />
-          <h3 class="menu-title">Product Properties</h3>
-          <p class="menu-description">Track and manage Product Properties</p>
+          <h3 class="menu-title">Produkt Egenskaper</h3>
+          <p class="menu-description">
+            Lägg till och ta bort Produkt Egenskaper
+          </p>
+        </a>
+      </div>
+      <div class="menu-item" style="--animation-order: 10">
+        <a href="/admin/brands" class="menu-link">
+          <font-awesome-icon icon="copyright" class="menu-icon" />
+          <h3 class="menu-title">Produkt Märken</h3>
+          <p class="menu-description">Lägg till och ta bort produkt märken</p>
         </a>
       </div>
     </div>
@@ -115,7 +116,6 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
-  background: linear-gradient(to bottom right, #faf7f2, #fff);
   position: relative;
 }
 
