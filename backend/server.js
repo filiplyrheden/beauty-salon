@@ -171,6 +171,7 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
     const { dummyItems } = req.body; // Destructure to easily access line_items
     const { user_id } = req.body;
     const line_items = await getCheckoutProducts(res, dummyItems);
+    console.log(line_items);
     // Ensure line_items is an array and has at least one item
     if (!Array.isArray(dummyItems) || line_items.length === 0) {
       return res.status(400).send("Invalid or missing line items");
