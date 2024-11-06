@@ -124,10 +124,12 @@ app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
-    console.log("HI IM A WEBHOOK");
     let event;
     try {
       console.log("HI IM A WEBHOOK");
+      console.log("payload" + req.body);
+      console.log("sig" + sig);
+      console.log("whs" + STRIPE_WEBHOOK_SECRET);
       const sig = req.headers["stripe-signature"];
       event = stripe.webhooks.constructEvent(
         req.body,
@@ -140,7 +142,7 @@ app.post(
 
     // Acknowledge the webhook quickly
     res.sendStatus(200);
-    console.log("HI IM A WEBHOOK");
+    console.log("WEBHOOK WENT PAST????");
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
 
@@ -178,7 +180,7 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
     if (!Array.isArray(dummyItems) || line_items.length === 0) {
       return res.status(400).send("Invalid or missing line items");
     }
-
+    console.log("line items" + line_items);
     // Create a checkout session with all the line items
     const session = await stripe.checkout.sessions.create({
       line_items, // Pass the entire line_items array
