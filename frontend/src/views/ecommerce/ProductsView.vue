@@ -22,41 +22,46 @@
           <img src="../../assets/filter.svg" alt="" />
           <h2>Filter</h2>
         </div>
+        <!-- Category Accordion -->
         <div class="accordion">
           <div @click="toggleDropdown('category')" class="accordion-header">
             <h3 class="filter-title">Category</h3>
             <span
               class="accordion-icon"
               :class="{ open: showDropdown.category }"
-              ><font-awesome-icon icon="chevron-down"
-            /></span>
+            >
+              <font-awesome-icon icon="chevron-down" />
+            </span>
           </div>
 
-          <!-- Accordion Content (Category Dropdown with Checkboxes) -->
-          <ul v-if="showDropdown" class="category-dropdown">
-            <li>
-              <label>
-                <input
-                  type="checkbox"
-                  @change="toggleCategorySelection('')"
-                  :checked="selectedCategories.includes('')"
-                />
-                All Categories
-              </label>
-            </li>
-            <li v-for="category in categories" :key="category.category_id">
-              <label>
-                <input
-                  type="checkbox"
-                  @change="toggleCategorySelection(category.category_id)"
-                  :checked="selectedCategories.includes(category.category_id)"
-                />
-                {{ category.category_name }}
-              </label>
-            </li>
-          </ul>
+          <!-- Wrap in transition for sliding effect -->
+          <transition name="accordion">
+            <ul v-if="showDropdown.category" class="category-dropdown">
+              <li>
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="toggleCategorySelection('')"
+                    :checked="selectedCategories.includes('')"
+                  />
+                  All Categories
+                </label>
+              </li>
+              <li v-for="category in categories" :key="category.category_id">
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="toggleCategorySelection(category.category_id)"
+                    :checked="selectedCategories.includes(category.category_id)"
+                  />
+                  {{ category.category_name }}
+                </label>
+              </li>
+            </ul>
+          </transition>
         </div>
 
+        <!-- Accordion for Properties Filter -->
         <div class="accordion">
           <div @click="toggleDropdown('properties')" class="accordion-header">
             <h3 class="filter-title">Properties</h3>
@@ -67,51 +72,55 @@
               <font-awesome-icon icon="chevron-down" />
             </span>
           </div>
-          <ul v-if="showDropdown" class="properties-dropdown">
-            <li v-for="property in properties" :key="property.id">
-              <label>
-                <input
-                  type="checkbox"
-                  @change="togglePropertySelection(property.name)"
-                  :checked="selectedProperties.includes(property.name)"
-                />
-                {{ property.name }}
-              </label>
-            </li>
-          </ul>
+          <!-- Wrap in transition for sliding effect -->
+          <transition name="accordion">
+            <ul v-if="showDropdown.properties" class="properties-dropdown">
+              <li v-for="property in properties" :key="property.id">
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="togglePropertySelection(property.name)"
+                    :checked="selectedProperties.includes(property.name)"
+                  />
+                  {{ property.name }}
+                </label>
+              </li>
+            </ul>
+          </transition>
         </div>
-
         <div class="accordion">
-          <div @click="toggleDropdown" class="accordion-header">
-            <h3 class="filter-title">Category</h3>
-            <span class="accordion-icon" :class="{ open: showDropdown }"
-              ><font-awesome-icon icon="chevron-down"
-            /></span>
+          <div @click="toggleDropdown('brand')" class="accordion-header">
+            <h3 class="filter-title">Märke</h3>
+            <span class="accordion-icon" :class="{ open: showDropdown.brand }">
+              <font-awesome-icon icon="chevron-down" />
+            </span>
           </div>
 
-          <!-- Accordion Content (Category Dropdown with Checkboxes) -->
-          <ul v-if="showDropdown" class="category-dropdown">
-            <li>
-              <label>
-                <input
-                  type="checkbox"
-                  @change="toggleCategorySelection('')"
-                  :checked="selectedCategories.includes('')"
-                />
-                All Categories
-              </label>
-            </li>
-            <li v-for="category in categories" :key="category.category_id">
-              <label>
-                <input
-                  type="checkbox"
-                  @change="toggleCategorySelection(category.category_id)"
-                  :checked="selectedCategories.includes(category.category_id)"
-                />
-                {{ category.category_name }}
-              </label>
-            </li>
-          </ul>
+          <!-- Wrap in transition for sliding effect -->
+          <transition name="accordion">
+            <ul v-if="showDropdown.brand" class="category-dropdown">
+              <li>
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="toggleBrandSelection('')"
+                    :checked="selectedBrands.includes('')"
+                  />
+                  Alla Märken
+                </label>
+              </li>
+              <li v-for="brand in brands" :key="brand.brand_id">
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="toggleCategorySelection(brand.brand_id)"
+                    :checked="selectedCategories.includes(brand.brand_id)"
+                  />
+                  {{ brand.brand_name }}
+                </label>
+              </li>
+            </ul>
+          </transition>
         </div>
       </div>
 
@@ -242,8 +251,10 @@ export default {
         properties: false,
       },
       selectedCategories: [],
+      selectedBrands: [],
       selectedProperties: [],
       categories: [],
+      brands: [],
       searchQuery: "",
       sortOption: "",
       showSizeOptions: {}, // Object to track size option visibility
@@ -264,13 +275,27 @@ export default {
           this.selectedCategories.includes(product.category.category_id)
         );
       }
-      if (this.selectedProperties.length > 0) {
+      if (this.selectedBrands.length > 0 && !this.selectedBrands.includes("")) {
         filtered = filtered.filter((product) =>
-          product.properties.some((property) =>
-            this.selectedProperties.includes(property.name)
-          )
+          this.selectedBrands.includes(product.brand.brand_id)
         );
       }
+      if (this.selectedProperties.length > 0) {
+        filtered = filtered.filter((product) => {
+          // Convert properties to an array if it's an object or ensure it's an empty array if undefined
+          const propertiesArray = Array.isArray(product.properties)
+            ? product.properties
+            : product.properties
+            ? Object.values(product.properties)
+            : [];
+
+          // Now perform the filtering based on selectedProperties
+          return propertiesArray.some((property) =>
+            this.selectedProperties.includes(property.name)
+          );
+        });
+      }
+
       // Filter by search query
       if (this.searchQuery) {
         const query = this.searchQuery.toLowerCase();
@@ -305,9 +330,18 @@ export default {
     this.getProducts();
     this.getCategories();
     this.getProperties();
+    this.getBrands();
   },
 
   methods: {
+    async getBrands() {
+      try {
+        const response = await axiosInstance.get(`/brands`);
+        this.brands = response.data;
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    },
     async getProperties() {
       try {
         const response = await axiosInstance.get(`/productproperties`);
@@ -323,6 +357,7 @@ export default {
           ...product,
           selectedSize: product.variants?.[0]?.size_id || null,
         }));
+        console.log(this.productItems);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -359,6 +394,17 @@ export default {
         );
       } else {
         this.selectedProperties.push(propertyName);
+      }
+    },
+    toggleBrandSelection(brandId) {
+      if (this.selectedBrands.includes(brandId)) {
+        // Remove category if already selected
+        this.selectedBrands = this.selectedBrands.filter(
+          (id) => id !== brandId
+        );
+      } else {
+        // Add category to selected list
+        this.selectedBrands.push(brandId);
       }
     },
 
@@ -465,7 +511,8 @@ select {
   border: none;
 }
 
-.category-dropdown {
+.category-dropdown,
+.properties-dropdown {
   padding: 10px;
   list-style: none;
   display: flex;
@@ -473,7 +520,8 @@ select {
   align-items: flex-start;
 }
 
-.category-dropdown li {
+.category-dropdown li,
+.properties-dropdown li {
   padding: 5px 0;
 }
 
@@ -495,9 +543,9 @@ select {
   border-bottom: 1px solid black;
   padding: 12px 0px;
 }
-
 .accordion-icon.open {
   transform: rotate(180deg);
+  transition: transform 0.3s ease;
 }
 
 .select-size {
@@ -654,5 +702,21 @@ select {
 .size-options-leave-from {
   max-height: 100px;
   opacity: 1;
+}
+
+.accordion-enter-active,
+.accordion-leave-active {
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+.accordion-enter-from,
+.accordion-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+.accordion-enter-to,
+.accordion-leave-from {
+  max-height: 500px; /* Set a maximum height that accommodates the content */
+  opacity: 1;
+  overflow: hidden;
 }
 </style>

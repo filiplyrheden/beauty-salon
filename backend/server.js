@@ -43,6 +43,12 @@ import {
   deleteServicesCategoriesById,
 } from "./controllers/servicescategories.js";
 import {
+  showBrands,
+  createNewBrand,
+  updateBrandById,
+  deleteBrandById,
+} from "./controllers/brand.js";
+import {
   showPageReviews,
   createNewPageReviews,
   updatePageReviewsById,
@@ -368,6 +374,12 @@ app.delete(
   deleteServicesCategoriesById
 ); // Delete
 
+//Routes for Brands
+app.get("/brands", showBrands); // Get all Servicescategories
+app.post("/brands", authMiddleware, adminMiddleware, createNewBrand); // Create
+app.put("/brands/:id", authMiddleware, adminMiddleware, updateBrandById); // Update
+app.delete("/brands/:id", authMiddleware, adminMiddleware, deleteBrandById); // Delete
+
 //Routes for PageReviews
 app.get("/page-reviews", authMiddleware, adminMiddleware, showPageReviews); // Get all PageReviews
 app.post(
@@ -423,7 +435,7 @@ app.delete("/user/:id", authMiddleware, adminMiddleware, deleteUserById); // Del
 app.get("/product/:id", GetProductById);
 
 // Routes for product Properties
-app.get("/productproperties", authMiddleware, adminMiddleware, showProperties);
+app.get("/productproperties", showProperties);
 app.post(
   "/productproperties",
   authMiddleware,

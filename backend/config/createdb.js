@@ -6,7 +6,7 @@ import mysql from "mysql2/promise";
 const dbConfig = {
   host: "localhost",
   user: "root", // MySQL username
-  password: "123", // MySQL password
+  password: "", // MySQL password
   // database will be specified later
 };
 
@@ -37,6 +37,12 @@ const tableCreationQueries = [
     FOREIGN KEY (parent_category_id) REFERENCES Categories(category_id) ON DELETE SET NULL
   );`,
 
+  // Table: Brands
+  `CREATE TABLE Brands (
+      brand_id INT AUTO_INCREMENT PRIMARY KEY,
+      brand_name VARCHAR(100)
+    );`,
+
   // Table: serviceCategories
   `CREATE TABLE serviceCategories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,6 +55,7 @@ const tableCreationQueries = [
     product_name VARCHAR(255),
     description TEXT,
     category_id INT,
+    brand_id INT,
     featured boolean,
     usage_products TEXT,
     ingredients TEXT,
@@ -56,7 +63,8 @@ const tableCreationQueries = [
     image_url_primary TEXT,
     image_url_secondary TEXT,
     image_url_third TEXT,
-    FOREIGN KEY (category_id) REFERENCES Categories(category_id) ON DELETE SET NULL
+    FOREIGN KEY (category_id) REFERENCES Categories(category_id) ON DELETE SET NULL,
+    FOREIGN KEY (brand_id) REFERENCES Brands(brand_id) ON DELETE SET NULL
   );`,
 
   // Table: Orders
@@ -199,13 +207,17 @@ const insertDataQueries = [
   ('Nail Services'),
   ('Hair Services');`,
 
+  `INSERT INTO Brands (brand_name) VALUES
+  ('Circadia' ),
+  ('Herbs2Peel');`,
+
   // Insert into Products
-  `INSERT INTO Products (product_name, description, category_id, featured, usage_products, ingredients)
+  `INSERT INTO Products (product_name, description, category_id, brand_id, featured, usage_products, ingredients)
   VALUES
-  ('Hydrating Facial Cream', 'Deeply moisturizes and revitalizes skin.', 1, TRUE, 'Apply a small amount to the face and neck twice daily after cleansing.', 'Aqua, Glycerin, Hyaluronic Acid, Vitamin E, Shea Butter'),
-  ('Organic Shampoo', 'Gentle cleansing with natural ingredients.', 2, TRUE, 'Massage into wet hair, lather, and rinse thoroughly. Use daily or as needed.', 'Water, Aloe Vera, Coconut Oil, Jojoba Oil, Lavender Essential Oil'),
-  ('Matte Liquid Lipstick', 'Long-lasting matte finish in various shades.', 3, FALSE, 'Apply directly to lips starting at the center and moving outwards. Allow to dry for a matte finish.', 'Isododecane, Dimethicone, Red 7 Lake, Candelilla Wax, Vitamin E'),
-  ('Revitalizing Hair Mask', 'Nourishes and strengthens hair.', 2, FALSE, 'Apply generously to damp hair, leave for 10-15 minutes, then rinse thoroughly. Use weekly for best results.', 'Water, Argan Oil, Avocado Oil, Keratin, Coconut Extract');`,
+  ('Hydrating Facial Cream', 'Deeply moisturizes and revitalizes skin.', 1, 1, TRUE, 'Apply a small amount to the face and neck twice daily after cleansing.', 'Aqua, Glycerin, Hyaluronic Acid, Vitamin E, Shea Butter'),
+  ('Organic Shampoo', 'Gentle cleansing with natural ingredients.', 2,1, TRUE, 'Massage into wet hair, lather, and rinse thoroughly. Use daily or as needed.', 'Water, Aloe Vera, Coconut Oil, Jojoba Oil, Lavender Essential Oil'),
+  ('Matte Liquid Lipstick', 'Long-lasting matte finish in various shades.', 3, 2, FALSE, 'Apply directly to lips starting at the center and moving outwards. Allow to dry for a matte finish.', 'Isododecane, Dimethicone, Red 7 Lake, Candelilla Wax, Vitamin E'),
+  ('Revitalizing Hair Mask', 'Nourishes and strengthens hair.', 2,2, FALSE, 'Apply generously to damp hair, leave for 10-15 minutes, then rinse thoroughly. Use weekly for best results.', 'Water, Argan Oil, Avocado Oil, Keratin, Coconut Extract');`,
 
   `INSERT INTO ProductSizes (product_id, size, price, stock_quantity) VALUES
   (1, '50 ml', 29.99, 150),
