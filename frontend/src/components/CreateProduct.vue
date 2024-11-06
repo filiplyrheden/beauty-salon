@@ -4,14 +4,18 @@
       ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
     >
     <h2>Add New Product</h2>
-    <form id="uploadForm" @submit.prevent="saveProduct" enctype="multipart/form-data">
+    <form
+      id="uploadForm"
+      @submit.prevent="saveProduct"
+      enctype="multipart/form-data"
+    >
       <!-- Existing Fields -->
       <div class="form-group">
         <label for="productName">Produktnamn</label>
-        <input 
-          type="text" 
-          id="productName" 
-          v-model="productName" 
+        <input
+          type="text"
+          id="productName"
+          v-model="productName"
           required
           placeholder="Enter product name"
         />
@@ -19,9 +23,9 @@
 
       <div class="form-group">
         <label for="description">Beskrivning</label>
-        <textarea 
-          id="description" 
-          v-model="description" 
+        <textarea
+          id="description"
+          v-model="description"
           required
           placeholder="Enter product description"
         ></textarea>
@@ -29,15 +33,24 @@
 
       <div class="form-group">
         <label for="categoryId">Category ID ÄNDRA</label>
-        <input 
-          type="number" 
-          id="categoryId" 
-          v-model="categoryId" 
+        <input
+          type="number"
+          id="categoryId"
+          v-model="categoryId"
           required
           placeholder="Enter category ID"
         />
       </div>
-
+      <div class="form-group">
+        <label for="brand">BRAND ID ÄNDRA</label>
+        <input
+          type="number"
+          id="brand"
+          v-model="brand"
+          required
+          placeholder="märke, typ Circadia"
+        />
+      </div>
       <!-- Sizes Section -->
       <div class="form-group">
         <label for="sizes">Storlekar och Priser</label>
@@ -69,9 +82,9 @@
       <!-- Usage Products Section -->
       <div class="form-group">
         <label for="usageProducts">Användarinstruktioner</label>
-        <textarea 
-          id="usageProducts" 
-          v-model="usageProducts" 
+        <textarea
+          id="usageProducts"
+          v-model="usageProducts"
           placeholder="Enter usage instructions"
         ></textarea>
       </div>
@@ -79,43 +92,42 @@
       <!-- Ingredients Section -->
       <div class="form-group">
         <label for="ingredients">Ingredienser</label>
-        <textarea 
-          id="ingredients" 
-          v-model="ingredients" 
+        <textarea
+          id="ingredients"
+          v-model="ingredients"
           required
           placeholder="Skriv in alla ingredienser separerade med kommatecken (t.ex. Vatten, Glycerin, Doft)."
         ></textarea>
       </div>
 
-
       <!-- Image Fields and Submit Button -->
       <div class="form-group">
         <label for="primaryImage">Första Bilden:</label>
-        <input 
-          type="file" 
-          id="primaryImage" 
-          @change="onImageChange($event, 'primary')" 
-          accept="image/*" 
+        <input
+          type="file"
+          id="primaryImage"
+          @change="onImageChange($event, 'primary')"
+          accept="image/*"
         />
       </div>
 
       <div class="form-group">
         <label for="secondaryImage">Andra Bilden:</label>
-        <input 
-          type="file" 
-          id="secondaryImage" 
-          @change="onImageChange($event, 'secondary')" 
-          accept="image/*" 
+        <input
+          type="file"
+          id="secondaryImage"
+          @change="onImageChange($event, 'secondary')"
+          accept="image/*"
         />
       </div>
 
       <div class="form-group">
         <label for="thirdImage">Tredje Bilden:</label>
-        <input 
-          type="file" 
+        <input
+          type="file"
           id="thirdImage"
-          @change="onImageChange($event, 'third')" 
-          accept="image/*" 
+          @change="onImageChange($event, 'third')"
+          accept="image/*"
         />
       </div>
 
@@ -124,7 +136,11 @@
         <label for="property">Egenskaper</label>
         <select v-model="selectedProperty">
           <option value="" disabled selected>Välj en egenskap</option>
-          <option v-for="(property, index) in propertiesOnLoad" :key="index" :value="property.property_id">
+          <option
+            v-for="(property, index) in propertiesOnLoad"
+            :key="index"
+            :value="property.property_id"
+          >
             {{ property.name }}
           </option>
         </select>
@@ -138,13 +154,10 @@
       </div>
 
       <div class="form-group">
-        <label for="featured">Ska denna produkten vara på landningssidan?</label>
-        <input 
-        :value="true"
-        type="radio"
-        id="featured"
-        v-model="featured"
+        <label for="featured"
+          >Ska denna produkten vara på landningssidan?</label
         >
+        <input :value="true" type="radio" id="featured" v-model="featured" />
       </div>
 
       <button type="submit" class="submit-btn">Add Product</button>
@@ -171,12 +184,11 @@ export default {
     return {
       productName: "",
       description: "",
-      sizes: [
-        { sizeName: "", price: "", quantity: "" }
-      ],
+      sizes: [{ sizeName: "", price: "", quantity: "" }],
       usageProducts: "",
       ingredients: "",
       properties: [],
+      brand: "",
       featured: false,
       primaryImageFile: null,
       secondaryImageFile: null,
@@ -188,7 +200,7 @@ export default {
     };
   },
   created() {
-    this.fetchProductProperties()
+    this.fetchProductProperties();
   },
   methods: {
     async fetchProductProperties() {
@@ -230,11 +242,7 @@ export default {
 
         if (propertyExists) {
           // Show an error message using SweetAlert
-          Swal.fire(
-            "Fel",
-            "Egenskapen har redan lagts till.",
-            "error"
-          );
+          Swal.fire("Fel", "Egenskapen har redan lagts till.", "error");
           return; // Exit the function if the property already exists
         }
 
@@ -262,11 +270,11 @@ export default {
     onImageChange(event, imageType) {
       const file = event.target.files[0];
 
-      if (imageType === 'primary') {
+      if (imageType === "primary") {
         this.primaryImageFile = file;
-      } else if (imageType === 'secondary') {
+      } else if (imageType === "secondary") {
         this.secondaryImageFile = file;
-      } else if (imageType === 'third') {
+      } else if (imageType === "third") {
         this.thirdImageFile = file;
       }
     },
@@ -280,21 +288,28 @@ export default {
       formData.append("category_id", parseInt(this.categoryId));
       formData.append("featured", this.featured);
       formData.append("properties", JSON.stringify(this.properties));
+      formData.append("brand", this.brand);
 
-      if (this.primaryImageFile) formData.append("primaryImage", this.primaryImageFile);
-      if (this.secondaryImageFile) formData.append("secondaryImage", this.secondaryImageFile);
-      if (this.thirdImageFile) formData.append("thirdImage", this.thirdImageFile);
+      if (this.primaryImageFile)
+        formData.append("primaryImage", this.primaryImageFile);
+      if (this.secondaryImageFile)
+        formData.append("secondaryImage", this.secondaryImageFile);
+      if (this.thirdImageFile)
+        formData.append("thirdImage", this.thirdImageFile);
 
       try {
         const response = await axiosInstance.post(`admin/products`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
+          headers: { "Content-Type": "multipart/form-data" },
         });
         console.log("Response:", response);
         this.message = "Product added successfully!";
         this.resetForm();
       } catch (error) {
         console.error("Error adding product:", error);
-        this.message = error.response?.data?.error || error.message || "Internal Server Error";
+        this.message =
+          error.response?.data?.error ||
+          error.message ||
+          "Internal Server Error";
       }
     },
     resetForm() {
@@ -310,6 +325,7 @@ export default {
       this.thirdImageFile = null;
       this.categoryId = "";
       this.selectedProperty = "";
+      this.brand = "";
     },
   },
 };

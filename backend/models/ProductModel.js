@@ -16,56 +16,66 @@ export const getProducts = async () => {
 
 export const getFeaturedProducts = async () => {
   try {
-    const [rows] = await db.query(`SELECT 
-  p.product_id,
-  p.product_name,
-  p.description,
-  p.usage_products,
-  p.ingredients,
-  p.featured,
-  p.created_at,
-  p.image_url_primary,
-  p.image_url_secondary,
-  p.image_url_third,
-  JSON_OBJECT(
-      'category_id', c.category_id,
-      'category_name', c.category_name,
-      'parent_category_id', c.parent_category_id
-  ) AS category,
-  JSON_ARRAYAGG(
-      CASE 
-          WHEN ps.size_id IS NOT NULL THEN JSON_OBJECT(
-              'size_id', ps.size_id,
-              'size', ps.size,
-              'price', ps.price,
-              'stock_quantity', ps.stock_quantity
-          )
-      END
-  ) AS variants,
-  (SELECT JSON_ARRAYAGG(
-          JSON_OBJECT(
-              'property_id', pp.property_id,
-              'name', pp.name
-          )
-      ) FROM ProductPropertiesJoinTable ppjt
-      INNER JOIN ProductProperties pp ON ppjt.property_id = pp.property_id
-      WHERE ppjt.product_id = p.product_id) AS properties
-FROM 
-  Products p
-LEFT JOIN
-  Categories c ON p.category_id = c.category_id
-LEFT JOIN 
-  ProductSizes ps ON p.product_id = ps.product_id
-LEFT JOIN
-  ProductPropertiesJoinTable ppjt ON p.product_id = ppjt.product_id
-WHERE 
-  p.featured = 1
-GROUP BY 
-  p.product_id;
-`);
-    return rows;
+    const [rows] = await db.query(`
+      SELECT 
+        p.product_id,
+        p.product_name,
+        p.description,
+        p.usage_products,
+        p.ingredients,
+        p.featured,
+        p.created_at,
+        p.brand_id,
+        p.image_url_primary,
+        p.image_url_secondary,
+        p.image_url_third,
+        JSON_OBJECT(
+            'category_id', c.category_id,
+            'category_name', c.category_name,
+            'parent_category_id', c.parent_category_id
+        ) AS category,
+        JSON_ARRAYAGG(
+            CASE 
+                WHEN ps.size_id IS NOT NULL THEN JSON_OBJECT(
+                    'size_id', ps.size_id,
+                    'size', ps.size,
+                    'price', ps.price,
+                    'stock_quantity', ps.stock_quantity
+                )
+                ELSE NULL
+            END
+        ) AS variants,
+        (SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'property_id', pp.property_id,
+                    'name', pp.name
+                )
+            ) FROM ProductPropertiesJoinTable ppjt
+            INNER JOIN ProductProperties pp ON ppjt.property_id = pp.property_id
+            WHERE ppjt.product_id = p.product_id) AS properties
+      FROM 
+        Products p
+      LEFT JOIN
+        Categories c ON p.category_id = c.category_id
+      LEFT JOIN 
+        ProductSizes ps ON p.product_id = ps.product_id
+      WHERE 
+        p.featured = 1
+      GROUP BY 
+        p.product_id;
+    `);
+
+    // Post-process the rows to handle empty arrays or objects as needed
+    return rows.map((row) => {
+      // Set variants to an empty array if it contains only nulls
+      row.variants =
+        row.variants && row.variants[0] !== null ? row.variants : [];
+      row.properties =
+        row.properties && row.properties.length > 0 ? row.properties : [];
+      return row;
+    });
   } catch (err) {
-    console.error("Error fetching products:", err);
+    console.error("Error fetching featured products:", err);
     throw err;
   }
 };
@@ -77,6 +87,7 @@ export const insertProduct = async (product) => {
     sizes, // Assuming this is an array of objects
     usage_products,
     ingredients,
+    brand,
     properties, // Expected structure: [{ name: 'Skin Type', property_id: 1 }, ...]
     category_id,
     featured,
@@ -90,8 +101,8 @@ export const insertProduct = async (product) => {
 
     // Step 1: Insert into the Products table
     const productQuery = `
-      INSERT INTO Products (product_name, description, usage_products, ingredients, category_id, featured, image_url_primary, image_url_secondary, image_url_third)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO Products (product_name, description, usage_products, ingredients, category_id, brand, featured, image_url_primary, image_url_secondary, image_url_third)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [productResult] = await db.query(productQuery, [
       product_name,
@@ -99,6 +110,7 @@ export const insertProduct = async (product) => {
       usage_products,
       ingredients,
       category_id,
+      brand,
       featuredValue,
       image_url_primary,
       image_url_secondary,
@@ -151,6 +163,7 @@ export const editProduct = async (product) => {
     usage_products,
     ingredients,
     category_id,
+    brand,
     featuredValue,
     image_url_primary,
     image_url_secondary,
@@ -163,7 +176,7 @@ export const editProduct = async (product) => {
   try {
     const productQuery = `
       UPDATE Products
-      SET product_name = ?, description = ?, usage_products = ?, ingredients = ?, category_id = ?, featured = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
+      SET product_name = ?, description = ?, usage_products = ?, ingredients = ?, category_id = ?, brand, featured = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
       WHERE product_id = ?
     `;
     await db.query(productQuery, [
@@ -172,6 +185,7 @@ export const editProduct = async (product) => {
       usage_products,
       ingredients,
       category_id,
+      brand,
       featuredValue,
       image_url_primary,
       image_url_secondary,
@@ -281,57 +295,62 @@ export const fetchCheckoutProductsByIds = async (items) => {
 };
 
 export const getProductsWithInfo = async () => {
-  const [rows] = await db.query(`
-    SELECT 
-      p.product_id,
-      p.product_name,
-      p.description,
-      p.usage_products,
-      p.ingredients,
-      p.featured,
-      p.created_at,
-      p.image_url_primary,
-      p.image_url_secondary,
-      p.image_url_third,
-      JSON_OBJECT(
-          'category_id', c.category_id,
-          'category_name', c.category_name,
-          'parent_category_id', c.parent_category_id
-      ) AS category,
-      (SELECT JSON_ARRAYAGG(
-          JSON_OBJECT(
-              'size_id', ps.size_id,
-              'size', ps.size,
-              'price', ps.price,
-              'stock_quantity', ps.stock_quantity)
-      ) FROM ProductSizes ps WHERE ps.product_id = p.product_id) AS variants,
-      (SELECT JSON_ARRAYAGG(
-          JSON_OBJECT(
-              'property_id', pp.property_id,
-              'name', pp.name
-          )
-      ) FROM ProductPropertiesJoinTable ppjt
-      INNER JOIN ProductProperties pp ON ppjt.property_id = pp.property_id
-      WHERE ppjt.product_id = p.product_id) AS properties
-    FROM 
-      Products p
-    LEFT JOIN
-      Categories c ON p.category_id = c.category_id
-  `);
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        p.product_id,
+        p.product_name,
+        p.description,
+        p.usage_products,
+        p.ingredients,
+        p.featured,
+        p.created_at,
+        p.image_url_primary,
+        p.image_url_secondary,
+        p.image_url_third,
+        JSON_OBJECT(
+            'category_id', c.category_id,
+            'category_name', c.category_name,
+            'parent_category_id', c.parent_category_id
+        ) AS category,
+        JSON_OBJECT(
+          'brand_id', b.brand_id,
+          'brand_name', b.brand_name
+        ) AS brand,
+        (SELECT JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'size_id', ps.size_id,
+                'size', ps.size,
+                'price', ps.price,
+                'stock_quantity', ps.stock_quantity)
+        ) FROM ProductSizes ps WHERE ps.product_id = p.product_id) AS variants,
+        (SELECT JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'property_id', pp.property_id,
+                'name', pp.name
+            )
+        ) FROM ProductPropertiesJoinTable ppjt
+        INNER JOIN ProductProperties pp ON ppjt.property_id = pp.property_id
+        WHERE ppjt.product_id = p.product_id) AS properties
+      FROM 
+        Products p
+      LEFT JOIN
+        Categories c ON p.category_id = c.category_id
+      LEFT JOIN
+        Brands b ON p.brand_id = b.brand_id
+    `);
 
-  // Post-process the rows to ensure variants is an empty object if there are no sizes
-  return rows.map((row) => {
-    // Check if variants is an empty array or undefined, and set to empty object
-    if (!row.variants || row.variants.length === 0) {
-      row.variants = {}; // Set to empty object if there are no variants
-    }
-
-    if (!row.properties || row.properties.length === 0) {
-      row.properties = {};
-    }
-
-    return row;
-  });
+    return rows.map((row) => {
+      row.variants =
+        row.variants && row.variants.length > 0 ? row.variants : {};
+      row.properties =
+        row.properties && row.properties.length > 0 ? row.properties : {};
+      return row;
+    });
+  } catch (error) {
+    console.error("Error fetching product data:", error);
+    throw error; // Re-throw or handle as needed
+  }
 };
 
 // Fetch a single product and its details, including price, sizes, and properties by product ID
@@ -347,6 +366,7 @@ export const getProductById = async (productId) => {
       p.image_url_third,
       p.usage_products,
       p.ingredients,
+      p.brand_id,
       p.featured,
       p.category_id,
       c.category_name

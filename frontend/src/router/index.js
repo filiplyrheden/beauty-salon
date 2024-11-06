@@ -25,6 +25,7 @@ import EventsPage from "../views/mainpage/EventsView.vue";
 import CoursesPage from "../views/mainpage/CoursesView.vue";
 import Product from "@/views/mainpage/ProductPage.vue";
 import ProductProperties from "@/views/admin/ProductProperties.vue";
+import BrandsPage from "@/views/admin/BrandView.vue";
 
 const routes = [
   {
@@ -144,6 +145,12 @@ const routes = [
     path: "/admin/page-reviews",
     name: "Page Reviews Page",
     component: PageReviewsPage,
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path: "/admin/brands",
+    name: "Brands Page",
+    component: BrandsPage,
     meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
