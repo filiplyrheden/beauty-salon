@@ -84,11 +84,11 @@ export const insertProduct = async (product) => {
   const {
     product_name,
     description,
-    sizes, // Assuming this is an array of objects
+    sizes,
     usage_products,
     ingredients,
     brand_id,
-    properties, // Expected structure: [{ name: 'Skin Type', property_id: 1 }, ...]
+    properties,
     category_id,
     featured,
     image_url_primary,
@@ -97,6 +97,15 @@ export const insertProduct = async (product) => {
   } = product;
 
   try {
+    // Check if sizes or properties are missing and throw an error
+    if (!sizes || sizes.length === 0) {
+      throw new Error("Product sizes are missing");
+    }
+
+    if (!properties || properties.length === 0) {
+      throw new Error("Product properties are missing");
+    }
+
     const featuredValue = featured ? 1 : 0;
 
     // Step 1: Insert into the Products table
@@ -118,8 +127,6 @@ export const insertProduct = async (product) => {
     ]);
 
     const productId = productResult.insertId;
-
-    console.log("Properties inside the model:", properties);
 
     // Step 2: Insert sizes into the ProductSizes table
     const sizeValues = sizes.map(({ sizeName, price, quantity }) => [
@@ -149,8 +156,10 @@ export const insertProduct = async (product) => {
 
     return productResult;
   } catch (err) {
-    console.error("Error inserting product, sizes, and properties:", err);
-    throw err;
+    console.error("Error inserting product, sizes, or properties:", err);
+
+    // Return a specific error message to the frontend
+    throw new Error(err.message || "Error inserting product");
   }
 };
 
