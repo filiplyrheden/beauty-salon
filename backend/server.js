@@ -127,11 +127,12 @@ app.post(
   async (req, res) => {
     let event;
     try {
+      const sig = req.headers["stripe-signature"];
+
       console.log("Received Webhook Request");
       console.log("Payload:", req.body);
       console.log("Signature:", sig);
       console.log("Webhook Secret:", STRIPE_WEBHOOK_SECRET);
-      const sig = req.headers["stripe-signature"];
       event = stripe.webhooks.constructEvent(
         req.body,
         sig,
