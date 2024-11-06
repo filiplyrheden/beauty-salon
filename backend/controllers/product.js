@@ -51,7 +51,7 @@ export const getCheckoutProducts = async (res, dummyItems) => {
   try {
     // Fetch product and size details for each (product_id, size_id) pair
     const products = await fetchCheckoutProductsByIds(dummyItems);
-
+    console.log("do I work to fetch prices?????");
     // Create line items with the correct quantity, size, and price for each product
     const line_items = products.map((product) => {
       // Find the matching item in dummyItems to get the quantity
@@ -90,7 +90,7 @@ export const createProduct = async (req, res) => {
   console.log(product);
   console.log(files);
 
-  if (typeof product.sizes === 'string') {
+  if (typeof product.sizes === "string") {
     try {
       product.sizes = JSON.parse(product.sizes);
     } catch (error) {
@@ -99,7 +99,7 @@ export const createProduct = async (req, res) => {
     }
   }
 
-  if (typeof product.properties === 'string') {
+  if (typeof product.properties === "string") {
     try {
       product.properties = JSON.parse(product.properties);
     } catch (error) {
@@ -110,30 +110,29 @@ export const createProduct = async (req, res) => {
 
   console.log(product.properties);
 
-    // Get the file paths for the uploaded images
-    const primaryImagePath = req.files.primaryImage[0].filename;
-    const secondaryImagePath = req.files.secondaryImage[0].filename;
-    const thirdImagePath = req.files.thirdImage[0].filename;
+  // Get the file paths for the uploaded images
+  const primaryImagePath = req.files.primaryImage[0].filename;
+  const secondaryImagePath = req.files.secondaryImage[0].filename;
+  const thirdImagePath = req.files.thirdImage[0].filename;
 
-    // Construct URLs for both images
-    const primaryImageUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/uploads/${primaryImagePath}`;
-    const secondaryImageUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/uploads/${secondaryImagePath}`;
-    const thirdImageUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/uploads/${thirdImagePath}`;
+  // Construct URLs for both images
+  const primaryImageUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/uploads/${primaryImagePath}`;
+  const secondaryImageUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/uploads/${secondaryImagePath}`;
+  const thirdImageUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/uploads/${thirdImagePath}`;
 
-    // Add image URLs to service data
-    const newProductData = {
-      ...product,
-      image_url_primary: primaryImageUrl,
-      image_url_secondary: secondaryImageUrl,
-      image_url_third: thirdImageUrl, 
-    };
-
+  // Add image URLs to service data
+  const newProductData = {
+    ...product,
+    image_url_primary: primaryImageUrl,
+    image_url_secondary: secondaryImageUrl,
+    image_url_third: thirdImageUrl,
+  };
 
   try {
     const result = await insertProduct(newProductData);
@@ -159,7 +158,8 @@ export const updateProduct = async (req, res) => {
 
   const existingProduct = await getProductById(productId);
   console.log(
-    "existing product with images that needs to be deleted if there are new images uploaded: ", existingProduct
+    "existing product with images that needs to be deleted if there are new images uploaded: ",
+    existingProduct
   );
 
   if (!existingProduct) {
@@ -167,10 +167,16 @@ export const updateProduct = async (req, res) => {
   }
 
   // Check if files exist before trying to access them
-  const primaryImagePath = files.primaryImage ? files.primaryImage[0]?.filename : null;
-  const secondaryImagePath = files.secondaryImage ? files.secondaryImage[0]?.filename : null;
-  const thirdImagePath = files.thirdImage ? files.thirdImage[0]?.filename : null;
-  
+  const primaryImagePath = files.primaryImage
+    ? files.primaryImage[0]?.filename
+    : null;
+  const secondaryImagePath = files.secondaryImage
+    ? files.secondaryImage[0]?.filename
+    : null;
+  const thirdImagePath = files.thirdImage
+    ? files.thirdImage[0]?.filename
+    : null;
+
   console.log("primary image path (new) : " + primaryImagePath);
   console.log("secondary image path (new) : " + secondaryImagePath);
   console.log("third image path (new) : " + thirdImagePath);
@@ -188,14 +194,20 @@ export const updateProduct = async (req, res) => {
   if (existingImages) {
     existingImages.forEach((imagePath, index) => {
       // Determine if there's a new image for this index
-      const newImagePath = [primaryImagePath, secondaryImagePath, thirdImagePath][index];
+      const newImagePath = [
+        primaryImagePath,
+        secondaryImagePath,
+        thirdImagePath,
+      ][index];
 
       // Only delete existing image if there is a new image uploaded
-      if (newImagePath) { // Proceed only if there's a new image path
+      if (newImagePath) {
+        // Proceed only if there's a new image path
         if (imagePath) {
           const fullPath = path.join("uploads", path.basename(imagePath));
 
-          if (fs.existsSync(fullPath)) { // Check if the file exists
+          if (fs.existsSync(fullPath)) {
+            // Check if the file exists
             fs.unlink(fullPath, (err) => {
               if (err) {
                 console.error(`Failed to delete image at ${fullPath}:`, err);
@@ -212,9 +224,15 @@ export const updateProduct = async (req, res) => {
   }
 
   // Construct URLs for uploaded images if they exist
-  const primaryImageUrl = primaryImagePath ? `${req.protocol}://${req.get("host")}/uploads/${primaryImagePath}` : existingProduct.image_url_primary;
-  const secondaryImageUrl = secondaryImagePath ? `${req.protocol}://${req.get("host")}/uploads/${secondaryImagePath}` : existingProduct.image_url_secondary;
-  const thirdImageUrl = thirdImagePath ? `${req.protocol}://${req.get("host")}/uploads/${thirdImagePath}` : existingProduct.image_url_third;
+  const primaryImageUrl = primaryImagePath
+    ? `${req.protocol}://${req.get("host")}/uploads/${primaryImagePath}`
+    : existingProduct.image_url_primary;
+  const secondaryImageUrl = secondaryImagePath
+    ? `${req.protocol}://${req.get("host")}/uploads/${secondaryImagePath}`
+    : existingProduct.image_url_secondary;
+  const thirdImageUrl = thirdImagePath
+    ? `${req.protocol}://${req.get("host")}/uploads/${thirdImagePath}`
+    : existingProduct.image_url_third;
 
   // Add image URLs to the product data
   const newProductData = {
@@ -238,15 +256,13 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-
-
 /**
  * Handler to delete a product from the database.
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  */
 export const deleteProduct = async (req, res) => {
-  const productId = req.params.id; 
+  const productId = req.params.id;
   console.log("productId inside controller: " + productId);
 
   const existingProduct = await getProductById(productId);
@@ -257,11 +273,11 @@ export const deleteProduct = async (req, res) => {
     existingProduct.image_url_third,
   ];
 
-  existingImages.forEach(imagePath => {
-    
+  existingImages.forEach((imagePath) => {
     const fullPath = path.join("uploads", path.basename(imagePath));
-    
-    if (fs.existsSync(fullPath)) { // Check if the file exists
+
+    if (fs.existsSync(fullPath)) {
+      // Check if the file exists
       fs.unlink(fullPath, (err) => {
         if (err) {
           console.error(`Failed to delete image at ${fullPath}:`, err);
