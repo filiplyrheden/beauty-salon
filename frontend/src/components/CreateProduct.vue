@@ -288,7 +288,7 @@ export default {
       formData.append("category_id", parseInt(this.categoryId));
       formData.append("featured", this.featured);
       formData.append("properties", JSON.stringify(this.properties));
-      formData.append("brand", this.brand);
+      formData.append("brand_id", parseInt(this.brand));
 
       if (this.primaryImageFile)
         formData.append("primaryImage", this.primaryImageFile);
