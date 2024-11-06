@@ -110,21 +110,15 @@ export const createProduct = async (req, res) => {
 
   console.log(product.properties);
 
-    // Get the file paths for the uploaded images
-    const primaryImagePath = req.files.primaryImage[0].filename;
-    const secondaryImagePath = req.files.secondaryImage[0].filename;
-    const thirdImagePath = req.files.thirdImage[0].filename;
+    // Check if each file exists and assign the file paths conditionally
+    const primaryImagePath = req.files.primaryImage ? req.files.primaryImage[0].filename : null;
+    const secondaryImagePath = req.files.secondaryImage ? req.files.secondaryImage[0].filename : null;
+    const thirdImagePath = req.files.thirdImage ? req.files.thirdImage[0].filename : null;
 
-    // Construct URLs for both images
-    const primaryImageUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/uploads/${primaryImagePath}`;
-    const secondaryImageUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/uploads/${secondaryImagePath}`;
-    const thirdImageUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/uploads/${thirdImagePath}`;
+    // Construct URLs only for images that exist
+    const primaryImageUrl = primaryImagePath ? `${req.protocol}://${req.get("host")}/uploads/${primaryImagePath}` : null;
+    const secondaryImageUrl = secondaryImagePath ? `${req.protocol}://${req.get("host")}/uploads/${secondaryImagePath}` : null;
+    const thirdImageUrl = thirdImagePath ? `${req.protocol}://${req.get("host")}/uploads/${thirdImagePath}` : null;
 
     // Add image URLs to service data
     const newProductData = {
@@ -257,7 +251,12 @@ export const deleteProduct = async (req, res) => {
     existingProduct.image_url_third,
   ];
 
-  existingImages.forEach(imagePath => {
+  existingImages.forEach((imagePath) => {
+    if (!imagePath) {
+      // Skip if imagePath is null or undefined
+      console.log("Image path is null or undefined, skipping...");
+      return;
+    }
     
     const fullPath = path.join("uploads", path.basename(imagePath));
     
