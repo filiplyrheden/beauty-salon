@@ -87,7 +87,7 @@ export const insertProduct = async (product) => {
     sizes, // Assuming this is an array of objects
     usage_products,
     ingredients,
-    brand,
+    brand_id,
     properties, // Expected structure: [{ name: 'Skin Type', property_id: 1 }, ...]
     category_id,
     featured,
@@ -101,7 +101,7 @@ export const insertProduct = async (product) => {
 
     // Step 1: Insert into the Products table
     const productQuery = `
-      INSERT INTO Products (product_name, description, usage_products, ingredients, category_id, brand, featured, image_url_primary, image_url_secondary, image_url_third)
+      INSERT INTO Products (product_name, description, usage_products, ingredients, category_id, brand_id, featured, image_url_primary, image_url_secondary, image_url_third)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [productResult] = await db.query(productQuery, [
@@ -110,7 +110,7 @@ export const insertProduct = async (product) => {
       usage_products,
       ingredients,
       category_id,
-      brand,
+      brand_id,
       featuredValue,
       image_url_primary,
       image_url_secondary,
@@ -163,7 +163,7 @@ export const editProduct = async (product) => {
     usage_products,
     ingredients,
     category_id,
-    brand,
+    brand_id,
     featuredValue,
     image_url_primary,
     image_url_secondary,
@@ -176,7 +176,7 @@ export const editProduct = async (product) => {
   try {
     const productQuery = `
       UPDATE Products
-      SET product_name = ?, description = ?, usage_products = ?, ingredients = ?, category_id = ?, brand, featured = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
+      SET product_name = ?, description = ?, usage_products = ?, ingredients = ?, category_id = ?, brand_id = ?, featured = ?, image_url_primary = ?, image_url_secondary = ?, image_url_third = ?
       WHERE product_id = ?
     `;
     await db.query(productQuery, [
@@ -185,7 +185,7 @@ export const editProduct = async (product) => {
       usage_products,
       ingredients,
       category_id,
-      brand,
+      brand_id,
       featuredValue,
       image_url_primary,
       image_url_secondary,
@@ -198,14 +198,13 @@ export const editProduct = async (product) => {
     `;
     await db.query(deleteSizesQuery, [product_id]);
 
-    const sizeValues = variants
-      .map(
-        ({ size, price, stock_quantity }) =>
-          `(${product_id}, '${size}', ${price}, ${stock_quantity})`
-      )
-      .join(", ");
-
-    if (variants.length > 0) {
+    if (variants && variants.length > 0) {
+      const sizeValues = variants
+        .map(
+          ({ size, price, stock_quantity }) =>
+            `(${product_id}, '${size}', ${price}, ${stock_quantity})`
+        )
+        .join(", ");
       const insertSizesQuery = `
         INSERT INTO ProductSizes (product_id, size, price, stock_quantity)
         VALUES ${sizeValues}`;
@@ -217,11 +216,10 @@ export const editProduct = async (product) => {
     `;
     await db.query(deletePropertiesQuery, [product_id]);
 
-    const propertiesValues = properties
-      .map(({ property_id }) => `(${property_id}, ${product_id})`)
-      .join(", ");
-
-    if (properties.length > 0) {
+    if (properties && properties.length > 0) {
+      const propertiesValues = properties
+        .map(({ property_id }) => `(${property_id}, ${product_id})`)
+        .join(", ");
       const insertPropertiesQuery = `INSERT INTO ProductPropertiesJoinTable (property_id, product_id)
       VALUES ${propertiesValues}`;
       await db.query(insertPropertiesQuery);
