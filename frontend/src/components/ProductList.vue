@@ -179,6 +179,19 @@
               placeholder="Enter category ID"
             />
           </div>
+          <div class="form-group">
+            <label for="brandId"
+              >Märkes ID ÄNDRA DENNA(Current:
+              {{ editingProduct.brand.brand_name }})</label
+            >
+            <input
+              type="number"
+              id="brandId"
+              v-model="editingProduct.brand.brand_id"
+              required
+              placeholder="Enter brand ID"
+            />
+          </div>
 
           <fieldset>
             <legend>Sizes</legend>
@@ -367,6 +380,7 @@ export default {
       formData.append("featured", this.editingProduct.featured); // Ensure 'featured' is part of editingProduct
       formData.append("usage_products", this.editingProduct.usage_products); // Usage instructions
       formData.append("ingredients", this.editingProduct.ingredients); // Ensure 'ingredients' is part of editingProduct
+      formData.append("brand_id", this.editingProduct.brand.brand_id);
 
       if (this.editingProduct.primaryImageFile)
         formData.append("primaryImage", this.editingProduct.primaryImageFile);
