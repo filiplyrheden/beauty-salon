@@ -138,7 +138,7 @@ app.post(
 
     // Acknowledge the webhook quickly
     res.sendStatus(200);
-
+    console.log("HI IM A WEBHOOK");
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
 

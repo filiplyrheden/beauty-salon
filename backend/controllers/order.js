@@ -131,6 +131,7 @@ export const createOrderByHook = async (
   lineItems,
   shippingAddress
 ) => {
+  console.log("createOrderByHook", user_id, lineItems, shippingAddress);
   let connection;
   try {
     // Acquire a connection from the pool
