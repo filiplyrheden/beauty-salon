@@ -86,7 +86,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "https://exarbete-production.up.railway.app/register",
+          `${process.env.VUE_APP_API_BASE_URL}/register`,
           registerData
         );
         this.message = "Registration successful!";

@@ -60,7 +60,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "https://exarbete-production.up.railway.app/login",
+          `${process.env.VUE_APP_API_BASE_URL}/login`,
           loginData
         );
         this.message = "Login successful!";

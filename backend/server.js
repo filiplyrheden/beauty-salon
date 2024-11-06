@@ -97,7 +97,7 @@ const PORT = 3000;
 app.options("*", cors()); // Allow preflight requests for all routes
 app.use(
   cors({
-    origin: "https://www.sn-beauty.se",
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -112,7 +112,7 @@ async function getCheckoutSession(sessionId) {
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const YOUR_DOMAIN = "https://www.sn-beauty.se"; //
+const YOUR_DOMAIN = process.env.FRONTEND_URL; //
 
 app.post(
   "/webhook",
@@ -187,7 +187,7 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
       cancel_url: `${YOUR_DOMAIN}/cancel`,
     });
     // Set CORS header and respond with the session URL
-    res.setHeader("Access-Control-Allow-Origin", "https://www.sn-beauty.se");
+    res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
     res.status(303).json({ url: session.url });
   } catch (error) {
     console.error("Error creating Stripe checkout session:", error); // More detailed error log
