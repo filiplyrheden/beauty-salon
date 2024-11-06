@@ -207,22 +207,23 @@
                 </div>
               </div>
             </div>
-
-            <div class="product-info">
-              <div class="product-info-header">
-                <h3 class="product-name">{{ product.product_name }}</h3>
-                <span v-if="product.selectedSize">
-                  {{
-                    product.variants.find(
-                      (v) => v.size_id === product.selectedSize
-                    )?.price || "0"
-                  }}
-                  kr
-                </span>
-                <span v-else>{{ product.variants[0]?.price || "0" }} kr</span>
+            <router-link :to="'/products/' + product.product_id">
+              <div class="product-info">
+                <div class="product-info-header">
+                  <h3 class="product-name">{{ product.product_name }}</h3>
+                  <span v-if="product.selectedSize">
+                    {{
+                      product.variants.find(
+                        (v) => v.size_id === product.selectedSize
+                      )?.price || "0"
+                    }}
+                    kr
+                  </span>
+                  <span v-else>{{ product.variants[0]?.price || "0" }} kr</span>
+                </div>
+                <div class="product-description">{{ product.description }}</div>
               </div>
-              <div class="product-description">{{ product.description }}</div>
-            </div>
+            </router-link>
           </div>
         </div>
 
@@ -572,6 +573,16 @@ select {
   flex-direction: column;
   justify-content: flex-start;
 }
+.product-item a {
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+}
+a:hover {
+  transform: scale(1.01);
+  transition: transform 0.3s ease;
+}
+
 .card-overlay:hover .card-overlay-container {
   background-color: rgba(240, 240, 240, 0.9);
 }
