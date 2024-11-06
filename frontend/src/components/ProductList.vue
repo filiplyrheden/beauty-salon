@@ -33,7 +33,6 @@
             <strong>Märke:</strong>
             {{ product.brand.brand_name }}
           </p>
-
           <p>
             <strong>Skapad den:</strong> {{ formatDate(product.created_at) }}
           </p>
@@ -70,186 +69,195 @@
             <font-awesome-icon :icon="['fas', 'edit']" /> Ändra
           </button>
         </div>
-
+        
         <div
-          v-if="
+        v-if="
             editingProduct && editingProduct.product_id === product.product_id
-          "
+            "
           class="edit-form"
-        >
-          <h3>Ändra Produkt</h3>
-          <h4>{{ product }}</h4>
-          <br />
-          <h4>{{ editingProduct }}</h4>
-          <div class="form-group">
-            <label for="productName">Prouktnamn</label>
-            <input
-              class="productNameInput"
-              id="productName"
-              v-model="editingProduct.product_name"
-              placeholder="Product Name"
-            />
-          </div>
-          <div class="form-group">
-            <label for="productDescription">Beskrivning</label>
-            <textarea
-              id="productDescription"
-              v-model="editingProduct.description"
-              placeholder="Description"
-            ></textarea>
-          </div>
+          >
+          <form 
+          id="uploadForm"
+          @submit.prevent="saveProduct"
+          enctype="multipart/form-data">
 
-          <fieldset class="fieldsetFlex">
-            <legend>Egenskaper</legend>
-            <label for="property">Välj Egenskap:</label>
-            <select id="property" v-model="selectedProperty">
-              <option
-                v-for="property in propertiesOnLoad"
-                :key="property.property_id"
-                :value="property.property_id"
-              >
-                {{ property.name }}
-              </option>
-            </select>
-            <button class="save-btn" @click="addProperty">
-              Lägg till Egenskap
-            </button>
-            <ul>
-              <li
-                v-for="(property, index) in editingProduct.properties"
-                :key="property.property_id"
-              >
-                {{ property.name }}
-                <button @click="removeProperty(index)">Remove</button>
-              </li>
-            </ul>
-          </fieldset>
-
-          <fieldset>
-            <legend>Bilder</legend>
-            <div class="editingImageWrapper">
-              <div
-                class="form-group"
-                v-for="(imageType, index) in ['primary', 'secondary', 'third']"
-                :key="index"
-              >
-                <label :for="`${imageType}Image`">
-                  {{ imageType.charAt(0).toUpperCase() + imageType.slice(1) }}
-                  Image:</label
-                >
-                <div
-                  v-if="editingProduct[`image_url_${imageType}`]"
-                  class="currentImagePreview"
-                >
-                  <img
-                    :src="getImageUrl(editingProduct[`image_url_${imageType}`])"
-                    alt="Image Preview"
-                    class="product-image"
-                  />
-                </div>
+            <h3>Ändra Produkt</h3>
+            <h4>{{ product }}</h4>
+            <br />
+            <h4>{{ editingProduct }}</h4>
+              <div class="form-group">
+                <label for="productName">Prouktnamn</label>
                 <input
-                  type="file"
-                  :id="`${imageType}Image`"
-                  @change="onImageChangeEditing($event, imageType)"
-                  accept="image/*"
+                  class="productNameInput"
+                  id="productName"
+                  v-model="editingProduct.product_name"
+                  placeholder="Product Name"
                 />
               </div>
+              <div class="form-group">
+                <label for="productDescription">Beskrivning</label>
+                <textarea
+                  id="productDescription"
+                  v-model="editingProduct.description"
+                  placeholder="Description"
+                ></textarea>
+              </div>
+
+              <fieldset class="fieldsetFlex">
+                <legend>Egenskaper</legend>
+                <label for="property">Välj Egenskap:</label>
+                <select id="property" v-model="selectedProperty">
+                  <option
+                    v-for="property in propertiesOnLoad"
+                    :key="property.property_id"
+                    :value="property.property_id"
+                  >
+                    {{ property.name }}
+                  </option>
+                </select>
+                <button class="save-btn" @click="addProperty">
+                  Lägg till Egenskap
+                </button>
+                <ul>
+                  <li
+                    v-for="(property, index) in editingProduct.properties"
+                    :key="property.property_id"
+                  >
+                    {{ property.name }}
+                    <button @click="removeProperty(index)">Remove</button>
+                  </li>
+                </ul>
+              </fieldset>
+
+              <fieldset>
+                <legend>Bilder</legend>
+                <div class="editingImageWrapper">
+                  <div class="form-group">
+                    <label for="primaryImage">Första Bilden:</label>
+                    <input
+                      type="file"
+                      id="primaryImage"
+                      @change="onImageChangeEditing($event, 'primary')"
+                      accept="image/*"
+                      />
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="secondaryImage">Andra Bilden:</label>
+                    <input
+                    type="file"
+                    id="secondaryImage"
+                    @change="onImageChangeEditing($event, 'secondary')"
+                    accept="image/*"
+                    />
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="thirdImage">Tredje Bilden:</label>
+                    <input
+                    type="file"
+                    id="thirdImage"
+                    @change="onImageChangeEditing($event, 'third')"
+                    accept="image/*"
+                    />
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="form-group">
+                <label for="usageProducts">Användningsinstruktioner</label>
+                <textarea
+                  id="usageProducts"
+                  v-model="editingProduct.usage_products"
+                  placeholder="Enter usage instructions"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="categoryId"
+                  >Kategori ID ÄNDRA DENNA(Current:
+                  {{ editingProduct.category.category_name }})</label
+                >
+                <input
+                  type="number"
+                  id="categoryId"
+                  v-model="editingProduct.category.category_id"
+                  required
+                  placeholder="Enter category ID"
+                />
+              </div>
+              <div class="form-group">
+                <label for="brandId"
+                  >Märkes ID ÄNDRA DENNA(Current:
+                  {{ editingProduct.brand.brand_name }})</label
+                >
+                <input
+                  type="number"
+                  id="brandId"
+                  v-model="editingProduct.brand.brand_id"
+                  required
+                  placeholder="Enter brand ID"
+                />
+              </div>
+
+            <fieldset>
+              <legend>Sizes</legend>
+              <div
+                v-for="(variant, index) in editingProduct.variants"
+                :key="index"
+                class="size-variant"
+              >
+                <input v-model="variant.size" placeholder="Size" />
+                <input
+                  v-model.number="variant.price"
+                  type="number"
+                  placeholder="Price"
+                />
+                <input
+                  v-model.number="variant.stock_quantity"
+                  type="number"
+                  placeholder="Stock Quantity"
+                />
+                <button class="delete-btn" @click="removeSize(index)">
+                  Ta Bort Storlek
+                </button>
+              </div>
+              <button @click.prevent="addSize">Lägg Till Storlek</button>
+            </fieldset>
+
+            <div class="form-group">
+              <label>Ska denna produkten vara på landningssidan?</label>
+              <input
+                type="radio"
+                id="featuredYes"
+                value="true"
+                v-model="editingProduct.featured"
+              />
+              <label for="featuredYes">Ja</label>
+              <input
+                type="radio"
+                id="featuredNo"
+                value="false"
+                v-model="editingProduct.featured"
+              />
+              <label for="featuredNo">Nej</label>
             </div>
-          </fieldset>
 
-          <div class="form-group">
-            <label for="usageProducts">Användningsinstruktioner</label>
-            <textarea
-              id="usageProducts"
-              v-model="editingProduct.usage_products"
-              placeholder="Enter usage instructions"
-            ></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="categoryId"
-              >Kategori ID ÄNDRA DENNA(Current:
-              {{ editingProduct.category.category_name }})</label
-            >
-            <input
-              type="number"
-              id="categoryId"
-              v-model="editingProduct.category.category_id"
-              required
-              placeholder="Enter category ID"
-            />
-          </div>
-          <div class="form-group">
-            <label for="brandId"
-              >Märkes ID ÄNDRA DENNA(Current:
-              {{ editingProduct.brand.brand_name }})</label
-            >
-            <input
-              type="number"
-              id="brandId"
-              v-model="editingProduct.brand.brand_id"
-              required
-              placeholder="Enter brand ID"
-            />
-          </div>
-
-          <fieldset>
-            <legend>Sizes</legend>
-            <div
-              v-for="(variant, index) in editingProduct.variants"
-              :key="index"
-              class="size-variant"
-            >
-              <input v-model="variant.size" placeholder="Size" />
-              <input
-                v-model.number="variant.price"
-                type="number"
-                placeholder="Price"
-              />
-              <input
-                v-model.number="variant.stock_quantity"
-                type="number"
-                placeholder="Stock Quantity"
-              />
-              <button class="delete-btn" @click="removeSize(index)">
-                Ta Bort Storlek
+            <div class="button-group">
+              <button
+                class="delete-btn"
+                @click="deleteProduct(product.product_id)"
+              >
+                <font-awesome-icon :icon="['fas', 'trash']" /> Ta bort
+              </button>
+              <button class="cancel-btn" @click="cancelEdit(product)">
+                <font-awesome-icon :icon="['fas', 'times']" /> Avbryt
+              </button>
+              <button class="save-btn" type="submit">
+                <font-awesome-icon :icon="['fas', 'save']" /> Spara
               </button>
             </div>
-            <button @click.prevent="addSize">Lägg Till Storlek</button>
-          </fieldset>
-
-          <div class="form-group">
-            <label>Ska denna produkten vara på landningssidan?</label>
-            <input
-              type="radio"
-              id="featuredYes"
-              value="true"
-              v-model="editingProduct.featured"
-            />
-            <label for="featuredYes">Ja</label>
-            <input
-              type="radio"
-              id="featuredNo"
-              value="false"
-              v-model="editingProduct.featured"
-            />
-            <label for="featuredNo">Nej</label>
-          </div>
-
-          <div class="button-group">
-            <button
-              class="delete-btn"
-              @click="deleteProduct(product.product_id)"
-            >
-              <font-awesome-icon :icon="['fas', 'trash']" /> Ta bort
-            </button>
-            <button class="cancel-btn" @click="cancelEdit(product)">
-              <font-awesome-icon :icon="['fas', 'times']" /> Avbryt
-            </button>
-            <button class="save-btn" @click="saveProduct(product)">
-              <font-awesome-icon :icon="['fas', 'save']" /> Spara
-            </button>
-          </div>
+          </form>
         </div>
       </li>
     </ul>
@@ -415,13 +423,17 @@ export default {
       }
       
       axiosInstance
-        .put(`admin/products/${this.editingProduct.product_id}`, formData)
-        .then(() => {
-          Swal.fire("Product saved successfully");
-          this.cancelEdit();
-        });
+    .put(`admin/products/${this.editingProduct.product_id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }) // Corrected syntax here
+    .then(() => {
+      Swal.fire("Product saved successfully");
+      this.cancelEdit();
+    })
+    .catch((error) => {
+      console.error("Error saving product:", error);
+    });
     },
-
     cancelEdit() {
       this.editingProduct = null;
     },
