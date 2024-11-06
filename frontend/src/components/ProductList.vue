@@ -150,7 +150,7 @@
                 <input
                   type="file"
                   :id="`${imageType}Image`"
-                  @change="onImageChange($event, imageType)"
+                  @change="onImageChangeEditing($event, imageType)"
                   accept="image/*"
                 />
               </div>
@@ -300,17 +300,6 @@ export default {
         this.$emit("product-deleted", productId);
       });
     },
-    onImageChange(event, imageType) {
-      const file = event.target.files[0];
-
-      if (imageType === "primary") {
-        this.primaryImageFile = file;
-      } else if (imageType === "secondary") {
-        this.secondaryImageFile = file;
-      } else if (imageType === "third") {
-        this.thirdImageFile = file;
-      }
-    },
     editProduct(product) {
       this.editingProduct = JSON.parse(JSON.stringify(product));
     },
@@ -357,6 +346,17 @@ export default {
         this.selectedProperty = "";
       }
     },
+    onImageChangeEditing(event, imageType) {
+      const file = event.target.files[0];
+
+      if (imageType === "primary") {
+        this.editingProduct.primaryImageFile = file;
+      } else if (imageType === "secondary") {
+        this.editingProduct.secondaryImageFile = file;
+      } else if (imageType === "third") {
+        this.editingProduct.thirdImageFile = file;
+      }
+    },
     removeProperty(index) {
       this.editingProduct.properties.splice(index, 1);
     },
@@ -385,20 +385,14 @@ export default {
       if (this.editingProduct.primaryImageFile)
         formData.append("primaryImage", this.editingProduct.primaryImageFile);
       if (this.editingProduct.secondaryImageFile)
-        formData.append(
-          "secondaryImage",
-          this.editingProduct.secondaryImageFile
-        );
+        formData.append("secondaryImage", this.editingProduct.secondaryImageFile);
       if (this.editingProduct.thirdImageFile)
         formData.append("thirdImage", this.editingProduct.thirdImageFile);
 
       this.editingProduct.variants.forEach((variant, i) => {
         formData.append(`variants[${i}][size]`, variant.size);
         formData.append(`variants[${i}][price]`, variant.price);
-        formData.append(
-          `variants[${i}][stock_quantity]`,
-          variant.stock_quantity
-        );
+        formData.append(`variants[${i}][stock_quantity]`, variant.stock_quantity);
       });
 
       if (Array.isArray(this.editingProduct.properties)) {
@@ -416,6 +410,10 @@ export default {
         );
       }
 
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+      
       axiosInstance
         .put(`admin/products/${this.editingProduct.product_id}`, formData)
         .then(() => {
@@ -568,7 +566,7 @@ select {
 
 .editingImageWrapper {
   display: flex;
-  justify-content: space-evenly;
+  flex-flow: wrap;
   align-items: center;
 }
 

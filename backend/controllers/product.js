@@ -153,7 +153,7 @@ export const updateProduct = async (req, res) => {
   const product = req.body;
   console.log(product);
   console.log("---------------------------------");
-  const files = req.files || {}; // Ensure files is an object to avoid undefined
+  const files = req.files;
   const productId = product.product_id;
   console.log(files);
 
