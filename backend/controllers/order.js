@@ -131,6 +131,7 @@ export const createOrderByHook = async (
   lineItems,
   shippingAddress
 ) => {
+  console.log("createOrderByHook", user_id, lineItems, shippingAddress);
   let connection;
   try {
     // Acquire a connection from the pool
@@ -154,15 +155,15 @@ export const createOrderByHook = async (
     const [fetchedProducts] = await connection.query(
       `
         SELECT 
-          products.product_id, 
-          productSizes.size_id, 
-          productSizes.price 
+          Products.product_id, 
+          ProductSizes.size_id, 
+          ProductSizes.price 
         FROM 
           Products 
         INNER JOIN 
-          productSizes ON products.product_id = productSizes.product_id
+          ProductSizes ON Products.product_id = ProductSizes.product_id
         WHERE 
-          (products.product_id, productSizes.size_id) IN (?)
+          (Products.product_id, ProductSizes.size_id) IN (?)
       `,
       [productSizePairs] // Pass array of pairs (product_id, size_id)
     );
@@ -199,7 +200,7 @@ export const createOrderByHook = async (
     const city = shippingAddress.city;
 
     const [orderResult] = await connection.query(
-      "INSERT INTO orders (user_id, order_status, total_amount, order_date, address_line1, address_line2, postal_code, country, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO Orders (user_id, order_status, total_amount, order_date, address_line1, address_line2, postal_code, country, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         user_id,
         order_status,
@@ -224,7 +225,7 @@ export const createOrderByHook = async (
     ]);
 
     await connection.query(
-      "INSERT INTO orderDetails (order_id, product_id, quantity, size_id, unit_price) VALUES ?",
+      "INSERT INTO OrderDetails (order_id, product_id, quantity, size_id, unit_price) VALUES ?",
       [orderDetailQueries]
     );
 

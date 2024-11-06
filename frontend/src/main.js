@@ -26,6 +26,7 @@ import {
   faTimes,
   faEdit,
   faSave,
+  faCopyright,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { store } from "./store/store.js";
@@ -54,7 +55,8 @@ library.add(
   faLock,
   faMagnifyingGlass,
   faArrowRightFromBracket,
-  faChevronLeft
+  faChevronLeft,
+  faCopyright
 );
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
