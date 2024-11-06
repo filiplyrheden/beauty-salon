@@ -120,65 +120,18 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const YOUR_DOMAIN = process.env.FRONTEND_URL; //
 
-// app.post(
-//   "/webhook",
-//   express.raw({ type: "application/json" }),
-//   async (req, res) => {
-//     let event;
-//     try {
-//       console.log("HI IM A WEBHOOK");
-//       console.log("payload" + req.body);
-//       console.log("sig" + sig);
-//       console.log("whs" + STRIPE_WEBHOOK_SECRET);
-//       const sig = req.headers["stripe-signature"];
-//       event = stripe.webhooks.constructEvent(
-//         req.body,
-//         sig,
-//         STRIPE_WEBHOOK_SECRET
-//       );
-//     } catch (err) {
-//       return res.status(400).send(`Webhook Error: ${err.message}`);
-//     }
-
-//     // Acknowledge the webhook quickly
-//     res.sendStatus(200);
-//     if (event.type === "checkout.session.completed") {
-//       const session = event.data.object;
-
-//       // Move the rest to a background process
-//       (async () => {
-//         try {
-//           const shippingAddress = session.customer_details.address;
-//           const items = await getCheckoutSession(session.id);
-//           const lineItems = await stripe.checkout.sessions.listLineItems(
-//             session.id,
-//             {
-//               expand: ["data.price.product"],
-//             }
-//           );
-//           const user_id = session.metadata.user_id;
-//           /* const adress = get the adress from the stripe input */
-//           await createOrderByHook(user_id, lineItems, shippingAddress);
-//         } catch (error) {
-//           console.error("Error creating order: ", error);
-//         }
-//       })();
-//     }
-//   }
-// );
-
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
+
   async (req, res) => {
-    const sig = req.headers["stripe-signature"];
     let event;
     try {
       console.log("Received Webhook Request");
       console.log("Payload:", req.body);
       console.log("Signature:", sig);
       console.log("Webhook Secret:", STRIPE_WEBHOOK_SECRET);
-
+      const sig = req.headers["stripe-signature"];
       event = stripe.webhooks.constructEvent(
         req.body,
         sig,
@@ -189,13 +142,16 @@ app.post(
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    res.sendStatus(200); // Respond quickly to Stripe
-
+    // Acknowledge the webhook quickly
+    res.sendStatus(200);
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
+
+      // Move the rest to a background process
       (async () => {
         try {
           const shippingAddress = session.customer_details.address;
+          const items = await getCheckoutSession(session.id);
           const lineItems = await stripe.checkout.sessions.listLineItems(
             session.id,
             {
@@ -203,7 +159,7 @@ app.post(
             }
           );
           const user_id = session.metadata.user_id;
-
+          /* const adress = get the adress from the stripe input */
           await createOrderByHook(user_id, lineItems, shippingAddress);
         } catch (error) {
           console.error("Error creating order: ", error);
