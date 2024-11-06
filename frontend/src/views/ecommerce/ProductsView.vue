@@ -22,11 +22,12 @@
           <img src="../../assets/filter.svg" alt="" />
           <h2>Filter</h2>
         </div>
-
         <div class="accordion">
-          <div @click="toggleDropdown" class="accordion-header">
+          <div @click="toggleDropdown('category')" class="accordion-header">
             <h3 class="filter-title">Category</h3>
-            <span class="accordion-icon" :class="{ open: showDropdown }"
+            <span
+              class="accordion-icon"
+              :class="{ open: showDropdown.category }"
               ><font-awesome-icon icon="chevron-down"
             /></span>
           </div>
@@ -55,38 +56,31 @@
             </li>
           </ul>
         </div>
-        <div class="accordion">
-          <div @click="toggleDropdown" class="accordion-header">
-            <h3 class="filter-title">Category</h3>
-            <span class="accordion-icon" :class="{ open: showDropdown }"
-              ><font-awesome-icon icon="chevron-down"
-            /></span>
-          </div>
 
-          <!-- Accordion Content (Category Dropdown with Checkboxes) -->
-          <ul v-if="showDropdown" class="category-dropdown">
-            <li>
+        <div class="accordion">
+          <div @click="toggleDropdown('properties')" class="accordion-header">
+            <h3 class="filter-title">Properties</h3>
+            <span
+              class="accordion-icon"
+              :class="{ open: showDropdown.properties }"
+            >
+              <font-awesome-icon icon="chevron-down" />
+            </span>
+          </div>
+          <ul v-if="showDropdown" class="properties-dropdown">
+            <li v-for="property in properties" :key="property.id">
               <label>
                 <input
                   type="checkbox"
-                  @change="toggleCategorySelection('')"
-                  :checked="selectedCategories.includes('')"
+                  @change="togglePropertySelection(property.name)"
+                  :checked="selectedProperties.includes(property.name)"
                 />
-                All Categories
-              </label>
-            </li>
-            <li v-for="category in categories" :key="category.category_id">
-              <label>
-                <input
-                  type="checkbox"
-                  @change="toggleCategorySelection(category.category_id)"
-                  :checked="selectedCategories.includes(category.category_id)"
-                />
-                {{ category.category_name }}
+                {{ property.name }}
               </label>
             </li>
           </ul>
         </div>
+
         <div class="accordion">
           <div @click="toggleDropdown" class="accordion-header">
             <h3 class="filter-title">Category</h3>
@@ -243,12 +237,17 @@ export default {
   data() {
     return {
       productItems: [],
-      showDropdown: false,
+      showDropdown: {
+        category: false,
+        properties: false,
+      },
       selectedCategories: [],
+      selectedProperties: [],
       categories: [],
       searchQuery: "",
       sortOption: "",
       showSizeOptions: {}, // Object to track size option visibility
+      properties: [],
     };
   },
 
@@ -265,7 +264,13 @@ export default {
           this.selectedCategories.includes(product.category.category_id)
         );
       }
-
+      if (this.selectedProperties.length > 0) {
+        filtered = filtered.filter((product) =>
+          product.properties.some((property) =>
+            this.selectedProperties.includes(property.name)
+          )
+        );
+      }
       // Filter by search query
       if (this.searchQuery) {
         const query = this.searchQuery.toLowerCase();
@@ -299,9 +304,18 @@ export default {
   created() {
     this.getProducts();
     this.getCategories();
+    this.getProperties();
   },
 
   methods: {
+    async getProperties() {
+      try {
+        const response = await axiosInstance.get(`/productproperties`);
+        this.properties = response.data;
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      }
+    },
     async getProducts() {
       try {
         const response = await axiosInstance.get(`/allproducts`);
@@ -323,8 +337,8 @@ export default {
       }
     },
 
-    toggleDropdown() {
-      this.showDropdown = !this.showDropdown;
+    toggleDropdown(type) {
+      this.showDropdown[type] = !this.showDropdown[type];
     },
 
     toggleCategorySelection(categoryId) {
@@ -336,6 +350,15 @@ export default {
       } else {
         // Add category to selected list
         this.selectedCategories.push(categoryId);
+      }
+    },
+    togglePropertySelection(propertyName) {
+      if (this.selectedProperties.includes(propertyName)) {
+        this.selectedProperties = this.selectedProperties.filter(
+          (prop) => prop !== propertyName
+        );
+      } else {
+        this.selectedProperties.push(propertyName);
       }
     },
 
