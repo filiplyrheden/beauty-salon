@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+/* import nodemailer from 'nodemailer'; */
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -7,12 +7,12 @@ import {
     getUserByResettoken,
     insertNewPassword,
 } from '../models/reset-password.js';
+import brevo from '@getbrevo/brevo';
 
 export const sendCode = async (req, res) => {
     try {
         const { email } = req.body;
         const user = await validateEmail(email);
-        console.log(user);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         const resetToken = uuidv4();
@@ -23,32 +23,37 @@ export const sendCode = async (req, res) => {
             return res.status(500).json({ message: 'Error inserting token into user' });
         }
 
-        // Send email with the token
-        const transporter = nodemailer.createTransport({
-            host: 'in-v3.mailjet.com',
-            port: 587,
-            auth: {
-                user: 'e94629177f6af5a49799d421c5ecee29',
-                pass: 'ba67f72e78ca40371ffc7b57c900e523',
+        // Initialize the API instance and API key directly
+        const apiInstance = new brevo.TransactionalEmailsApi();
+        apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API);
+
+        const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+        const sendSmtpEmail = new brevo.SendSmtpEmail();
+        sendSmtpEmail.subject = "My {{params.subject}}";
+        sendSmtpEmail.sender = { "name": "Lucas", "email": "lucas@ackerberg.se" };
+        sendSmtpEmail.to = [{ "email": `${email}`, "name": "sample-name" }];
+        sendSmtpEmail.replyTo = { "email": "example@brevo.com", "name": "sample-name" };
+        sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+        sendSmtpEmail.params = { "token": `${resetToken}`, "subject": "Lösenordsåterställning" };
+        sendSmtpEmail.templateId = 1;
+
+
+        apiInstance.sendTransacEmail(sendSmtpEmail).then(
+            function (data) {
+                console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+                res.status(200).json({ message: 'Reset email sent successfully' });
             },
-        });
-
-        const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
-        await transporter.sendMail({
-            from: 'lucas@ackerberg.se', // Use your registered Mailjet email
-            to: 'lucas@ackerberg.se',
-            subject: 'Password Reset Request',
-            html: `<p>You requested a password reset. Click <a href="${resetURL}">here</a> to reset your password.</p>`,
-        });
-
-        res.status(200).json({ message: 'Password reset email sent' });
+            function (error) {
+                console.error(error);
+                res.status(500).json({ message: 'Error sending email' });
+            }
+        );
     } catch (error) {
-        console.error("Error in SendCode controller:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("Error in sendCode function:", error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-
 
 export const resetPassword = async (req, res) => {
     const { token } = req.params;
@@ -56,7 +61,7 @@ export const resetPassword = async (req, res) => {
 
     // Find user by token and check if the token is still valid
     const user = await getUserByResettoken(token);
-    if (!user) return res.status(400).json({ message: 'Token is invalid or expired' });
+    if (!user) return res.status(400).json({ message: 'Token är ogiltig eller har gått ut' });
 
     try {
         // Hash the new password

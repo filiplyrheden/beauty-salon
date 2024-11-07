@@ -22,7 +22,7 @@ export const validateEmail = async (email) => {
   export const updateToken = async (resetToken, resetTokenExpiry, email) => {
     try {
       const [result] = await db.query(
-        "UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?",
+        "UPDATE Users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?",
         [resetToken, resetTokenExpiry, email]
       );
   
