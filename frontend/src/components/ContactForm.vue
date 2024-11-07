@@ -5,10 +5,11 @@
       <p>Skicka ett meddelande så återkommer jag så snart jag kan.</p>
     </div>
     <div class="contact-form">
-      <form>
+      <form @submit.prevent="sendEmail">
         <div class="form-group">
           <label for="name">Namn</label>
           <input
+            v-model="name"
             required
             type="text"
             id="name"
@@ -20,6 +21,7 @@
           <label for="email">Email</label>
           <input
             required
+            v-model="email"
             type="text"
             id="name"
             name="name"
@@ -29,6 +31,7 @@
         <div class="form-group">
           <label for="message">Meddelande</label>
           <textarea
+            v-model="message"
             required
             class="message"
             id="message"
@@ -36,7 +39,7 @@
             placeholder="Skriv ditt meddelande"
           ></textarea>
         </div>
-        <button>SKICKA</button>
+        <button type="submit">SKICKA</button>
       </form>
     </div>
   </div>
@@ -64,6 +67,11 @@ export default {
         });
         console.log(response);
         this.resetEmailForm();
+        Swal.fire({
+          icon: "success",
+          title: "Tack!",
+          text: "Ditt meddelande har skickats!",
+        });
       } catch (error) {
         console.error(error);
         Swal.fire({
