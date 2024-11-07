@@ -11,11 +11,9 @@ export const sendContactForm = async (req, res) =>{
         const sendSmtpEmail = new brevo.SendSmtpEmail();
         sendSmtpEmail.subject = `Nytt meddelande från kontaktformulär`;
         sendSmtpEmail.sender = { "name": `${contactDetails.name}`, "email": "lucas@ackerberg.se" };
-        sendSmtpEmail.to = [{ "email": `lucas@ackerberg.se`, "name": "sample-name" }]; // Ändra sen
-        sendSmtpEmail.replyTo = { "email": `${contactDetails.email}`, "name": "sample-name" };
-        sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
-        sendSmtpEmail.htmlContent = `<html><body><p>${contactDetails.message}</p></body></html>`; // ÄNDRA DENNA MED VAD VI VILL HA
-
+        sendSmtpEmail.to = [{ "email": `lucas@ackerberg.se`, "name": "SN Beauty" }]; // Ändra sen
+        sendSmtpEmail.replyTo = { "email": `${contactDetails.email}`, "name": `${contactDetails.name}` };
+        sendSmtpEmail.htmlContent = `<html><body><h1>Meddelande från: ${contactDetails.name} </h1> <p>${contactDetails.message}</p></body></html>`; // ÄNDRA DENNA MED VAD VI VILL HA
         /* sendSmtpEmail.params = { "token": `${resetToken}`, "subject": "Lösenordsåterställning" }; */
 
         apiInstance.sendTransacEmail(sendSmtpEmail).then(
