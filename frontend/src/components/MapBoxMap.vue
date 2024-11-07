@@ -2,7 +2,7 @@
   <div
     ref="mapContainer"
     class="map-container"
-    style="width: 100%; height: 350px"
+    style="width: 100%; height: 250px"
   ></div>
 </template>
 
