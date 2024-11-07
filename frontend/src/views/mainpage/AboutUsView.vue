@@ -63,16 +63,19 @@
           />
         </div>
       </div>
+      <ContactForm></ContactForm>
     </div>
   </div>
 </template>
 
 <script>
 import MapBoxMap from "../../components/MapBoxMap.vue";
+import ContactForm from "../../components/ContactForm.vue";
 export default {
   name: "AboutUsPage",
   components: {
     MapBoxMap,
+    ContactForm,
   },
   setup() {
     const apiKey = process.env.VUE_APP_MAPBOX_API_KEY;
@@ -131,6 +134,7 @@ export default {
 .information-section,
 .salon-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   max-width: 1280px;
@@ -140,7 +144,7 @@ export default {
   display: flex;
   gap: 16px;
   width: 50%;
-  padding: 32px 32px 64px 32px;
+  padding: 32px 32px 32px 32px;
 }
 .information-description {
   display: flex;
