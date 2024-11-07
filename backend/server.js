@@ -93,6 +93,8 @@ import {
   showProperties,
   updatePropertyById,
 } from "./controllers/productproperties.js";
+import { sendContactForm } from "./controllers/sendContactForm.js";
+
 
 dotenv.config();
 const app = express();
@@ -424,6 +426,9 @@ app.delete(
 // Routes for resetting password.
 app.post("/forgot-password", sendCode);
 app.post("/reset-password/:token", resetPassword);
+
+// Routes for sending messafe through contact form.
+app.post("/contactform", sendContactForm);
 
 //Routes for User
 app.get("/user/:id", showUserById); // Get all User

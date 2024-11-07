@@ -32,6 +32,10 @@
         Har du inte ett konto ännu? Registrera dig
         <router-link to="/register">här</router-link>
       </div>
+      <div class="forgotPassword">
+        Har du glömt ditt lösenord..?
+        <router-link to="/forgot-password">Klicka här</router-link>
+      </div>
     </div>
   </div>
 </template>
