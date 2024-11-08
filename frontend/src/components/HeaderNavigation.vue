@@ -41,7 +41,7 @@
 
       <!-- Centered Logo -->
       <router-link to="/" class="logo">
-        <img src="@/assets/snbeauty.png" alt="SN Beauty Logo" />
+        <img src="@/assets/snbeautylogo.svg" alt="SN Beauty Logo" />
       </router-link>
 
       <ul class="right-links">
