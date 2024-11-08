@@ -1,8 +1,7 @@
 <template>
-  <header :class="['header-nav', { sticky: isSticky }]">
-    <div :class="{ 'header-nav-placeholder': isSticky }"></div>
+  <header :class="['header-nav', 'sticky']">
     <!-- Top bar section -->
-    <div class="top-bar">
+    <div :class="['top-bar']">
       <nav>
         <ul>
           <li class="desktop-top-bar">
@@ -14,7 +13,10 @@
             <router-link to="/shop">Köp hudvård online</router-link>
           </li>
           <li class="desktop-top-bar">
-            <router-link to="/om-mig">Vasaplatsen - Göteborg</router-link>
+            <a
+              href="https://www.google.com/maps/place/Vasaplatsen+7B,+411+26+G%C3%B6teborg/@57.6993155,11.9686789,17z/data=!4m6!3m5!1s0x464ff36e4641dd05:0x616043b9427a534e!8m2!3d57.6993155!4d11.9686789!16s%2Fg%2F11csfkmj2n?entry=ttu&g_ep=EgoyMDI0MTEwNS4wIKXMDSoASAFQAw%3D%3D"
+              >Vasaplatsen - Göteborg</a
+            >
           </li>
           <li class="mobile-top-bar">
             <router-link :to="currentTopBarLink.path">
@@ -27,6 +29,17 @@
 
     <!-- Main navigation with logo centered -->
     <nav class="main-nav">
+      <!-- Burger icon for mobile -->
+      <div
+        class="burger-menu"
+        @click="toggleMobileMenu"
+        :class="{ open: isMobileMenuVisible }"
+      >
+        <span class="burger-line top"></span>
+        <span class="burger-line middle"></span>
+        <span class="burger-line bottom"></span>
+      </div>
+
       <ul class="left-links">
         <li v-for="(link, index) in navLinksLeft" :key="index">
           <router-link
@@ -45,7 +58,6 @@
       </router-link>
 
       <ul class="right-links">
-        <li><img src="../assets/Search_Magnifying_Glass.svg" alt="" /></li>
         <li>
           <router-link v-if="!isLoggedIn" to="/login"
             ><img src="../assets/User.svg" alt="" />
@@ -94,6 +106,24 @@
         </div>
       </div>
     </nav>
+    <transition name="slide">
+      <div v-if="isMobileMenuVisible" class="mobile-menu">
+        <ul class="mobile-links">
+          <li v-for="(link, index) in navLinksLeft" :key="index">
+            <router-link
+              :to="link.path"
+              exact-active-class="active"
+              active-class="active"
+            >
+              {{ link.name }}
+            </router-link>
+          </li>
+        </ul>
+        <a href="https://www.bokadirekt.se/places/sn-beauty-56396"
+          ><button class="bokadirekt">BOKADIREKT</button></a
+        >
+      </div>
+    </transition>
   </header>
 </template>
 
@@ -104,20 +134,33 @@ export default {
   data() {
     return {
       navLinksLeft: [
-        { name: "Boka", path: "/behandlingar" },
+        { name: "Behandlingar", path: "/behandlingar" },
         { name: "Produkter", path: "/shop" },
         { name: "Event", path: "/events" },
         { name: "Kurser", path: "/kurser" },
-        { name: "Om mig", path: "/om-mig" },
+        { name: "Salongen", path: "/om-mig" },
       ],
       topBarLinks: [
         { name: "Boka behandling och Kurs", path: "/behandlingar" },
         { name: "Köp hudvård online", path: "/shop" },
-        { name: "Vasaplatsen - Göteborg", path: "/om-mig" },
+        {
+          name: "Vasaplatsen - Göteborg",
+          path: "https://www.google.com/maps/place/Vasaplatsen+7B,+411+26+G%C3%B6teborg/@57.6993155,11.9686789,17z/data=!4m6!3m5!1s0x464ff36e4641dd05:0x616043b9427a534e!8m2!3d57.6993155!4d11.9686789!16s%2Fg%2F11csfkmj2n?entry=ttu&g_ep=EgoyMDI0MTEwNS4wIKXMDSoASAFQAw%3D%3D",
+        },
       ],
       currentTopBarLinkIndex: 0,
-      isSticky: false,
+      lastScrollPosition: 0,
+      isMobileMenuVisible: false,
     };
+  },
+  watch: {
+    isMobileMenuVisible(value) {
+      if (value) {
+        document.body.style.overflow = "hidden"; // Prevent scrolling
+      } else {
+        document.body.style.overflow = ""; // Restore scrolling
+      }
+    },
   },
   computed: {
     ...mapState(["isLoggedIn", "isAdmin", "isCartVisible"]),
@@ -192,8 +235,8 @@ export default {
         }); // Otherwise, decrement the quantity
       }
     },
-    handleScroll() {
-      this.isSticky = window.scrollY > 0; // Make sticky when scrolling down
+    toggleMobileMenu() {
+      this.isMobileMenuVisible = !this.isMobileMenuVisible;
     },
     checkAuthentication() {
       this.$store.dispatch("checkAuth");
@@ -248,8 +291,7 @@ export default {
   display: flex;
   justify-content: center; /* Center all content */
   align-items: center;
-  padding: 10px 72px;
-  border-bottom: 1px solid #eaeaea;
+  padding: 24px 72px;
   margin: 0 auto;
   position: relative; /* Allow absolute positioning of left and right sections */
 }
@@ -286,14 +328,14 @@ export default {
 }
 
 .logo img {
-  height: 50px; /* Adjust as necessary */
+  height: 44px;
 }
 
 .cart-badge {
   position: absolute;
   top: -8px;
   right: -18px;
-  background-color: rgb(41, 34, 150);
+  background-color: black;
   color: white;
   border-radius: 50%;
   padding: 2px 7px;
@@ -399,6 +441,7 @@ export default {
 .cartExitButton {
   all: unset;
   border: none;
+  cursor: pointer;
 }
 .noBorder {
   all: unset;
@@ -423,9 +466,8 @@ export default {
   align-content: center;
   border: none;
 }
-
 .sticky {
-  position: fixed;
+  position: sticky;
   top: 0;
   width: 100%;
   z-index: 1000;
@@ -433,16 +475,134 @@ export default {
 .header-nav {
   background-color: white;
 }
-.header-nav-placeholder {
-  height: 0;
-  transition: height 0.3s ease;
+.burger-menu {
+  display: none;
+  gap: 5px;
+  left: 72px;
+  width: 30px;
+  height: 30px;
+  flex-direction: column;
+  justify-content: space-around;
+  cursor: pointer;
 }
-.header-nav-placeholder.sticky {
-  height: 80px; /* Match the height of your header */
+.burger-line {
+  width: 30px;
+  height: 3px;
+  background-color: #000;
+  border-radius: 2px;
 }
 
+.burger-line {
+  width: 100%;
+  height: 4px;
+  background-color: black;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.burger-line.middle {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.burger-menu.open .top {
+  transform: rotate(45deg);
+  position: absolute;
+  top: 12px;
+}
+
+.burger-menu.open .middle {
+  opacity: 0;
+}
+
+.burger-menu.open .bottom {
+  transform: rotate(-45deg);
+  position: absolute;
+  top: 12px;
+}
+
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  z-index: 1000;
+  overflow: hidden;
+  height: calc(100vh - 133px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 64px;
+}
+.mobile-links {
+  list-style-type: none;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+}
+.bokadirekt {
+  width: 100%;
+  background-color: black;
+  border: 1px solid black;
+  color: white;
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  padding: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.bokadirekt:hover {
+  background-color: white;
+  color: black;
+}
+.mobile-links a {
+  text-decoration: none;
+  color: black;
+  font-family: "Playfair Display", serif !important;
+  font-size: 2em;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+.slide-enter-from,
+.slide-leave-to {
+  height: 0;
+  opacity: 0;
+}
+.slide-enter-to,
+.slide-leave-from {
+  height: calc(100vh - 112px);
+  opacity: 1;
+}
 /* Mobile styling (only one link visible at a time) */
-@media (max-width: 768px) {
+@media (min-width: 992px) and (max-width: 1200px) {
+  .right-links {
+    right: 32px;
+  }
+  .left-links {
+    left: 32px;
+  }
+}
+@media (max-width: 992px) {
+  .burger-menu {
+    display: flex;
+    position: absolute;
+    /* Align with the padding */
+    left: 32px;
+  }
+
+  .right-links {
+    right: 32px;
+  }
+
+  .left-links {
+    display: none;
+  }
+
   .mobile-top-bar {
     display: block;
     width: 100%;

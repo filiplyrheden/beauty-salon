@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="salon-container">
-      <div class="salon-section">
+      <div class="salon-section" id="map">
         <div class="left-section">
           <div class="opening-times">
             <div class="opening-header">ÖPPETTIDER</div>
