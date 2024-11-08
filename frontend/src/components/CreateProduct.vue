@@ -1,9 +1,13 @@
 <template>
-  <div class="create-product">
-    <router-link to="/admin" class="back"
-      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
-    >
+  <div class="header">
+    <button>
+      <router-link to="/admin" class="back"
+        >Tillbaka</router-link
+      >
+    </button>
     <h2>Add New Product</h2>
+  </div>
+  <div class="create-product">
     <form
       id="uploadForm"
       @submit.prevent="saveProduct"
@@ -52,31 +56,33 @@
         />
       </div>
       <!-- Sizes Section -->
-      <div class="form-group">
+      <div class="form-group-sizes">
         <label for="sizes">Storlekar och Priser</label>
         <div v-for="(size, index) in sizes" :key="index" class="size-entry">
           <input
             v-model="size.sizeName"
             type="text"
-            placeholder="Size (e.g., 50 ml)"
+            placeholder="Storlek (Tex, 50 ml)"
             required
           />
           <input
             v-model.number="size.price"
             type="number"
             step="0.01"
-            placeholder="Price (SEK)"
+            placeholder="Pris (SEK)"
             required
           />
           <input
             v-model.number="size.quantity"
             type="number"
-            placeholder="Quantity (10, 20, 30)"
+            placeholder="Kvantitet (10, 20, 30)"
             required
           />
-          <button @click.prevent="removeSize(index)">Ta Bort</button>
+          <div class="sizesButtonWrapper">
+            <button @click.prevent="removeSize(index)">Ta Bort Denna Storleken</button>
+            <button class="addSizes" @click.prevent="addSize">Lägg Till Storlek</button>
+          </div>
         </div>
-        <button @click.prevent="addSize">Lägg Till Storlek</button>
       </div>
 
       <!-- Usage Products Section -->
@@ -85,7 +91,7 @@
         <textarea
           id="usageProducts"
           v-model="usageProducts"
-          placeholder="Enter usage instructions"
+          placeholder="Användarinstruktioner"
         ></textarea>
       </div>
 
@@ -132,35 +138,37 @@
       </div>
 
       <!-- Properties Section -->
-      <div class="form-group">
+      <div class="form-group-properties">
         <label for="property">Egenskaper</label>
-        <select v-model="selectedProperty">
-          <option value="" disabled selected>Välj en egenskap</option>
-          <option
-            v-for="(property, index) in propertiesOnLoad"
-            :key="index"
-            :value="property.property_id"
-          >
-            {{ property.name }}
-          </option>
-        </select>
-        <button @click.prevent="addProperty">Lägg till Egenskap</button>
+        <div class="selectPropertyWrapper">
+          <select v-model="selectedProperty">
+            <option value="" disabled selected>Välj en egenskap</option>
+            <option
+              v-for="(property, index) in propertiesOnLoad"
+              :key="index"
+              :value="property.property_id"
+            >
+              {{ property.name }}
+            </option>
+          </select>
+          <button @click.prevent="addProperty">Lägg till Egenskap</button>
+        </div>
         <ul>
-          <li v-for="(property, index) in properties" :key="index">
-            {{ property.name }}
-            <button @click.prevent="removeProperty(index)">Remove</button>
+          <li class="liPropertyStyles" v-for="(property, index) in properties" :key="index">
+              {{ property.name }}
+            <button @click.prevent="removeProperty(index)">Ta Bort Denna Egenskapen</button>
           </li>
         </ul>
       </div>
-
-      <div class="form-group">
+      <div class="form-group-submit">
         <label for="featured"
           >Ska denna produkten vara på landningssidan?</label
         >
-        <input :value="true" type="radio" id="featured" v-model="featured" />
+        <input :value="true" type="radio" id="featured" v-model="featured" class="custom-radio" />
       </div>
-
-      <button type="submit" class="submit-btn">Add Product</button>
+      <div class="form-group-submit">
+        <button type="submit" class="submit-btn">Add Product</button>
+      </div>
     </form>
 
     <div
@@ -332,31 +340,117 @@ export default {
 </script>
 
 <style scoped>
-.create-product {
-  max-width: 600px;
-  margin: 0 auto;
+
+.header{
+  padding-top: 20px;
   padding: 20px;
-  background: white;
+  padding-bottom: 20px;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  justify-content: center;
+  align-items: start;
+  margin: 0 auto;
+}
+
+.header h2{
+  font-size: 32px;
+}
+
+button a{
+  text-decoration: none;
+  color: black;
+}
+
+h1, h2 ,h3 h4{
+  font-family: "Playfair Display", serif;
+  color: black;
+}
+
+button{
+  padding-block: 0px;
+  padding-inline: 0px;
+  border-width: 0px;
+  border-style: outset;
+  border: 1px solid black;
+  padding: 8px 16px;
+  background-color: white;
+  font-family: "Playfair Display", serif;
+  cursor: pointer;
+}
+
+button:hover{
+  background-color: black;
+}
+
+button:hover a,
+button:hover p,
+button:hover {
+  color: white;
+}
+
+
+.create-product {
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 20px;
+  background: rgb(245, 245, 245);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
-  color: #2c3e50;
-  margin-bottom: 30px;
-  font-size: 28px;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
+.form-group {
+margin-bottom: 20px
 }
 
-.form-group {
+.form-group-sizes {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 20px;
+}
+
+.sizesButtonWrapper{
+  display: flex;
+  justify-content: space-between;
+  padding-top: 7px;
+}
+
+.form-group-properties{
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+
+.form-group-properties ul li{
+  list-style: none;
+}
+.form-group-submit{
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.selectPropertyWrapper{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.liPropertyStyles{
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 label {
   display: block;
   margin-bottom: 8px;
-  color: #2c3e50;
+  color: #000000;
   font-weight: 500;
   font-size: 14px;
 }
@@ -374,8 +468,8 @@ textarea {
 input:focus,
 textarea:focus {
   outline: none;
-  border-color: #1e90ff;
-  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 textarea {
@@ -394,7 +488,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .submit-btn {
-  background-color: #007bff;
+  background-color: #000000;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -403,7 +497,7 @@ input[type="number"]::-webkit-inner-spin-button {
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  width: 100%;
+  width: 50%;
   margin-top: 20px;
 }
 
@@ -440,6 +534,29 @@ input[type="number"]::-webkit-inner-spin-button {
   cursor: not-allowed;
 }
 
+/* Hide default radio button */
+.custom-radio {
+  margin-left: 15px;
+  margin-bottom: 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  background-color: white;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Style when radio button is checked */
+.custom-radio:checked {
+  background-color: #000000; /* Change to your preferred color */
+  border-color: #ffffff;
+}   
+
 /* Responsive design */
 @media (max-width: 768px) {
   .create-product {
@@ -447,8 +564,15 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 10px;
   }
 
-  h2 {
+  h1, h2, h3, h4 {
     font-size: 24px;
+  }
+  .header h2{
+    font-size: 24px;
+  }
+  button{
+    padding: 4px 8px;
+    font-size: 10px;
   }
 }
 </style>

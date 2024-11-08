@@ -145,7 +145,8 @@
             class="product-item"
           >
             <div class="product-image-section">
-              <img
+              <img v-if="product.image_url_primary" class="product-image" :src="product.image_url_primary" alt="">
+              <img v-if="!product.image_url_primary"
                 src="../../assets/noImage.png"
                 :alt="product.product_name"
                 class="product-image"
@@ -586,8 +587,14 @@ a:hover {
 .card-overlay:hover .card-overlay-container {
   background-color: rgba(240, 240, 240, 0.9);
 }
+.card-overlay:hover .card-overlay-container button{
+  background-color: black;
+  color: white;
+}
+
 .card-overlay-container {
   padding: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 .product-name {
   font-size: 16px;
@@ -605,11 +612,17 @@ a:hover {
   font-weight: 400;
   line-height: 19.6px;
   text-align: left;
+
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 .product-image-section {
   position: relative;
   width: 100%;
-  height: 300px;
+  height: 350px;
   margin-bottom: 10px;
 }
 .product-image {
@@ -678,6 +691,8 @@ a:hover {
   font-weight: bold;
   margin-top: 10px;
   width: 100%;
+  font-family: "Playfair Display", serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 .search-input {
   width: 100%;

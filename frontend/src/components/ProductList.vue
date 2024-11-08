@@ -533,10 +533,6 @@ fieldset {
   background-color: #f9f9f9;
 }
 
-.productListWrapper {
-  width: 600px;
-}
-
 .form-group {
   margin-bottom: 15px;
 }
@@ -616,5 +612,57 @@ button:hover {
 .cancel-btn {
   background-color: #6c757d;
   color: white;
+}
+
+@media (max-width: 767px) {
+  .product-list {
+    padding: 10px;
+  }
+
+  .product-card {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .product-info {
+    align-items: center;
+  }
+
+  .image-container-wrapper {
+    flex-wrap: wrap;
+  }
+
+  .product-image-container {
+    width: 50%;
+    margin-bottom: 10px;
+  }
+
+  .product-image {
+    max-width: 80px;
+  }
+
+  .action-buttons {
+    justify-content: center;
+  }
+
+  .button-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    padding: 6px;
+  }
+
+  button {
+    padding: 8px 12px;
+  }
 }
 </style>
