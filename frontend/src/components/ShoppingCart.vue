@@ -135,7 +135,9 @@ export default {
       }
     },
     async handleCheckout() {
+      this.disableOutsideClick();
       try {
+        console.log(this.$store.state.userId);
         const response = await axiosInstance.post("/create-checkout-session", {
           dummyItems: this.$store.state.cart.map((item) => ({
             product_id: item.product_id,
@@ -144,10 +146,18 @@ export default {
           })),
           user_id: this.$store.state.userId,
         });
+
+        // Manually handle the redirect from the 303 status
         const { url } = response.data;
         window.location.href = url;
       } catch (error) {
-        console.error("Error creating checkout session:", error);
+        if (error.response && error.response.status === 303) {
+          // If 303, redirect manually to the URL in the response
+          const redirectUrl = error.response.data.url;
+          window.location.href = redirectUrl;
+        } else {
+          console.error("Error creating checkout session:", error);
+        }
       }
     },
   },

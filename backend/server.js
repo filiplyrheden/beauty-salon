@@ -95,7 +95,6 @@ import {
 } from "./controllers/productproperties.js";
 import { sendContactForm } from "./controllers/sendContactForm.js";
 
-
 dotenv.config();
 const app = express();
 const PORT = 3000;
@@ -194,13 +193,35 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
       metadata: {
         user_id: user_id,
       },
-
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            display_name: "Standard Frakt",
+            type: "fixed_amount",
+            fixed_amount: {
+              amount: 4500, // 45 SEK in the smallest currency unit (öre)
+              currency: "SEK",
+            },
+            delivery_estimate: {
+              minimum: {
+                unit: "business_day",
+                value: 3,
+              },
+              maximum: {
+                unit: "business_day",
+                value: 5,
+              },
+            },
+          },
+        },
+      ],
       locale: "sv",
       success_url: `${YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${YOUR_DOMAIN}/cancel`,
     });
     // Set CORS header and respond with the session URL
     res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
+    console.log("Session created:", session.id);
     res.status(303).json({ url: session.url });
   } catch (error) {
     console.error("Error creating Stripe checkout session:", error); // More detailed error log
