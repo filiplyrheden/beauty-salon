@@ -48,7 +48,6 @@ export default {
 <style scoped>
 .footer-container {
   width: 100%;
-
   background-color: rgba(202, 193, 187, 1);
 }
 .footer {
@@ -62,6 +61,7 @@ export default {
   padding: 0px 72px;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 .footer-bottom {
   padding: 72px 72px;
@@ -76,6 +76,9 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 16px;
 }
 .title {
   font-family: "Playfair Display", serif !important;
@@ -119,5 +122,35 @@ export default {
   letter-spacing: 0.04em;
   text-align: left;
   opacity: 0.3;
+}
+
+@media (max-width: 830px) {
+  .footer-top {
+    padding: 0 24px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-bottom {
+    overflow: hidden;
+    padding: 24px;
+  }
+  .text {
+    font-size: 100px;
+    line-height: 1.1;
+  }
+  .title {
+    font-size: 1.2em;
+  }
+  .bokadirekt {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 465px) {
+  .text{
+    font-size: 50px;
+  }
 }
 </style>
