@@ -22,9 +22,9 @@
           <input
             required
             v-model="email"
-            type="text"
-            id="name"
-            name="name"
+            type="email"
+            id="email"
+            name="email"
             placeholder="exempel@email.com"
           />
         </div>
@@ -44,6 +44,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import axiosInstance from "@/services/axiosConfig";
 import Swal from "sweetalert2";

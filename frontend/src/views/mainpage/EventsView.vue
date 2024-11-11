@@ -23,7 +23,9 @@
             professionell som vet hur man balanserar stil, kreativitet och
             glädje!
           </div>
-          <button>KONTAKTA OSS FÖR ETT SKÄRDDARSYTT EVENT</button>
+          <router-link to="/om-mig">
+            <button>KONTAKTA SHAHAD FÖR ETT SKRÄDDARSYTT EVENT</button>
+          </router-link>
         </div>
         <div class="events">
           <h2 class="events-title">KOMMANDE EVENTS</h2>
@@ -241,6 +243,7 @@ button {
   padding: 8px 16px;
   border: 1px solid black;
   background: white;
+  width: 100%;
 }
 button:hover {
   background: black;

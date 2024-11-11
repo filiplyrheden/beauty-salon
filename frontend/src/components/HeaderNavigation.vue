@@ -112,6 +112,7 @@
           <li v-for="(link, index) in navLinksLeft" :key="index">
             <router-link
               :to="link.path"
+              @click="toggleMobileMenu"
               exact-active-class="active"
               active-class="active"
             >
