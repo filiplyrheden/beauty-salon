@@ -48,7 +48,6 @@ export default {
 <style scoped>
 .footer-container {
   width: 100%;
-
   background-color: rgba(202, 193, 187, 1);
 }
 .footer {
@@ -62,6 +61,7 @@ export default {
   padding: 0px 72px;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 .footer-bottom {
   padding: 72px 72px;
@@ -76,6 +76,9 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 16px;
 }
 .title {
   font-family: "Playfair Display", serif !important;

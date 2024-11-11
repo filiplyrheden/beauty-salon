@@ -13,6 +13,111 @@
       </div>
     </div>
 
+    <!-- Slide-out Popup for Mobile Filters -->
+    <transition name="slide">
+      <div :class="['filter-popup', { 'open': showFilterPopup }]">
+        
+        <!-- Popup Header -->
+        <div class="filter-popup-header">
+          <h2>Filter</h2>
+          <button class="" @click="toggleFilterPopup"><img src="@/assets/x.svg" alt=""></button>
+        </div>
+        
+        <!-- Category Filter Accordion -->
+        <div class="accordion">
+          <div @click="toggleDropdown('category')" class="accordion-header">
+            <h3 class="filter-title">Category</h3>
+            <span class="accordion-icon" :class="{ open: showDropdown.category }">
+              <font-awesome-icon icon="chevron-down" />
+            </span>
+          </div>
+          <transition name="accordion">
+            <ul v-if="showDropdown.category" class="category-dropdown">
+              <li>
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="toggleCategorySelection('')"
+                    :checked="selectedCategories.includes('')"
+                  />
+                  All Categories
+                </label>
+              </li>
+              <li v-for="category in categories" :key="category.category_id">
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="toggleCategorySelection(category.category_id)"
+                    :checked="selectedCategories.includes(category.category_id)"
+                  />
+                  {{ category.category_name }}
+                </label>
+              </li>
+            </ul>
+          </transition>
+        </div>
+
+        <!-- Properties Filter Accordion -->
+        <div class="accordion">
+          <div @click="toggleDropdown('properties')" class="accordion-header">
+            <h3 class="filter-title">Properties</h3>
+            <span class="accordion-icon" :class="{ open: showDropdown.properties }">
+              <font-awesome-icon icon="chevron-down" />
+            </span>
+          </div>
+          <transition name="accordion">
+            <ul v-if="showDropdown.properties" class="properties-dropdown">
+              <li v-for="property in properties" :key="property.id">
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="togglePropertySelection(property.name)"
+                    :checked="selectedProperties.includes(property.name)"
+                  />
+                  {{ property.name }}
+                </label>
+              </li>
+            </ul>
+          </transition>
+        </div>
+
+        <!-- Brand Filter Accordion -->
+        <div class="accordion">
+          <div @click="toggleDropdown('brand')" class="accordion-header">
+            <h3 class="filter-title">Märke</h3>
+            <span class="accordion-icon" :class="{ open: showDropdown.brand }">
+              <font-awesome-icon icon="chevron-down" />
+            </span>
+          </div>
+          <transition name="accordion">
+            <ul v-if="showDropdown.brand" class="category-dropdown">
+              <li>
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="toggleBrandSelection('')"
+                    :checked="selectedBrands.includes('')"
+                  />
+                  Alla Märken
+                </label>
+              </li>
+              <li v-for="brand in brands" :key="brand.brand_id">
+                <label>
+                  <input
+                    type="checkbox"
+                    @change="toggleCategorySelection(brand.brand_id)"
+                    :checked="selectedCategories.includes(brand.brand_id)"
+                  />
+                  {{ brand.brand_name }}
+                </label>
+              </li>
+            </ul>
+          </transition>
+        </div>
+
+      </div>
+    </transition>
+
     <!-- Products Container Wrapper -->
     <div class="products-container-wrapper">
       <!-- Filter Container -->
@@ -95,7 +200,6 @@
               <font-awesome-icon icon="chevron-down" />
             </span>
           </div>
-
           <!-- Wrap in transition for sliding effect -->
           <transition name="accordion">
             <ul v-if="showDropdown.brand" class="category-dropdown">
@@ -128,6 +232,10 @@
       <div class="top-products-wrapper">
         <!-- Sort Dropdown -->
         <div class="filter">
+          <div class="filter-header-mobile" @click="toggleFilterPopup">
+            <img src="../../assets/filter.svg" alt="" />
+            <h2>Filter</h2>
+          </div>
           <select v-model="sortOption">
             <option value="">Sortera efter</option>
             <option value="alphabeticalAsc">Alfabetisk A - Ö</option>
@@ -223,6 +331,14 @@
                   <span v-else>{{ product.variants[0]?.price || "0" }} kr</span>
                 </div>
                 <div class="product-description">{{ product.description }}</div>
+                <p class="mobilePrice" v-if="product.selectedSize">
+                    {{
+                      product.variants.find(
+                        (v) => v.size_id === product.selectedSize
+                      )?.price || "0"
+                    }}
+                    kr
+                  </p>
               </div>
             </router-link>
           </div>
@@ -252,6 +368,7 @@ export default {
         category: false,
         properties: false,
       },
+      showFilterPopup: false,
       selectedCategories: [],
       selectedBrands: [],
       selectedProperties: [],
@@ -265,6 +382,25 @@ export default {
   },
 
   computed: {
+    filterSections() {
+    return [
+      {
+        title: "Category",
+        type: "category",
+        items: this.categories,
+      },
+      {
+        title: "Properties",
+        type: "properties",
+        items: this.properties,
+      },
+      {
+        title: "Brand",
+        type: "brand",
+        items: this.brands,
+      }
+    ];
+  },
     filteredProducts() {
       let filtered = this.productItems;
 
@@ -376,6 +512,10 @@ export default {
 
     toggleDropdown(type) {
       this.showDropdown[type] = !this.showDropdown[type];
+    },
+
+    toggleFilterPopup() {
+    this.showFilterPopup = !this.showFilterPopup;
     },
 
     toggleCategorySelection(categoryId) {
@@ -579,6 +719,10 @@ select {
   color: black;
   cursor: pointer;
 }
+.filter-header-mobile{
+  display: none;
+  gap: 5px;
+}
 a:hover {
   transform: scale(1.01);
   transition: transform 0.3s ease;
@@ -715,6 +859,9 @@ a:hover {
 .size-options {
   overflow: hidden;
 }
+.mobilePrice{
+  display: none;
+}
 .size-options-enter-active,
 .size-options-leave-active {
   transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
@@ -744,5 +891,109 @@ a:hover {
   max-height: 500px; /* Set a maximum height that accommodates the content */
   opacity: 1;
   overflow: hidden;
+}
+
+.filter-popup {
+  padding-top: 200px;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 50px;
+  opacity: 1; /* Keep the popup itself fully opaque */
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.65); /* Semi-transparent white background */
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+
+  /* Apply blur effect behind the popup */
+  backdrop-filter: blur(5px); /* Adjust the blur intensity as needed */
+  -webkit-backdrop-filter: blur(5px); /* For Safari compatibility */
+}
+
+.filter-popup.open{
+  transform: translateX(0);
+}
+
+.filter-popup .filter-popup-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #000000;
+}
+
+.filter-popup-header button{
+  border:none;
+  cursor: pointer;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.slide-enter, .slide-leave-to {
+  transform: translateX(0);
+}
+
+
+@media (max-width: 767px) {
+  .products-header h1{
+    font-size: 30px;
+  }
+  .products-header{
+    flex-direction: column;
+  }
+  .search{
+    width: 100%;
+  }
+
+  .filter-container{
+    display: none;
+  }
+  .filter-header-mobile{
+    display: flex;
+  }
+  .filter{
+    display: flex;
+    padding-left: 20px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .top-products-wrapper{
+    gap: 25px;
+    width: 100%;
+  }
+  .product-item{
+    width: calc(49% - 17.2px);
+    height: 320px;
+  }
+  .product-info-header span{
+    display: none;
+  }
+  .product-name{
+    font-size: 12px;
+  }
+  .mobilePrice{
+    display: flex;
+  }
+
+  .add-to-cart{
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+}
+
+@media (max-width: 340px) {
+  .product-item{
+    width: calc(100% - 17.2px);
+  }
 }
 </style>
