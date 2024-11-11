@@ -120,4 +120,31 @@ export default {
   text-align: left;
   opacity: 0.3;
 }
+
+@media (max-width: 768px) {
+  .footer-top {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .footer-bottom {
+    padding: 32px 16px;
+  }
+  .footer-top {
+    padding: 0px 16px;
+  }
+  .contact,
+  .page-links,
+  .social-media {
+    gap: 16px;
+  }
+  .text {
+    display: none;
+  }
+}
+@media (min-width: 768px) and (max-width: 1200px) {
+  .text {
+    font-size: 96px;
+    line-height: 106.67px;
+  }
+}
 </style>
