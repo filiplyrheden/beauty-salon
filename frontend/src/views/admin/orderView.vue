@@ -270,7 +270,7 @@ export default {
         hour: "2-digit",
         minute: "2-digit",
       };
-      return new Date(datetime).toLocaleDateString(undefined, options);
+      return new Date(datetime).toLocaleDateString("sv-SE", options);
     },
   },
 };
