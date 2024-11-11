@@ -58,7 +58,7 @@
       </div>
       <div class="cart-summary">
         <h3>SUMMA: {{ totalPrice.toFixed(2) }} kr</h3>
-        <button @click="handleCheckout">CHECKA UT</button>
+        <button @click="handleCheckout">TILL KASSAN</button>
         <ul>
           <li><img :src="visa" alt="" /></li>
           <li><img :src="mastercard" alt="" /></li>

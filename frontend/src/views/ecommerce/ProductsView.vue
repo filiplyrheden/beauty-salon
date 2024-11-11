@@ -7,7 +7,7 @@
         <input
           type="text"
           v-model="searchQuery"
-          placeholder="Search products..."
+          placeholder="Sök bland produkter"
           class="search-input"
         />
       </div>
@@ -15,19 +15,23 @@
 
     <!-- Slide-out Popup for Mobile Filters -->
     <transition name="slide">
-      <div :class="['filter-popup', { 'open': showFilterPopup }]">
-        
+      <div :class="['filter-popup', { open: showFilterPopup }]">
         <!-- Popup Header -->
         <div class="filter-popup-header">
           <h2>Filter</h2>
-          <button class="" @click="toggleFilterPopup"><img src="@/assets/x.svg" alt=""></button>
+          <button class="" @click="toggleFilterPopup">
+            <img src="@/assets/x.svg" alt="" />
+          </button>
         </div>
-        
+
         <!-- Category Filter Accordion -->
         <div class="accordion">
           <div @click="toggleDropdown('category')" class="accordion-header">
-            <h3 class="filter-title">Category</h3>
-            <span class="accordion-icon" :class="{ open: showDropdown.category }">
+            <h3 class="filter-title">Kategori</h3>
+            <span
+              class="accordion-icon"
+              :class="{ open: showDropdown.category }"
+            >
               <font-awesome-icon icon="chevron-down" />
             </span>
           </div>
@@ -40,7 +44,7 @@
                     @change="toggleCategorySelection('')"
                     :checked="selectedCategories.includes('')"
                   />
-                  All Categories
+                  Alla Kategorier
                 </label>
               </li>
               <li v-for="category in categories" :key="category.category_id">
@@ -60,8 +64,11 @@
         <!-- Properties Filter Accordion -->
         <div class="accordion">
           <div @click="toggleDropdown('properties')" class="accordion-header">
-            <h3 class="filter-title">Properties</h3>
-            <span class="accordion-icon" :class="{ open: showDropdown.properties }">
+            <h3 class="filter-title">Egenskaper</h3>
+            <span
+              class="accordion-icon"
+              :class="{ open: showDropdown.properties }"
+            >
               <font-awesome-icon icon="chevron-down" />
             </span>
           </div>
@@ -114,7 +121,6 @@
             </ul>
           </transition>
         </div>
-
       </div>
     </transition>
 
@@ -130,7 +136,7 @@
         <!-- Category Accordion -->
         <div class="accordion">
           <div @click="toggleDropdown('category')" class="accordion-header">
-            <h3 class="filter-title">Category</h3>
+            <h3 class="filter-title">Kategori</h3>
             <span
               class="accordion-icon"
               :class="{ open: showDropdown.category }"
@@ -149,7 +155,7 @@
                     @change="toggleCategorySelection('')"
                     :checked="selectedCategories.includes('')"
                   />
-                  All Categories
+                  Alla Kategorier
                 </label>
               </li>
               <li v-for="category in categories" :key="category.category_id">
@@ -169,7 +175,7 @@
         <!-- Accordion for Properties Filter -->
         <div class="accordion">
           <div @click="toggleDropdown('properties')" class="accordion-header">
-            <h3 class="filter-title">Properties</h3>
+            <h3 class="filter-title">Egenskaper</h3>
             <span
               class="accordion-icon"
               :class="{ open: showDropdown.properties }"
@@ -253,8 +259,14 @@
             class="product-item"
           >
             <div class="product-image-section">
-              <img v-if="product.image_url_primary" class="product-image" :src="product.image_url_primary" alt="">
-              <img v-if="!product.image_url_primary"
+              <img
+                v-if="product.image_url_primary"
+                class="product-image"
+                :src="product.image_url_primary"
+                alt=""
+              />
+              <img
+                v-if="!product.image_url_primary"
                 src="../../assets/noImage.png"
                 :alt="product.product_name"
                 class="product-image"
@@ -332,20 +344,20 @@
                 </div>
                 <div class="product-description">{{ product.description }}</div>
                 <p class="mobilePrice" v-if="product.selectedSize">
-                    {{
-                      product.variants.find(
-                        (v) => v.size_id === product.selectedSize
-                      )?.price || "0"
-                    }}
-                    kr
-                  </p>
+                  {{
+                    product.variants.find(
+                      (v) => v.size_id === product.selectedSize
+                    )?.price || "0"
+                  }}
+                  kr
+                </p>
               </div>
             </router-link>
           </div>
         </div>
 
         <div v-else class="no-products-message">
-          <p>No products found.</p>
+          <p>Inga produkter hittades</p>
         </div>
       </div>
     </div>
@@ -383,24 +395,24 @@ export default {
 
   computed: {
     filterSections() {
-    return [
-      {
-        title: "Category",
-        type: "category",
-        items: this.categories,
-      },
-      {
-        title: "Properties",
-        type: "properties",
-        items: this.properties,
-      },
-      {
-        title: "Brand",
-        type: "brand",
-        items: this.brands,
-      }
-    ];
-  },
+      return [
+        {
+          title: "Category",
+          type: "category",
+          items: this.categories,
+        },
+        {
+          title: "Properties",
+          type: "properties",
+          items: this.properties,
+        },
+        {
+          title: "Brand",
+          type: "brand",
+          items: this.brands,
+        },
+      ];
+    },
     filteredProducts() {
       let filtered = this.productItems;
 
@@ -515,7 +527,7 @@ export default {
     },
 
     toggleFilterPopup() {
-    this.showFilterPopup = !this.showFilterPopup;
+      this.showFilterPopup = !this.showFilterPopup;
     },
 
     toggleCategorySelection(categoryId) {
@@ -719,7 +731,7 @@ select {
   color: black;
   cursor: pointer;
 }
-.filter-header-mobile{
+.filter-header-mobile {
   display: none;
   gap: 5px;
 }
@@ -731,7 +743,7 @@ a:hover {
 .card-overlay:hover .card-overlay-container {
   background-color: rgba(240, 240, 240, 0.9);
 }
-.card-overlay:hover .card-overlay-container button{
+.card-overlay:hover .card-overlay-container button {
   background-color: black;
   color: white;
 }
@@ -859,7 +871,7 @@ a:hover {
 .size-options {
   overflow: hidden;
 }
-.mobilePrice{
+.mobilePrice {
   display: none;
 }
 .size-options-enter-active,
@@ -905,7 +917,12 @@ a:hover {
   width: 100%;
   max-width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.65); /* Semi-transparent white background */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.65
+  ); /* Semi-transparent white background */
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   z-index: 1000;
@@ -917,7 +934,7 @@ a:hover {
   -webkit-backdrop-filter: blur(5px); /* For Safari compatibility */
 }
 
-.filter-popup.open{
+.filter-popup.open {
   transform: translateX(0);
 }
 
@@ -928,8 +945,8 @@ a:hover {
   border-bottom: 1px solid #000000;
 }
 
-.filter-popup-header button{
-  border:none;
+.filter-popup-header button {
+  border: none;
   cursor: pointer;
 }
 
@@ -938,61 +955,60 @@ a:hover {
   transition: transform 0.3s ease;
 }
 
-.slide-enter, .slide-leave-to {
+.slide-enter,
+.slide-leave-to {
   transform: translateX(0);
 }
 
-
 @media (max-width: 767px) {
-  .products-header h1{
+  .products-header h1 {
     font-size: 30px;
   }
-  .products-header{
+  .products-header {
     flex-direction: column;
   }
-  .search{
+  .search {
     width: 100%;
   }
 
-  .filter-container{
+  .filter-container {
     display: none;
   }
-  .filter-header-mobile{
+  .filter-header-mobile {
     display: flex;
   }
-  .filter{
+  .filter {
     display: flex;
     padding-left: 20px;
     width: 100%;
     justify-content: space-between;
   }
-  .top-products-wrapper{
+  .top-products-wrapper {
     gap: 25px;
     width: 100%;
   }
-  .product-item{
+  .product-item {
     width: calc(49% - 17.2px);
     height: 320px;
   }
-  .product-info-header span{
+  .product-info-header span {
     display: none;
   }
-  .product-name{
+  .product-name {
     font-size: 12px;
   }
-  .mobilePrice{
+  .mobilePrice {
     display: flex;
   }
 
-  .add-to-cart{
+  .add-to-cart {
     padding: 4px 8px;
     font-size: 12px;
   }
-
 }
 
 @media (max-width: 340px) {
-  .product-item{
+  .product-item {
     width: calc(100% - 17.2px);
   }
 }
