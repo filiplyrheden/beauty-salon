@@ -187,6 +187,7 @@ export default {
   right: 10px;
   border: none;
   background-color: transparent;
+  cursor: pointer;
 }
 .cart-header {
   height: 10%;
@@ -312,6 +313,7 @@ h1 {
 .cartExitButton {
   all: unset;
   border: none;
+  cursor: pointer;
 }
 ul {
   display: flex;
@@ -332,5 +334,11 @@ ul {
 .slide-leave-from {
   width: 35%;
   opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .cart {
+    width: 100%;
+  }
 }
 </style>
