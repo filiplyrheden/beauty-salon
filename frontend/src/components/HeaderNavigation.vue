@@ -112,6 +112,7 @@
           <li v-for="(link, index) in navLinksLeft" :key="index">
             <router-link
               :to="link.path"
+              @click="toggleMobileMenu"
               exact-active-class="active"
               active-class="active"
             >
@@ -477,7 +478,6 @@ export default {
 }
 .burger-menu {
   display: none;
-  gap: 5px;
   left: 72px;
   width: 30px;
   height: 30px;
@@ -485,16 +485,11 @@ export default {
   justify-content: space-around;
   cursor: pointer;
 }
-.burger-line {
-  width: 30px;
-  height: 3px;
-  background-color: #000;
-  border-radius: 2px;
-}
 
 .burger-line {
   width: 100%;
-  height: 4px;
+  border-radius: 2px;
+  height: 2px;
   background-color: black;
   transition: all 0.3s ease;
   position: relative;
@@ -588,15 +583,26 @@ export default {
   }
 }
 @media (max-width: 992px) {
+  .logo img {
+    height: 40px;
+  }
   .burger-menu {
     display: flex;
     position: absolute;
     /* Align with the padding */
     left: 32px;
+    width: 24px;
+    height: 24px;
   }
-
+  .top-bar {
+    padding: 8px 32px;
+  }
   .right-links {
     right: 32px;
+    gap: 8px;
+  }
+  .main-nav {
+    padding: 16px 32px;
   }
 
   .left-links {

@@ -124,33 +124,30 @@ export default {
   opacity: 0.3;
 }
 
-@media (max-width: 830px) {
+@media (max-width: 768px) {
   .footer-top {
-    padding: 0 24px;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    gap: 16px;
   }
   .footer-bottom {
-    overflow: hidden;
-    padding: 24px;
+    padding: 32px 16px;
+  }
+  .footer-top {
+    padding: 0px 16px;
+  }
+  .contact,
+  .page-links,
+  .social-media {
+    gap: 16px;
   }
   .text {
-    font-size: 100px;
-    line-height: 1.1;
-  }
-  .title {
-    font-size: 1.2em;
-  }
-  .bokadirekt {
-    font-size: 16px;
-    padding: 6px 12px;
+    display: none;
   }
 }
-
-@media (max-width: 465px) {
-  .text{
-    font-size: 50px;
+@media (min-width: 768px) and (max-width: 1200px) {
+  .text {
+    font-size: 96px;
+    line-height: 106.67px;
   }
 }
 </style>

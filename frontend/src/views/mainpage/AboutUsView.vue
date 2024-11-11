@@ -188,4 +188,28 @@ export default {
 .opening-times a {
   color: black;
 }
+
+@media (max-width: 768px) {
+  .hero-container {
+    height: 50vh;
+  }
+  .salon-section {
+    width: 100%;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .information-description,
+  .contact-container {
+    width: 100%;
+  }
+  .hero h1 {
+    font-size: 2em;
+  }
+  .information-description .title {
+    font-size: 1.5em;
+  }
+  .map {
+    width: 100%;
+  }
+}
 </style>
