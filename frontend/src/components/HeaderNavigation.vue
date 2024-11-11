@@ -582,15 +582,26 @@ export default {
   }
 }
 @media (max-width: 992px) {
+  .logo img {
+    height: 40px;
+  }
   .burger-menu {
     display: flex;
     position: absolute;
     /* Align with the padding */
     left: 32px;
+    width: 24px;
+    height: 24px;
   }
-
+  .top-bar {
+    padding: 8px 32px;
+  }
   .right-links {
     right: 32px;
+    gap: 8px;
+  }
+  .main-nav {
+    padding: 16px 32px;
   }
 
   .left-links {
