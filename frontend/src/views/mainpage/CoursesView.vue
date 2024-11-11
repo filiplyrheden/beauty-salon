@@ -241,6 +241,7 @@ button {
   padding: 8px 16px;
   border: 1px solid black;
   background: white;
+  width: 100%;
 }
 button:hover {
   background: black;

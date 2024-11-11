@@ -1,8 +1,12 @@
 <template>
-  <transition name="slide">
-    <div class="cart">
+  <transition
+    name="slide"
+    @after-enter="enableOutsideClick"
+    @before-leave="disableOutsideClick"
+  >
+    <div class="cart" v-if="isCartVisible" ref="cart">
       <div class="cart-header">
-        <button class="cartCloseButton" @click="hideCart">
+        <button class="cartCloseButton" @click="closeCart">
           <img src="../assets/exit.svg" alt="" />
         </button>
         <h1>DIN KUNDKORG</h1>
@@ -12,21 +16,19 @@
       </div>
       <div class="items">
         <div v-for="item in cartItems" :key="item.id" class="item">
-          <!-- TODO: set the image to :src="item.image_url" using a testing image to design page-->
           <button
             @click="removeItem(item.product_id, item.size_id)"
             class="cartExitButton"
           >
             <img class="trashIcon" src="../assets/trashcan.svg" alt="" />
           </button>
-          <img src="../assets/noImage.png" alt="" />
+          <img :src="item.image_url || '../assets/noImage.png'" alt="" />
           <div class="item-info">
             <div class="item-header">
               <p>{{ item.product_name }}</p>
               <div class="info">
                 <p>( {{ item.size }} )</p>
-                <p></p>
-                <p>({{ item.price }} kr/st )</p>
+                <p>{{ item.price }} kr/st</p>
               </div>
             </div>
             <div class="product-footer">
@@ -52,7 +54,6 @@
               </p>
             </div>
           </div>
-          <!-- Button for removing or decrementing item -->
         </div>
       </div>
       <div class="cart-summary">
@@ -84,7 +85,6 @@ export default {
   },
   computed: {
     ...mapState(["isCartVisible"]),
-
     cartItems() {
       return this.$store.getters.cartItems;
     },
@@ -92,6 +92,7 @@ export default {
       return this.$store.getters.cartTotalPrice;
     },
   },
+
   methods: {
     ...mapMutations({
       hideCart: "hideCart",
@@ -99,44 +100,42 @@ export default {
     closeCart() {
       this.hideCart();
     },
-    addItemToCart(product) {
-      this.$store.commit("addToCart", product);
+    handleOutsideClick(event) {
+      console.log("handleOutsideClick triggered", this.$refs.cart);
+      const cartElement = this.$refs.cart;
+      if (cartElement && !cartElement.contains(event.target)) {
+        console.log("Click detected outside cart, closing cart.");
+        this.hideCart();
+      }
     },
+    enableOutsideClick() {
+      document.addEventListener("click", this.handleOutsideClick);
+    },
+    disableOutsideClick() {
+      document.removeEventListener("click", this.handleOutsideClick);
+    },
+
     incrementItemInCart(productId, sizeId) {
-      this.$store.commit("incrementItemInCart", {
-        productId: productId,
-        sizeId: sizeId,
-      });
+      this.$store.commit("incrementItemInCart", { productId, sizeId });
     },
     decrementItem(productId, sizeId) {
-      this.$store.commit("decrementItemInCart", {
-        productId: productId,
-        sizeId: sizeId,
-      }); // Commit the Vuex mutation
+      this.$store.commit("decrementItemInCart", { productId, sizeId });
     },
     removeItem(productId, sizeId) {
-      this.$store.commit("removeFromCart", {
-        productId: productId,
-        sizeId: sizeId,
-      });
+      this.$store.commit("removeFromCart", { productId, sizeId });
     },
-    clearCart() {
-      this.$store.commit("clearCart");
-    },
-    // Method to handle both decrement and remove logic
     handleDecrementOrRemove(productId, sizeId) {
       const item = this.$store.state.cart.find(
         (item) => item.product_id === productId && item.size_id === sizeId
       );
       if (item.quantity === 1) {
-        this.removeItem(productId, sizeId); // Remove the item if quantity is 1
+        this.removeItem(productId, sizeId);
       } else {
-        this.decrementItem(productId, sizeId); // Otherwise, decrement the quantity
+        this.decrementItem(productId, sizeId);
       }
     },
     async handleCheckout() {
       try {
-        console.log(this.$store.state.userId);
         const response = await axiosInstance.post("/create-checkout-session", {
           dummyItems: this.$store.state.cart.map((item) => ({
             product_id: item.product_id,
@@ -145,18 +144,10 @@ export default {
           })),
           user_id: this.$store.state.userId,
         });
-
-        // Manually handle the redirect from the 303 status
         const { url } = response.data;
         window.location.href = url;
       } catch (error) {
-        if (error.response && error.response.status === 303) {
-          // If 303, redirect manually to the URL in the response
-          const redirectUrl = error.response.data.url;
-          window.location.href = redirectUrl;
-        } else {
-          console.error("Error creating checkout session:", error);
-        }
+        console.error("Error creating checkout session:", error);
       }
     },
   },
