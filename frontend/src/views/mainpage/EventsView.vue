@@ -247,4 +247,25 @@ button:hover {
   color: white;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .hero-container {
+    height: 50vh;
+  }
+  .events-description {
+    width: 100%;
+  }
+  .events {
+    width: 100%;
+  }
+  .event-item-container {
+    width: 100%;
+  }
+  .hero h1 {
+    font-size: 2em;
+  }
+  .event-description .title {
+    font-size: 1.5em;
+  }
+}
 </style>

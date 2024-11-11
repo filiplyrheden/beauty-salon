@@ -24,7 +24,9 @@
             eller kontakta oss direkt för en skräddarsydd kurs och fördjupa dig
             i en värld av färg, teknik och kreativitet!
           </div>
-          <button>KONTAKTA SHAHAD FÖR EN SKRÄDDARSYDD KURS</button>
+          <router-link to="/om-mig">
+            <button>KONTAKTA SHAHAD FÖR EN SKRÄDDARSYDD KURS</button>
+          </router-link>
         </div>
         <div class="courses">
           <h2 class="courses-title">KOMMANDE KURSER</h2>
@@ -154,6 +156,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 8px;
 }
 .course-image {
   width: 100%;
@@ -246,5 +249,26 @@ button:hover {
 }
 .price {
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .hero-container {
+    height: 50vh;
+  }
+  .courses-description {
+    width: 100%;
+  }
+  .courses {
+    width: 100%;
+  }
+  .course-item-container {
+    width: 100%;
+  }
+  .hero h1 {
+    font-size: 2em;
+  }
+  .courses-description .title {
+    font-size: 1.5em;
+  }
 }
 </style>

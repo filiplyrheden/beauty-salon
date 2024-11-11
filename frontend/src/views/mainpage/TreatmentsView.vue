@@ -34,12 +34,22 @@
               :key="service.id"
               class="service-item"
             >
-              <span class="service-name">{{ service.name }}</span>
-              <span class="service-time">{{ service.time }} min</span>
-              <span class="service-price">{{ service.price }} SEK</span>
-              <span class="more-info" @click="openDescriptionModal(service)">
-                Mer info
-              </span>
+              <div class="service-info">
+                <div class="service-info-top">
+                  <span class="service-name">{{ service.name }}</span>
+                </div>
+                <div class="service-info-bottom">
+                  <span class="service-time">{{ service.time }} min,</span>
+                  <span class="service-price">{{ service.price }}kr</span>
+                  <span
+                    class="more-info"
+                    @click="openDescriptionModal(service)"
+                  >
+                    Mer info
+                  </span>
+                </div>
+              </div>
+
               <a :href="service.booking_link">
                 <button>BOKA</button>
               </a>
@@ -263,20 +273,17 @@ export default {
 .service-name {
   font-size: 1.1rem;
   color: #333;
+  font-weight: bold;
 }
 
 /* Service price */
-.service-price {
-  font-size: 1.1rem;
-  color: #333;
-  font-weight: bold;
-}
 .more-info {
   color: #333;
   cursor: pointer;
+  text-decoration: underline;
 }
 .more-info:hover {
-  text-decoration: underline;
+  cursor: pointer;
 }
 button {
   font-family: "Playfair Display", serif !important;
@@ -292,19 +299,36 @@ button:hover {
   background: white;
   color: black;
 }
+.service-info-top {
+  display: flex;
+  margin-bottom: 5px;
+}
+.service-info-bottom {
+  display: flex;
+  gap: 8px;
+}
 /* Responsive adjustments */
-@media (max-width: 600px) {
+@media (min-width: 768px) and (max-width: 1100px) {
+  .hero-container h1 {
+    font-size: 4em;
+  }
+}
+@media (max-width: 768px) {
+  .hero-container {
+    height: 50vh;
+  }
+  .hero-container h1 {
+    font-size: 2em;
+  }
   .services-container {
     padding: 32px 15px 15px 15px;
   }
 
   .service-item {
-    flex-direction: column;
     align-items: flex-start;
   }
-
-  .service-price {
-    margin-top: 5px;
+  .service-info-bottom {
+    flex-wrap: wrap;
   }
 }
 </style>
