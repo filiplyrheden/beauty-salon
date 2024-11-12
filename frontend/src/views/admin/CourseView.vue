@@ -555,6 +555,22 @@ table {
   table-layout: fixed;
 }
 
+.back {
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  border: 1px solid black;
+  padding: 8px 16px;
+  font-family: "Playfair Display", serif;
+  position: absolute;
+  transform: translate(0%, -50%);
+}
+
+.back:hover{
+  color: white;
+  background-color: #202020;
+}
+
 thead {
   background-color: #f8f9fa;
 }

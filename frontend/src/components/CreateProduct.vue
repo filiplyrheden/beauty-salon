@@ -1,9 +1,7 @@
 <template>
   <div class="header">
     <button>
-      <router-link to="/admin" class="back"
-        >Tillbaka</router-link
-      >
+      <router-link to="/admin" class="back">Tillbaka</router-link>
     </button>
     <h2>Add New Product</h2>
   </div>
@@ -361,6 +359,7 @@ export default {
 button a{
   text-decoration: none;
   color: black;
+  font-family: "Playfair Display", serif;
 }
 
 h1, h2 ,h3 h4{

@@ -1,5 +1,7 @@
 <template>
     <div class="course-container">
+      <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link>
       <h1>Produkt Egenskaper</h1>
   
       <!-- Loading Indicator -->
@@ -228,8 +230,25 @@
   };
 </script>
 
-  
+
   <style scoped>
+
+  .back {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+    border: 1px solid black;
+    padding: 8px 16px;
+    font-family: "Playfair Display", serif;
+    position: absolute;
+    transform: translate(0%, -50%);
+  }
+
+  .back:hover{
+    color: white;
+    background-color: #202020;
+  }
+
   .course-container {
     max-width: 1200px;
     margin: 0 auto;
