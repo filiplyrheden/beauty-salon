@@ -311,4 +311,14 @@ export default {
   max-height: 100px;
   opacity: 1;
 }
+
+@media (max-width: 768px) {
+  .product-carousel {
+    display: none;
+  }
+
+  .product-grid {
+    display: flex;
+  }
+}
 </style>
