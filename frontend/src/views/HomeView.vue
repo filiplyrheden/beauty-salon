@@ -168,6 +168,9 @@ export default {
 </script>
 
 <style scoped>
+.product-grid {
+  display: none;
+}
 .carousel__item {
   text-align: center;
   padding: 10px;
@@ -577,6 +580,9 @@ button:hover {
 }
 
 @media (max-width: 768px) {
+  .product-grid {
+    display: flex;
+  }
   .products-container {
     height: unset;
   }

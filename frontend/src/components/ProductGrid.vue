@@ -1,59 +1,56 @@
 <template>
-  <div>
-    <div class="product-grid">
-      <div
-        v-for="product in productItems"
-        :key="product.product_id"
-        class="product-item"
-      >
-        <div class="product-image-section">
-          <img
-            v-if="product.image_url_primary"
-            class="product-image"
-            :src="product.image_url_primary"
-            alt=""
-          />
-          <img
-            v-if="!product.image_url_primary"
-            src="../assets/noImage.png"
-            :alt="product.product_name"
-            class="product-image"
-          />
-          <div class="card-overlay">
-            <div class="card-overlay-container-mobile">
-              <button @click="toggleBuyMobile(product)">
-                <div class="buyMobileWrapper">
-                  <img src="../assets/buymobilelogo.svg" alt="" />
-                </div>
-              </button>
-            </div>
+  <div class="product-grid">
+    <div
+      v-for="product in productItems"
+      :key="product.product_id"
+      class="product-item"
+    >
+      <div class="product-image-section">
+        <img
+          v-if="product.image_url_primary"
+          class="product-image"
+          :src="product.image_url_primary"
+          alt=""
+        />
+        <img
+          v-if="!product.image_url_primary"
+          src="../assets/noImage.png"
+          :alt="product.product_name"
+          class="product-image"
+        />
+        <div class="card-overlay">
+          <div class="card-overlay-container-mobile">
+            <button @click="toggleBuyMobile(product)">
+              <div class="buyMobileWrapper">
+                <img src="../assets/buymobilelogo.svg" alt="" />
+              </div>
+            </button>
           </div>
         </div>
-        <router-link :to="'/products/' + product.product_id">
-          <div class="product-info">
-            <div class="product-info-header">
-              <h3 class="product-name">{{ product.product_name }}</h3>
-              <span v-if="product.selectedSize">
-                {{
-                  product.variants.find(
-                    (v) => v.size_id === product.selectedSize
-                  )?.price || "0"
-                }}
-                kr
-              </span>
-              <span v-else>{{ product.variants[0]?.price || "0" }} kr</span>
-            </div>
-            <div class="product-description">{{ product.description }}</div>
-            <p class="mobilePrice" v-if="product.selectedSize">
+      </div>
+      <router-link :to="'/products/' + product.product_id">
+        <div class="product-info">
+          <div class="product-info-header">
+            <h3 class="product-name">{{ product.product_name }}</h3>
+            <span v-if="product.selectedSize">
               {{
                 product.variants.find((v) => v.size_id === product.selectedSize)
                   ?.price || "0"
               }}
               kr
-            </p>
+            </span>
+            <span v-else>{{ product.variants[0]?.price || "0" }} kr</span>
           </div>
-        </router-link>
-      </div>
+          <div class="product-description">{{ product.description }}</div>
+          <p class="mobilePrice" v-if="product.selectedSize">
+            {{
+              product.variants.find((v) => v.size_id === product.selectedSize)
+                ?.price || "0"
+            }}
+            kr
+          </p>
+        </div>
+      </router-link>
     </div>
     <MobileSizePicker
       v-if="showSizesMobile"
