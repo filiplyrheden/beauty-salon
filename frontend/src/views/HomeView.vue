@@ -85,6 +85,7 @@
           </router-link>
         </div>
         <ProductCarousel></ProductCarousel>
+        <ProductGrid></ProductGrid>
       </div>
     </div>
     <div class="courses-container">
@@ -124,6 +125,7 @@ import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import noImage from "@/assets/noImage.png";
 import ProductCarousel from "@/components/ProductCarousel.vue";
+import ProductGrid from "@/components/ProductGrid.vue";
 
 export default {
   data() {
@@ -159,6 +161,7 @@ export default {
     Pagination,
     Navigation,
     ProductCarousel,
+    ProductGrid,
   },
   name: "HomeView",
 };
@@ -574,6 +577,9 @@ button:hover {
 }
 
 @media (max-width: 768px) {
+  .products-container {
+    height: unset;
+  }
   .hero-container {
     margin-bottom: 80px;
   }
@@ -659,9 +665,6 @@ button:hover {
   }
   .about-me-image {
     transform: translate(-88%, -50%);
-  }
-  .product-carousel {
-    display: none;
   }
 
   .products-header {
