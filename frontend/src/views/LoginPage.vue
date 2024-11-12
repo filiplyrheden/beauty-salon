@@ -205,7 +205,6 @@ h1 {
   .login-wrapper {
     padding: 20px; /* Reduce padding on smaller screens */
     box-shadow: none; /* Remove shadow for a cleaner look on mobile */
-    border: none;
   }
 
   h1 {
