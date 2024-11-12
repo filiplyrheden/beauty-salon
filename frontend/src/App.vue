@@ -82,4 +82,56 @@ body,
 html {
   height: 100%;
 }
+
+.carousel__pagination-button::after {
+  width: 9px !important;
+  height: 9px !important;
+  border-radius: 6px !important;
+  background-color: unset !important;
+  border: 1px solid black;
+}
+
+.carousel__pagination-button {
+  background-color: unset !important;
+}
+
+.carousel__pagination-item {
+  display: flex !important;
+}
+.carousel__prev,
+.carousel__next,
+.carousel__icon {
+  width: 75px !important;
+  height: 75px !important;
+}
+.carousel__pagination {
+  gap: 6px !important;
+}
+.carousel__pagination-button--active::after {
+  background-color: black !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .carousel__prev,
+  .carousel__next {
+    top: unset !important;
+    transform: translateY(0%) !important;
+    bottom: 0px;
+  }
+  .carousel__prev {
+    left: 20% !important;
+  }
+  .carousel__next {
+    right: 20% !important;
+  }
+  .carousel__prev,
+  .carousel__next,
+  .carousel__icon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
 </style>

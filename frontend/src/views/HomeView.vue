@@ -3,6 +3,7 @@
     <div class="hero-container">
       <div class="hero">
         <img src="https://picsum.photos/1200/600" alt="big" class="big-image" />
+        <div class="big-image-overlay"></div>
         <img
           src="https://picsum.photos/500/600"
           alt="big"
@@ -11,11 +12,10 @@
         <div class="overlay">
           <h1 class="title">SN BEAUTY</h1>
           <div class="content">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse et commodo ligula. Orci varius natoque penatibus et
-              magnis dis parturient montes, nascetur ridiculus mus. Pellentesque
-              euismod tempus lectus, et auctor enim tempus et.
+            <h3 class="content-title">Där du hittar avslappning i vardagen.</h3>
+            <p class="content-text">
+              Unna dig massage, ansiktsbehandlingar och sminkning i en lugn och
+              omsorgsfull miljö. Vi tar hand om dig!
             </p>
             <button>BOKA BEHANDLING</button>
           </div>
@@ -134,21 +134,20 @@ export default {
           title: "Brudmakeup",
           image: noImage,
           description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et.",
+            "På din stora dag förtjänar du att stråla. Vår brudmakeup är designad för att framhäva din naturliga skönhet och hålla hela dagen och natten. Vi skapar en look som harmonierar med din stil, klänning och tema – från klassiskt elegant till modernt och fräscht.",
         },
         {
           title: "Ansiktsbehandlingar",
           image: noImage,
           description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et..",
+            "Ge din hud nytt liv med våra ansiktsbehandlingar, skräddarsydda efter din hudtyp och behov. Perfekt för att rengöra på djupet, återfukta och få en naturlig lyster.",
         },
         {
           title: "Massage",
           image: noImage,
           description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et commodo ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus lectus, et auctor enim tempus et.",
+            "Koppla av med våra avslappnande massager, designade för att lösa upp spänningar och främja cirkulation. Vi anpassar behandlingen för att du ska känna dig balanserad och återhämtad.",
         },
-        // Add more slides as needed
       ],
     };
   },
@@ -219,34 +218,6 @@ export default {
   text-align: left;
   align-self: center;
 }
-.carousel__pagination-button {
-  background-color: unset;
-}
-.carousel__pagination-button::after {
-  width: 9px;
-  height: 9px;
-  border-radius: 6px;
-  background-color: unset;
-  border: 1px solid black;
-}
-.carousel__pagination-item {
-  display: flex;
-}
-.carousel__prev,
-.carousel__next,
-.carousel__icon {
-  width: 75px;
-  height: 75px;
-}
-.carousel__pagination {
-  gap: 6px;
-}
-.carousel__pagination-button--active::after {
-  background-color: var(--vc-pgn-active-color);
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
-}
 .carousel__image {
   width: 60%;
   height: auto;
@@ -268,12 +239,15 @@ export default {
   left: 0;
 }
 .hero-container {
-  padding-bottom: 140px;
+  margin-bottom: 140px;
 }
 .treatments-container {
   padding: 70px 0px;
 }
-.hero-container,
+.hero-container {
+  width: 100%;
+  height: calc(100vh - 122px);
+}
 .treatments {
   max-width: 1280px;
   margin: 0 auto;
@@ -491,8 +465,18 @@ export default {
   height: 100%;
   object-fit: cover;
 }
+.big-image-overlay {
+  z-index: -2;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 80%;
+  height: 100%;
+  object-fit: cover;
+  background-color: rgba(0, 0, 0, 0.6);
+}
 .small-image {
-  z-index: -1;
+  z-index: 0;
   position: absolute;
   left: 1%;
   top: 50%;
@@ -514,7 +498,7 @@ export default {
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  gap: 2rem;
+  gap: 12px;
 }
 .sub-title {
   font-size: 8em;
@@ -543,38 +527,209 @@ export default {
 .content {
   display: flex;
   flex-direction: column;
-  color: black;
-  background: rgba(255, 255, 255, 0.5);
+  color: white;
   padding: 20px;
   width: 35%;
   align-self: right;
   font-size: 16px;
   line-height: 22.5px;
   margin-bottom: 4.5%;
-  margin-left: 19%;
+  margin-left: 9%;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.content-title {
+  font-size: 19.2px;
+  font-weight: 500;
+  line-height: 26.88px;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .content p {
-  margin-bottom: 20px;
-  font-size: 0.8em;
-  line-height: 1.5;
-  color: #333;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19.6px;
+  text-align: center;
 }
 
 button {
   font-family: "Playfair Display", serif !important;
-  padding: 10px 20px;
   font-size: 1em;
   color: #333;
   background-color: white;
   border: none;
   cursor: pointer;
   transition: 0.3s;
-  align-self: flex-end;
+  padding: 16px 24px;
+  border: 1px 0px 0px 0px;
+  opacity: 0px;
 }
 
 button:hover {
   background-color: #333;
   color: white;
+}
+
+@media (max-width: 768px) {
+  .hero-container {
+    margin-bottom: 80px;
+  }
+  .small-image {
+    display: none;
+  }
+  .big-image {
+    width: 100%;
+  }
+  .big-image-overlay {
+    width: 100%;
+  }
+  .content {
+    margin-left: 0%;
+    width: 100%;
+  }
+  .title {
+    font-size: 59.61px;
+    font-weight: 600;
+    line-height: 65.57px;
+    letter-spacing: 0.04em;
+    text-align: left;
+  }
+
+  .sub-title {
+    font-size: 3.5em;
+    font-weight: 600;
+    line-height: 65.57px;
+    letter-spacing: 0.04em;
+    top: -30px;
+  }
+  .treatments-container {
+    padding: 32px 0px;
+  }
+  .treatments .carousel__item {
+    flex-direction: column;
+    height: 80vh;
+  }
+  .treatments .carousel__images {
+    margin: 0px;
+    width: 100%;
+    padding: 32px;
+  }
+  .treatments .carousel__image {
+    width: 50%;
+    height: 90%;
+  }
+
+  .treatments .carousel__image__front {
+    bottom: -21px;
+    right: 59px;
+  }
+  .treatments .carousel__image__back {
+    top: -21px;
+    left: 59px;
+  }
+  .treatments .carousel__content {
+    width: 100%;
+    padding: 32px;
+    margin: 0px;
+  }
+
+  .carousel__icon {
+    height: 44px !important;
+    width: 44px !important;
+  }
+  .carousel__prev,
+  .carousel__next {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .about-me-container {
+    height: 100vh;
+  }
+  .about-me-content h2 {
+    font-size: 3em;
+    line-height: 42px;
+    text-align: end;
+    margin-right: 32px;
+  }
+  .about-me-content-text {
+    margin-right: 20px;
+  }
+  .about-me-image {
+    transform: translate(-88%, -50%);
+  }
+  .product-carousel {
+    display: none;
+  }
+
+  .products-header {
+    padding: 32px 16px;
+  }
+  .products-header-title {
+    font-size: 1.3em;
+    font-weight: 600;
+    line-height: 36.5px;
+    letter-spacing: 0.02em;
+    text-align: left;
+  }
+  .products-header .line {
+    display: none;
+  }
+  .courses-container {
+    height: unset;
+  }
+  .courses {
+    padding: 32px;
+    margin-top: 0px;
+  }
+  .courses-title {
+    font-size: 33.18px;
+    font-weight: 600;
+    line-height: 36.5px;
+    letter-spacing: 0.02em;
+    text-align: left;
+  }
+  .courses-content {
+    flex-direction: column-reverse;
+  }
+  .courses-text-content,
+  .courses-image {
+    width: 100%;
+  }
+
+  .events-container {
+    height: unset;
+  }
+
+  .events {
+    padding: 32px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1090px) {
+  .sub-title {
+    font-size: 5em;
+    font-weight: 600;
+    line-height: 65.57px;
+    letter-spacing: 0.04em;
+    top: -30px;
+  }
+}
+@media (max-width: 580px) {
+  .sub-title {
+    font-size: 2em;
+    font-weight: 600;
+    line-height: 65.57px;
+    letter-spacing: 0.04em;
+    top: -30px;
+  }
+  .hero-container {
+    margin-bottom: 40px;
+  }
+  .title {
+    font-size: 3em;
+  }
 }
 </style>
