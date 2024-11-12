@@ -1,6 +1,6 @@
 <template>
   <div class="event-list-container">
-    <h2 class="event-list-title">Event List</h2>
+    <h2 class="event-list-title">Event Lista</h2>
     <ul class="event-list">
       <li v-for="event in items" :key="event.event_id" class="event-item">
         <!-- Event Header -->
@@ -20,29 +20,34 @@
         </div>
 
         <!-- Event Content -->
+<!--         <p>{{ event }}</p> -->
         <div class="event-content">
           <div class="event-details">
             <div class="detail-group">
-              <label>Description:</label>
+              <label>Beskrivning:</label>
               <p>{{ event.description }}</p>
             </div>
             <div class="detail-group">
-              <label>Price:</label>
+              <label>Pris:</label>
               <p>${{ event.price }}</p>
             </div>
             <div class="detail-group">
-              <label>Created At:</label>
+              <label>Tid för event:</label>
+              <p>{{ convertToCET(event.schedule) }}</p>
+            </div>
+            <div class="detail-group">
+              <label>Skapades den:</label>
               <p>{{ event.created_at }}</p>
             </div>
             <div class="detail-group">
-              <label>Booking:</label>
+              <label>Bokning:</label>
               <a
                 :href="event.booking_link"
                 target="_blank"
                 class="booking-link"
               >
                 <font-awesome-icon :icon="['fas', 'external-link-alt']" />
-                Booking link
+                Bokningslänk
               </a>
             </div>
           </div>
@@ -60,13 +65,14 @@
           v-if="editingEvent && editingEvent.event_id === event.event_id"
           class="edit-form"
         >
-          <h4 class="edit-form-title">Edit Event</h4>
+          <h4 class="edit-form-title">Ändra Event</h4>
+          <p>{{  editingEvent }}</p>
           <div class="form-group">
-            <label for="editName">Name:</label>
+            <label for="editName">Namn:</label>
             <input v-model="editingEvent.name" id="editName" type="text" />
           </div>
           <div class="form-group">
-            <label for="editDescription">Description:</label>
+            <label for="editDescription">Beskrivning:</label>
             <input
               v-model="editingEvent.description"
               id="editDescription"
@@ -74,11 +80,20 @@
             />
           </div>
           <div class="form-group">
-            <label for="editPrice">Price:</label>
+            <label for="editSchedule">Tid för event:</label>
+            <input
+              v-model="editingEvent.schedule"
+              id="editDescription"
+              type="datetime-local" 
+              required ref="scheduleInput"
+            />
+          </div>
+          <div class="form-group">
+            <label for="editPrice">Pris:</label>
             <input v-model="editingEvent.price" id="editPrice" type="number" />
           </div>
           <div class="form-group">
-            <label for="editImage">New Image:</label>
+            <label for="editImage">Ny Bild:</label>
             <input
               type="file"
               @change="onFileChange"
@@ -87,7 +102,7 @@
             />
           </div>
           <div class="form-group">
-            <label for="editBookingLink">Booking Link:</label>
+            <label for="editBookingLink">Bokningslänk:</label>
             <input
               v-model="editingEvent.booking_link"
               id="editBookingLink"
@@ -97,7 +112,7 @@
           <div class="form-actions">
             <button @click="saveEvent(editingEvent)" class="save-btn">
               <font-awesome-icon :icon="['fas', 'save']" />
-              Save Changes
+              Spara Ändringar
             </button>
             <button @click="cancelEdit" class="cancel-btn">
               <font-awesome-icon :icon="['fas', 'times']" />
@@ -129,7 +144,7 @@ export default {
   },
   methods: {
     getImageUrl(imageName) {
-      return `${process.env.VUE_APP_API_BASE_URL}/${imageName}`;
+      return `${process.env.VUE_APP_API_BASE_URL}${imageName}`;
     },
     deleteEvent(eventId) {
       if (confirm("Are you sure you want to delete this event?")) {
@@ -146,16 +161,49 @@ export default {
     },
     editEvent(event) {
       this.editingEvent = { ...event };
+      this.editingEvent.schedule = this.formatScheduleForFrontend(event.schedule);
+    },
+    formatScheduleForFrontend(schedule) {
+      if (!schedule) return "";
+
+      const date = new Date(schedule);
+      if (isNaN(date.getTime())) {
+        console.error("Invalid date:", schedule);
+        return "";
+      }
+
+      const localDateString = date.toLocaleString("sv-SE", {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        hour12: false,
+      });
+
+      return localDateString.slice(0, 16);
     },
     onFileChange(event) {
       this.selectedFile = event.target.files[0];
     },
+    convertToCET(utcTime) {
+    const date = new Date(utcTime);
+    const cetTime = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Europe/Stockholm',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).format(date);
+
+      return cetTime;
+    },
     saveEvent(event) {
       const formData = new FormData();
-      formData.append("name", event.name);
-      formData.append("description", event.description);
-      formData.append("price", event.price);
-      formData.append("booking_link", event.booking_link);
+      formData.append("name", this.editingEvent.name);
+      formData.append("description", this.editingEvent.description);
+      formData.append("price", this.editingEvent.price);
+      formData.append("booking_link", this.editingEvent.booking_link);
+      formData.append("schedule", this.editingEvent.schedule);
 
       if (this.selectedFile) {
         formData.append("image", this.selectedFile);
@@ -196,7 +244,8 @@ export default {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
-  color: #2c3e50;
+  color: #202020;
+  font-family: "Playfair Display", serif;
 }
 
 .event-list {
@@ -226,7 +275,7 @@ export default {
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
-  color: #2c3e50;
+  color: #202020;
 }
 
 .event-content {
@@ -255,7 +304,7 @@ export default {
 
 .detail-group p {
   margin: 0;
-  color: #2c3e50;
+  color: #202020;
 }
 
 .event-image-container {

@@ -1,61 +1,42 @@
 <template>
   <div>
     <div class="header">
-      <router-link to="/admin" class="back"
-        ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
-      >
-      <h2>Add New Event</h2>
+      <router-link to="/admin" class="back">Tillbaka</router-link>
+      <h2>Lägg Till Event</h2>
     </div>
-    <form @submit.prevent="saveEvent">
+    <form @submit.prevent="saveEvent"
+    enctype="multipart/form-data">
       <div>
-        <label for="eventName">Event Name:</label>
+        <label for="eventName">Event Namn:</label>
         <input type="text" id="eventName" v-model="eventName" required />
       </div>
 
       <div>
-        <label for="description">Description:</label>
+        <label for="description">Beskrivning:</label>
         <textarea id="description" v-model="description" required></textarea>
       </div>
 
       <div>
-        <label for="eventPrice">Price:</label>
-        <input
-          type="number"
-          id="eventPrice"
-          v-model="eventPrice"
-          step="0.01"
-          required
-        />
+        <label for="eventPrice">Pris:</label>
+        <input type="number" id="eventPrice" v-model="eventPrice" step="0.01" required />
       </div>
 
       <div>
         <label for="schedule">Tid:</label>
-        <input
-          v-model="schedule"
-          id="schedule"
-          type="datetime-local"
-          required
-          ref="scheduleInput"
-        />
+        <input v-model="schedule" id="schedule" type="datetime-local" required ref="scheduleInput" />
       </div>
 
       <div>
-        <label for="image">Image:</label>
-        <input
-          type="file"
-          id="image"
-          @change="onImageChange"
-          accept="image/*"
-          required
-        />
+        <label for="image">Bild:</label>
+        <input type="file" id="image" @change="onImageChange" accept="image/*" required />
       </div>
 
       <div>
-        <label for="bookingLink">Booking Link:</label>
+        <label for="bookingLink">Bokningslänk:</label>
         <input type="text" id="bookingLink" v-model="bookingLink" />
       </div>
 
-      <button type="submit">Add Event</button>
+      <button type="submit">Lägg till</button>
     </form>
 
     <p v-if="message">{{ message }}</p>
@@ -71,56 +52,46 @@ export default {
       eventName: "",
       description: "",
       eventPrice: "",
-      imageFile: null, // Store the image file
+      imageFile: null,
       bookingLink: "",
-      message: "", // For success or error messages
+      message: "",
       schedule: "",
     };
   },
   methods: {
-    // Handle image file change
     onImageChange(event) {
-      this.imageFile = event.target.files[0]; // Store the selected image file
+      this.imageFile = event.target.files[0];
     },
-
-    // Save new event
     async saveEvent() {
       const formData = new FormData();
       formData.append("name", this.eventName);
       formData.append("description", this.description);
       formData.append("price", parseFloat(this.eventPrice));
-      formData.append("image", this.imageFile); // Add the image file to form data
+      formData.append("image", this.imageFile);
       formData.append("booking_link", this.bookingLink);
       formData.append("schedule", this.schedule);
 
       try {
         const response = await axiosInstance.post("/admin/events", formData, {
           headers: {
-            "Content-Type": "multipart/form-data", // Set content type for file upload
+            "Content-Type": "multipart/form-data",
           },
         });
-        console.log("Response:", response);
-        this.message =
-          "Event added successfully! Event ID: " + response.data.event_id; // Ensure correct property access
-        this.resetForm(); // Clear form fields after successful submission
+        this.message = "Event added successfully! Event ID: " + response.data.event_id;
+        this.resetForm();
       } catch (error) {
-        console.error("Error adding event:", error);
-        // Check if error response exists
         if (error.response && error.response.data) {
-          this.message = "Error adding event: " + error.response.data.error; // Access error message safely
+          this.message = "Error adding event: " + error.response.data.error;
         } else {
-          this.message =
-            "Error adding event: " + error.message || "Internal Server Error"; // Fallback error message
+          this.message = "Error adding event: " + (error.message || "Internal Server Error");
         }
       }
     },
-
-    // Reset form fields
     resetForm() {
       this.eventName = "";
       this.description = "";
       this.eventPrice = "";
-      this.imageFile = null; // Reset the image file
+      this.imageFile = null;
       this.bookingLink = "";
       this.schedule = "";
     },
@@ -131,7 +102,8 @@ export default {
 <style scoped>
 /* General form layout */
 form {
-  max-width: 600px;
+  max-width: 100%;
+  width: 90%;
   margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;
@@ -142,9 +114,9 @@ form {
 /* Headings */
 h2 {
   text-align: center;
-  margin-bottom: 20px;
   font-size: 1.5em;
   color: #333;
+  margin-bottom: 20px;
 }
 
 /* Input fields and labels */
@@ -183,27 +155,30 @@ input[type="file"] {
 
 /* Buttons */
 button[type="submit"] {
-  background-color: #007bff;
+  background-color: #202020;
   color: white;
   padding: 10px 15px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   width: 100%;
   font-size: 1.1rem;
   transition: background-color 0.3s ease;
+  border-radius: 4px;
+  font-family: "Playfair Display", serif;
 }
 
 button[type="submit"]:hover {
-  opacity: 0.9;
+  background-color: white;
+  color: #202020;
+  border: 1px solid #202020;
 }
 
 /* Success or error messages */
 p {
   text-align: center;
-  margin-top: 20px;
   font-size: 1.1rem;
   color: green;
+  margin-top: 20px;
 }
 
 p.error {
@@ -213,24 +188,58 @@ p.error {
 .header {
   position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 600px;
-  margin: 0 auto;
   flex-direction: column;
+  align-items: center;
   padding-top: 32px;
 }
 .header h2 {
   margin-bottom: 32px;
 }
 .back {
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  border: 1px solid black;
+  padding: 8px 16px;
+  font-family: "Playfair Display", serif;
   position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translate(0%, -50%);
+  top: 10px;
+  left: 5%;
 }
-.header a {
-  color: #007bff;
-  font-size: 1em;
+
+.back:hover {
+  color: white;
+  background-color: #202020;
+}
+
+@media (max-width: 600px) {
+  form {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 1.3em;
+    margin-bottom: 16px;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    font-size: 0.9rem;
+  }
+
+  button[type="submit"] {
+    font-size: 1rem;
+    padding: 8px 12px;
+  }
+
+  .back {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
 }
 </style>

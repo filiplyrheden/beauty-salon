@@ -14,6 +14,17 @@ export const getEvents = async () => {
   }
 };
 
+export const getEventById = async (id) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM Events WHERE event_id = ?", [id]);
+    return rows;
+  } catch (err) {
+    console.error("Error fetching event:", err.message); // Log specific error message
+    throw err; // Propagate the error to be handled by the controller
+  }
+};
+
+
 /**
  * Insert a new event into the database.
  * @param {Object} event - The event object containing details to be inserted.
@@ -59,7 +70,7 @@ export const insertEvent = async (event) => {
  * @returns {Promise<Object>} The result of the update operation.
  */
 export const editEvent = async (eventId, event) => {
-  const { name, description, price, image_url, booking_link } = event;
+  const { name, description, price, image_url, booking_link, schedule } = event;
   try {
     const query = `
       UPDATE Events

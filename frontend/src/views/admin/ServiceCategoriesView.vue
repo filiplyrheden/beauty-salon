@@ -1,7 +1,7 @@
 <template>
   <div class="service-category-container">
     <router-link to="/admin" class="back"
-      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+      >Tillbaka</router-link
     >
     <h1>Behandlings Kategorier</h1>
 
@@ -410,6 +410,22 @@ button:last-of-type {
 
 button:hover {
   opacity: 0.8;
+}
+
+.back {
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  border: 1px solid black;
+  padding: 8px 16px;
+  font-family: "Playfair Display", serif;
+  position: absolute;
+  transform: translate(0%, -50%);
+}
+
+.back:hover{
+  color: white;
+  background-color: #202020;
 }
 
 /* Loading Indicator Styles */

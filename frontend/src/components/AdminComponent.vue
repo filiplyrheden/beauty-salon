@@ -4,7 +4,7 @@
       ><font-awesome-icon icon="arrow-right-from-bracket"
     /></a>
     <div class="dashboard-header">
-      <h1>SN BEAUTY Administratörspanel</h1>
+      <h1>Adminpanel</h1>
     </div>
 
     <div class="menu-grid">
@@ -202,7 +202,7 @@ export default {
   font-size: 18px;
   font-weight: 500;
   margin: 0;
-  color: #2c3e50;
+  color: #202020;
 }
 
 .menu-description {
@@ -236,6 +236,11 @@ export default {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.snbeautyHeader{
+  font-family: "Playfair Display", serif;
+  color: #202020;
 }
 
 .menu-item {

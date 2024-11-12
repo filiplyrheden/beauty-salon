@@ -277,6 +277,23 @@ export default {
 </script>
 
 <style scoped>
+
+.back {
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  border: 1px solid black;
+  padding: 8px 16px;
+  font-family: "Playfair Display", serif;
+  position: absolute;
+  transform: translate(0%, -50%);
+}
+
+.back:hover{
+  color: white;
+  background-color: #202020;
+}
+
 .order-container {
   max-width: 1200px;
   margin: 0 auto;

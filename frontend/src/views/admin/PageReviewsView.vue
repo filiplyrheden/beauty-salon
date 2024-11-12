@@ -349,6 +349,22 @@ thead {
   background-color: #f8f9fa;
 }
 
+.back {
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  border: 1px solid black;
+  padding: 8px 16px;
+  font-family: "Playfair Display", serif;
+  position: absolute;
+  transform: translate(0%, -50%);
+}
+
+.back:hover{
+  color: white;
+  background-color: #202020;
+}
+
 th,
 td {
   padding: 12px;
