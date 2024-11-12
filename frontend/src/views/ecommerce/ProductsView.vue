@@ -259,10 +259,7 @@
                 :alt="product.product_name"
                 class="product-image"
               />
-              <div
-                class="card-overlay"
-                @mouseleave="hideSizeOptions(product.product_id)"
-              >
+              <div class="card-overlay" @mouseleave="hideSizeOptions(product.product_id)">
                 <div class="card-overlay-container">
                   <div
                     class="select-size"
@@ -313,6 +310,66 @@
                   <button class="add-to-cart" @click="addItemToCart(product)">
                     LÄGG I VARUKORG
                   </button>
+                </div>
+                <div class="card-overlay-container-mobile">
+                  <button @click="toggleBuyMobile">
+                    <div class="buyMobileWrapper">
+                      <img src="../../assets/buymobilelogo.svg" alt="">
+                    </div>
+                  </button>
+                </div>
+                <div v-if="showSizesMobile" class="showSizesMobileWrapper">
+                  <div class="sizesMobileOverlay" @click="showSizesMobile = false"></div>
+                  <div class="sizesMobilePopup">
+                    <div class="sizesMobilePopupWrapper">
+                      <div class="select-size extraselect-size" @click="toggleSizeMenu(product.product_id)">
+                        <div class="size-toggle">
+                          {{
+                            product.selectedSize
+                              ? product.variants.find(
+                                  (v) => v.size_id === product.selectedSize
+                                )?.size + " (vald)"
+                              : product.variants[0]?.size + " (vald)" ||
+                                "Välj storlek"
+                          }}
+                        </div>
+                        <font-awesome-icon icon="chevron-up" />
+                      </div>
+  
+                      <transition name="size-options">
+                        <div
+                          v-if="showSizeOptions[product.product_id]"
+                          class="size-options"
+                        >
+                          <p
+                            v-if="
+                              !product.variants || product.variants.length === 0
+                            "
+                          >
+                            Inga Varianter :()
+                          </p>
+                          <div
+                            v-else
+                            v-for="variant in product.variants"
+                            :key="variant.size_id"
+                          >
+                            <div
+                              @click="
+                                selectSize(product.product_id, variant.size_id)
+                              "
+                              class="variant-options"
+                            >
+                              <p>{{ variant.size }}</p>
+                              <p>{{ variant.price }} kr</p>
+                            </div>
+                          </div>
+                        </div>
+                      </transition>
+                      <button class="add-to-cart-mobile" @click="addItemToCart(product)">
+                        LÄGG I VARUKORG
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -377,6 +434,7 @@ export default {
       searchQuery: "",
       sortOption: "",
       showSizeOptions: {}, // Object to track size option visibility
+      showSizesMobile: false,
       properties: [],
     };
   },
@@ -508,6 +566,9 @@ export default {
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
+    },
+    toggleBuyMobile() {
+      this.showSizesMobile = !this.showSizesMobile;
     },
 
     toggleDropdown(type) {
@@ -838,6 +899,20 @@ a:hover {
   font-family: "Playfair Display", serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+.add-to-cart-mobile {
+  background-color: #202020;
+  color: white;
+  padding: 16px 16px;
+  font-size: 16px;
+  border: 1px solid black;
+  cursor: pointer;
+  font-weight: normal;
+  margin-top: 10px;
+  width: 100%;
+  font-family: "Playfair Display", serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 .search-input {
   width: 100%;
   padding: 8px 37px 8px 10px;
@@ -938,10 +1013,70 @@ a:hover {
   transition: transform 0.3s ease;
 }
 
+.card-overlay-container-mobile{
+  display: none;
+}
+
 .slide-enter, .slide-leave-to {
   transform: translateX(0);
 }
 
+.showSizesMobileWrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgb(0 0 0 / 20%); /* Dimmed overlay for background */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.sizesMobileOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent; /* Allows closing popup when clicked */
+}
+
+.sizesMobilePopupWrapper {
+  width: 100%;
+  max-width: 500px; /* Optional: restricts width on larger screens */
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sizesMobilePopup {
+  width: 100%;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease forwards;
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.extraselect-size{
+  gap: 20px;
+  width: 100%;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
 
 @media (max-width: 767px) {
   .products-header h1{
@@ -952,6 +1087,38 @@ a:hover {
   }
   .search{
     width: 100%;
+  }
+
+  .card-overlay{
+    opacity: 1;
+  }
+
+  .card-overlay-container{
+    display: none;
+  }
+
+  .card-overlay-container-mobile{
+    display: flex;
+    justify-content: end;
+    padding: 10px;
+    opacity: 1;
+  }
+
+  .buyMobileWrapper{
+    height: 40px;
+    width: 40px;
+    background-color: black;
+    border-radius: 30px;
+    opacity: 1;
+  }
+
+  .card-overlay-container-mobile button{
+    border: none;
+    background-color: transparent;
+  }
+
+  .showSizesMobileWrapper{
+    display: flex;
   }
 
   .filter-container{
