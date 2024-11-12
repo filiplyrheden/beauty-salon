@@ -9,7 +9,7 @@
         <div class="spinner"></div>
       </div>
 
-      <a class="logout" v-else @click="handleLogout">LOGOUT</a>
+      <a class="logout" v-else @click="handleLogout">Logga ut</a>
 
       <!-- User Profile -->
       <div v-if="!isEditing" class="form-container">
@@ -84,7 +84,7 @@
         <thead>
           <tr>
             <th class="w-7">Order ID</th>
-            <th>Address</th>
+            <th>Adress</th>
             <th class="w-7">Order Status</th>
             <th>Produkter</th>
             <th class="w-7">Kostnad</th>
@@ -123,13 +123,14 @@
                   <br />
                   Antal: {{ product.quantity }}
                   <br />
-                  Pris: {{ product.unit_price.toFixed(2) }}
+                  Pris: {{ product.unit_price.toFixed(2) }}kr
                   <br />
-                  Total: {{ product.unit_price * product.quantity }}
+                  Total: {{ product.unit_price * product.quantity }}kr
                 </div>
+                <div class="delivery">Fraktkostnad 45kr</div>
               </div>
             </td>
-            <td>{{ order.total_amount }}</td>
+            <td>{{ (order.total_amount + 45).toFixed(2) }}kr</td>
             <td>{{ formatDate(order.order_date) }}</td>
           </tr>
         </tbody>
@@ -285,7 +286,7 @@ export default {
         hour: "2-digit",
         minute: "2-digit",
       };
-      return new Date(datetime).toLocaleDateString(undefined, options);
+      return new Date(datetime).toLocaleDateString("sv-SE", options);
     },
     ...mapMutations(["logout"]), // Map the logout mutation
     handleLogout() {
