@@ -113,15 +113,27 @@ export default {
   align-items: center;
   height: calc(100vh - 112px);
   background-color: #f0f0f0;
+  padding: 20px; /* Added padding to avoid content touching edges */
 }
 
 .login-wrapper {
   max-width: 600px;
+  width: 100%; /* Make the wrapper take full width on smaller screens */
   margin: 0 auto;
   padding: 40px;
   background-color: #f9f9f9;
   border: 1px solid black;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Ensures padding doesn't exceed the width */
+}
+
+h1 {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 32px;
+  text-align: center; /* Center align for mobile */
 }
 
 .login-form {
@@ -129,13 +141,12 @@ export default {
   flex-direction: column;
   gap: 10px;
 }
+
 .form-group {
   position: relative;
   margin-bottom: 20px;
 }
-.no-account {
-  margin-top: 16px;
-}
+
 .input-field {
   width: 100%;
   padding: 12px;
@@ -179,14 +190,38 @@ export default {
   color: black;
 }
 
-h1 {
-  font-family: "Playfair Display", serif !important;
-  letter-spacing: 4%;
-  font-weight: 600;
-  font-size: 24px;
-  margin-bottom: 32px;
+.no-account, .forgotPassword {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px; /* Smaller font for mobile */
 }
+
 .error {
   color: red; /* Style for error messages */
+  text-align: center;
 }
+
+@media (max-width: 767px) {
+  .login-wrapper {
+    padding: 20px; /* Reduce padding on smaller screens */
+    box-shadow: none; /* Remove shadow for a cleaner look on mobile */
+    border: none;
+  }
+
+  h1 {
+    font-size: 20px; /* Reduce title font size */
+    margin-bottom: 24px;
+  }
+
+  .input-field {
+    padding: 10px; /* Reduce padding for input fields on smaller screens */
+    font-size: 14px; /* Smaller font for input fields */
+  }
+
+  .submit-button {
+    font-size: 14px; /* Smaller font for button */
+    padding: 10px; /* Smaller padding for button */
+  }
+}
+
 </style>
