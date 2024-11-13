@@ -191,8 +191,8 @@ export const createOrderByHook = async (
     });
 
     // Create the order in the database
-    const order_status = "pending"; // Or any default status you want to set
-    const order_date = new Date(); // You can adjust this if needed
+    const order_status = "Bekräftad";
+    const order_date = new Date();
     const address_line1 = shippingAddress.line1;
     const address_line2 = shippingAddress.line2;
     const postal_code = shippingAddress.postal_code;

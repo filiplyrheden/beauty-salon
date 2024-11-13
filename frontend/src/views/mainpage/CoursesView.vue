@@ -45,12 +45,19 @@
               :key="course.course_id"
               class="course-item-container"
             >
+              <img
+                v-if="course.image_url"
+                :src="course.image_url"
+                alt="kurs bild"
+                class="course-image"
+              />
+              <img
+                v-if="!course.image_url"
+                src="../../assets/courses.png"
+                :alt="course.name"
+                class="course-image"
+              />
               <div class="course-item">
-                <img
-                  src="../../assets/courses.png"
-                  alt="kurs bild"
-                  class="course-image"
-                />
                 <div class="course-name">{{ course.name }}</div>
                 <div class="schedule">{{ formatDate(course.schedule) }}</div>
                 <div class="course-description">{{ course.description }}</div>
