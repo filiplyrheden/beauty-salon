@@ -226,7 +226,7 @@ export default {
         }));
       } catch (error) {
         console.error(
-          "Error fetching Proeduct Properties:",
+          "Error fetching Product Properties:",
           error.response || error.message
         );
         Swal.fire(
@@ -353,7 +353,11 @@ export default {
           headers: { "Content-Type": "multipart/form-data" },
         });
         console.log("Response:", response);
-        this.message = "Product added successfully!";
+        Swal.fire(
+          "Produkt skapad!",
+          `Produkten "${this.productName}" har skapats.`,
+          "success"
+        );
         this.resetForm();
       } catch (error) {
         console.error("Error adding product:", error);
@@ -361,6 +365,11 @@ export default {
           error.response?.data?.error ||
           error.message ||
           "Internal Server Error";
+          Swal.fire(
+          "Något blev fel under skapandet av din produkt.",
+          `Produkten "${this.productName}" kunde inte skapas.`,
+          "error"
+        );
       }
     },
     resetForm() {

@@ -114,6 +114,30 @@ html {
   border-radius: 6px;
 }
 
+.swal2-title{
+  font-family: "Playfair Display", serif;
+}
+
+.swal2-styled{
+  background-color: white;
+  color: #202020;
+  width: 200px;
+  border: 1px solid #202020;
+  border-radius: 0px;
+  font-family: "Playfair Display", serif;
+}
+
+.swal2-styled:hover{
+  background-color: #202020;
+  color: white;
+}
+
+.swal2-popup{
+  box-sizing: border-box;
+  border: 1px solid #202020;
+  border-radius: 0px;
+}
+
 @media (max-width: 768px) {
   .carousel__prev,
   .carousel__next {

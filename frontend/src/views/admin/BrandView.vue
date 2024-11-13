@@ -118,7 +118,7 @@ export default {
         const addedBrand = { ...response.data };
         this.brands.push(addedBrand);
         this.resetForm();
-        Swal.fire("Success", "Category added successfully!", "success");
+        Swal.fire("Success", "Kategori tillagd!", "success");
       } catch (error) {
         console.error(
           "Error adding category:",
@@ -126,7 +126,7 @@ export default {
         );
         Swal.fire(
           "Error",
-          "Failed to add category. Please check your input and try again.",
+          "Kategori kunde inte läggas till. Kolla vad du har skrivit in och försök igen!",
           "error"
         );
       } finally {
@@ -171,12 +171,12 @@ export default {
 
         this.resetForm();
         this.isEditing = false;
-        Swal.fire("Success", "Brand updated successfully!", "success");
+        Swal.fire("Success", "Märke uppdaterat!", "success");
       } catch (error) {
         console.error("Error updating brand:", error.response || error.message);
         Swal.fire(
           "Error",
-          "Failed to update brand. Please check your input and try again.",
+          "Märke kunde inte uppdateras. Kolla vad du har skrivit in och prova igen!",
           "error"
         );
       } finally {
@@ -208,7 +208,7 @@ export default {
         this.brands = this.brands.filter(
           (brand) => brand.brand_id !== brand_id
         );
-        Swal.fire("Deleted!", "Category deleted successfully!", "success");
+        Swal.fire("Borttagen!", "Kategori borttagen!", "success");
       } catch (error) {
         console.error(
           "Error deleting category:",
@@ -216,7 +216,7 @@ export default {
         );
         Swal.fire(
           "Error",
-          "Failed to delete category. Please try again later.",
+          "Kategori kunde inte tas bort. Snälla försök igen senare.",
           "error"
         );
       } finally {
