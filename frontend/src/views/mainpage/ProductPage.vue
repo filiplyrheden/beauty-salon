@@ -3,28 +3,42 @@
     <div class="productWrapper">
       <div class="productImages">
         <div class="otherImages">
-          <img :src="product.image_url_secondary" alt="Secondary Image" @click="swapImage('secondary')">
-          <img :src="product.image_url_third" alt="Third Image" @click="swapImage('third')">
+          <img
+            :src="product.image_url_secondary"
+            alt="Secondary Image"
+            @click="swapImage('secondary')"
+          />
+          <img
+            :src="product.image_url_third"
+            alt="Third Image"
+            @click="swapImage('third')"
+          />
         </div>
         <div class="primaryImage">
-          <img :src="product.image_url_primary" alt="Primary Image">
+          <img :src="product.image_url_primary" alt="Primary Image" />
         </div>
       </div>
       <div class="productInfo">
         <div class="infoWrapper">
           <div class="productStars">
-            <h2 class="productBrand">{{ product.category_name }}</h2>
+            <h2 class="productBrand">
+              {{ product.brand?.brand_name || "Unknown Brand" }}
+            </h2>
           </div>
           <h1 class="productName">{{ product.product_name }}</h1>
           <h4 v-if="!chosenSize.price == 0">Pris: {{ chosenSize.price }} kr</h4>
           <!-- <p class="productSmallDescription">Hydrate and brighten damaged skin</p> -->
           <p class="productDescription">{{ product.description }}</p>
-          
+
           <div class="whichCreamWrapper">
             <p class="hudtyp">Produkt Egenskaper</p>
             <div class="hudtypWrapper">
-              <label class="creamLabel" v-for="(properties, index) in product.properties"
-              :key="index">{{ properties.name }}</label>
+              <label
+                class="creamLabel"
+                v-for="(properties, index) in product.properties"
+                :key="index"
+                >{{ properties.name }}</label
+              >
             </div>
           </div>
         </div>
@@ -35,26 +49,44 @@
               <p v-if="chosenSize.name">{{ chosenSize.name }} (Vald)</p>
               <p>Välj Storlek</p>
               <button @click="toggleSizesPopup">
-                <font-awesome-icon :icon="isSizesPopupVisible ? 'chevron-up' : 'chevron-down'" />
+                <font-awesome-icon
+                  :icon="isSizesPopupVisible ? 'chevron-up' : 'chevron-down'"
+                />
               </button>
             </div>
             <div class="cartAddRemoveQuantity">
-                <button class="incrementDecrement" @click="decrementProduct()"><img src="../../assets/minus.svg" alt=""></button>
-                <p class="incrementDecrementText">{{ quantity }}</p>
-                <button class="incrementDecrement" @click="incrementProduct()"><img src="../../assets/plus.svg" alt=""></button>
+              <button class="incrementDecrement" @click="decrementProduct()">
+                <img src="../../assets/minus.svg" alt="" />
+              </button>
+              <p class="incrementDecrementText">{{ quantity }}</p>
+              <button class="incrementDecrement" @click="incrementProduct()">
+                <img src="../../assets/plus.svg" alt="" />
+              </button>
             </div>
           </div>
-  
+
           <div class="selectSizeWrapper" v-if="isSizesPopupVisible">
-            <div class="infoHolder" 
-                v-for="(size, index) in product.variants" 
-                :key="index"  
-                @click="() => { changeSize(size); toggleSizesPopup(); }">
+            <div
+              class="infoHolder"
+              v-for="(size, index) in product.variants"
+              :key="index"
+              @click="
+                () => {
+                  changeSize(size);
+                  toggleSizesPopup();
+                }
+              "
+            >
               <label class="sizeSelection">{{ size.sizeName }}</label>
-              <label class="sizeSelection sizeSelectionPrice">{{ size.price }} kr</label>
+              <label class="sizeSelection sizeSelectionPrice"
+                >{{ size.price }} kr</label
+              >
             </div>
           </div>
-          <div :class="{ checkoutButtonDisabled: !chosenSize.name }" class="checkoutButton">
+          <div
+            :class="{ checkoutButtonDisabled: !chosenSize.name }"
+            class="checkoutButton"
+          >
             <button @click="addItemToCart(product)">LÄGG I VARUKORG</button>
           </div>
         </div>
@@ -63,7 +95,9 @@
             <label>
               <p>Användning</p>
             </label>
-            <font-awesome-icon :icon="isAnvandningPopupVisible ? 'chevron-up' : 'chevron-down'" />
+            <font-awesome-icon
+              :icon="isAnvandningPopupVisible ? 'chevron-up' : 'chevron-down'"
+            />
           </div>
           <div v-if="isAnvandningPopupVisible" class="anvandning">
             <p>{{ product.usage_products }}</p>
@@ -72,7 +106,9 @@
             <label>
               <p>Ingredienser</p>
             </label>
-            <font-awesome-icon :icon="isIngredienserPopupVisible ? 'chevron-up' : 'chevron-down'" />
+            <font-awesome-icon
+              :icon="isIngredienserPopupVisible ? 'chevron-up' : 'chevron-down'"
+            />
           </div>
           <div v-if="isIngredienserPopupVisible" class="ingredients">
             <p>{{ product.ingredients }}</p>
@@ -87,14 +123,14 @@
 </template>
 
 <script>
-import ProductCarousel from '@/components/ProductCarousel.vue';
-import axiosInstance from '@/services/axiosConfig';
+import ProductCarousel from "@/components/ProductCarousel.vue";
+import axiosInstance from "@/services/axiosConfig";
 
 export default {
   components: {
     ProductCarousel,
   },
-  name: 'ProductView',
+  name: "ProductView",
   data() {
     return {
       quantity: 1, // Default quantity
@@ -123,21 +159,21 @@ export default {
       }
     },
     changeSize(size) {
-      this.chosenSize = { 
-        name: size.sizeName, 
-        price: size.price, 
-        size_id: size.size_id
+      this.chosenSize = {
+        name: size.sizeName,
+        price: size.price,
+        size_id: size.size_id,
       };
       console.log(this.chosenSize);
     },
     incrementProduct() {
-    if (this.quantity < 99) this.quantity++;
+      if (this.quantity < 99) this.quantity++;
     },
     addItemToCart(product) {
       console.log(" product that is going to store.js: ");
       console.log(product);
-      this.$store.commit("addToCart", { 
-        product, 
+      this.$store.commit("addToCart", {
+        product,
         size_id: this.chosenSize.size_id,
         quantityFromProductPage: this.quantity,
       });
@@ -162,12 +198,12 @@ export default {
     swapImage(type) {
       // Temporary store the primary image
       const tempPrimaryImage = this.product.image_url_primary;
-      
+
       // Swap images based on clicked type
-      if (type === 'secondary') {
+      if (type === "secondary") {
         this.product.image_url_primary = this.product.image_url_secondary;
         this.product.image_url_secondary = tempPrimaryImage;
-      } else if (type === 'third') {
+      } else if (type === "third") {
         this.product.image_url_primary = this.product.image_url_third;
         this.product.image_url_third = tempPrimaryImage;
       }
@@ -177,7 +213,8 @@ export default {
 </script>
 
 <style scoped>
-.cartAddRemoveQuantity button,.cartAddRemoveQuantity p{
+.cartAddRemoveQuantity button,
+.cartAddRemoveQuantity p {
   all: unset;
   display: flex;
   align-items: center;
@@ -186,15 +223,15 @@ export default {
   width: 24px;
   height: 24px;
 }
-.incrementDecrement:hover{
+.incrementDecrement:hover {
   background-color: rgb(179, 179, 179);
   opacity: 0.75;
   cursor: pointer;
 }
-.incrementDecrement img{
+.incrementDecrement img {
   align-self: center;
 }
-.productWrapper{
+.productWrapper {
   padding-top: 20px;
   padding-bottom: 20px;
   padding-left: 72px;
@@ -202,27 +239,27 @@ export default {
   height: 100%;
   width: 100%;
   display: flex;
-  justify-content:center;
+  justify-content: center;
   gap: 30px;
 }
-.productCWrapper{
+.productCWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   padding-top: 100px;
   padding-bottom: 100px;
 }
-.productImages{
+.productImages {
   display: flex;
   gap: 10px;
 }
-.otherImages{
+.otherImages {
   display: flex;
   flex-direction: column;
   padding: 0 10px;
   gap: 30px;
 }
-.otherImages img{
+.otherImages img {
   width: 73px;
   height: 101px;
   object-fit: cover;
@@ -235,23 +272,23 @@ export default {
   transform: translateY(-3px);
   transition: all 0.3s ease;
 }
-.primaryImage img{
+.primaryImage img {
   width: 459px;
   height: 630px;
   object-fit: cover;
 }
-.productInfo{
+.productInfo {
   display: flex;
   flex-direction: column;
   gap: 72px;
   width: 40%;
 }
-.checkoutButton button{
+.checkoutButton button {
   font-family: "Playfair Display", serif;
   background-color: #202020;
   width: 100%;
   border: 2px solid black;
-  color: #FDFDFD;
+  color: #fdfdfd;
   padding: 15px;
   cursor: pointer;
 }
@@ -260,83 +297,83 @@ export default {
   opacity: 0.6;
   cursor: not-allowed;
 }
-.checkoutButton button:hover{
-background-color: rgba(32, 32, 32, 0.8);
+.checkoutButton button:hover {
+  background-color: rgba(32, 32, 32, 0.8);
 }
-.productStars{
+.productStars {
   display: flex;
   justify-content: space-between;
 }
-.productBrand{
+.productBrand {
   color: rgba(32, 32, 32, 0.5);
   font-family: "Playfair Display", serif;
 }
-.productName{
+.productName {
   font-family: "Playfair Display", serif;
 }
-.infoWrapper{
+.infoWrapper {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.ingredientsWrapper{
-display: flex;
-justify-content: space-between;
+.ingredientsWrapper {
+  display: flex;
+  justify-content: space-between;
 }
-.anvandning{
+.anvandning {
   padding: 15px;
 }
-.ingredients{
+.ingredients {
   padding: 15px;
 }
-.anvandningWrapper{
-display: flex;
-justify-content: space-between;
+.anvandningWrapper {
+  display: flex;
+  justify-content: space-between;
 }
-.addProductWrapper{
+.addProductWrapper {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.AnvandningIngredienserWrapper{
+.AnvandningIngredienserWrapper {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
-.hudtyp{
+.hudtyp {
   padding-bottom: 5px;
 }
-.effekt{
+.effekt {
   padding-bottom: 5px;
 }
-.hudtypWrapper{
+.hudtypWrapper {
   display: flex;
   gap: 15px;
 }
-.effektWrapper{
+.effektWrapper {
   display: flex;
   gap: 15px;
 }
-.creamLabel{
-background-color: rgba(32, 32, 32, 0.25);
-padding: 10px;
+.creamLabel {
+  background-color: rgba(32, 32, 32, 0.25);
+  padding: 10px;
 }
-.effectLabel{
-background-color: rgba(32, 32, 32, 0.25);
-padding: 10px;
+.effectLabel {
+  background-color: rgba(32, 32, 32, 0.25);
+  padding: 10px;
 }
-.size{
+.size {
   width: 50%;
   align-items: center;
-  justify-content:space-between;
+  justify-content: space-between;
   display: flex;
   gap: 10px;
 }
-.size button{
+.size button {
   all: unset;
   cursor: pointer;
 }
-.infoHolder{
+.infoHolder {
   display: flex;
   justify-content: start;
   align-items: center;
@@ -344,20 +381,20 @@ padding: 10px;
   padding: 8px;
   width: 50%;
 }
-.infoHolder:hover{
+.infoHolder:hover {
   background-color: rgba(32, 32, 32, 0.8);
   color: white;
   cursor: pointer;
 }
-.sizeSelectionPrice{
+.sizeSelectionPrice {
   margin-left: auto;
 }
-.selectSizeWrapper{
+.selectSizeWrapper {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
-.cartAddRemoveQuantity{
+.cartAddRemoveQuantity {
   align-self: flex-end;
   display: flex;
   margin-left: auto;
@@ -366,38 +403,41 @@ padding: 10px;
   align-items: center;
   border: 2px solid black;
 }
-.sizeAndQuantity{
+.sizeAndQuantity {
   display: flex;
 }
 
 @media (max-width: 1000px) {
-  .primaryImage img{
+  .primaryImage img {
     height: 400px;
     width: 291px;
   }
 }
 
-@media (max-width: 767px) {
-  .productWrapper{
+@media (max-width: 768px) {
+  .productWrapper {
     flex-direction: column;
     padding-left: 20px;
     padding-right: 20px;
   }
-
-  .primaryImage img{
+  .productCWrapper {
+    display: none;
+  }
+  .primaryImage img {
     width: 252px;
   }
 
-  .otherImages img{
+  .otherImages img {
     height: 69px;
     width: 50px;
   }
 
-  .productInfo{
+  .productInfo {
     width: 100%;
+    padding-bottom: 32px;
   }
 
-  .creamLabel{
+  .creamLabel {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -409,12 +449,12 @@ padding: 10px;
 }
 
 @media (max-width: 405px) {
-  .primaryImage img{
+  .primaryImage img {
     height: 252px;
     width: 184px;
   }
 
-  .otherimages img{
+  .otherimages img {
     height: 50px;
     width: 36.5px;
   }
