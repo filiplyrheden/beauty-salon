@@ -53,7 +53,7 @@
       <div class="menu-item" style="--animation-order: 9">
         <a href="/admin/orders" class="menu-link">
           <font-awesome-icon icon="shopping-bag" class="menu-icon" />
-          <h3 class="menu-title">Beställningar</h3>
+          <h3 class="menu-title">Ordrar</h3>
           <p class="menu-description">Följ och hantera kundbeställningar</p>
         </a>
       </div>
@@ -238,7 +238,7 @@ export default {
   }
 }
 
-.snbeautyHeader{
+.snbeautyHeader {
   font-family: "Playfair Display", serif;
   color: #202020;
 }
