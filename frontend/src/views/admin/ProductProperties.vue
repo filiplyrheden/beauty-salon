@@ -2,7 +2,7 @@
     <div class="course-container">
       <router-link to="/admin" class="back"
       ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link>
-      <h1 class="produktEgenskaper">Produkt Egenskaper</h1>
+      <h1>Produkt Egenskaper</h1>
   
       <!-- Loading Indicator -->
       <div v-if="isLoading" class="loading-overlay">
@@ -509,11 +509,11 @@
     h1, h2{
       font-size: 18px;
     }
+    h1{
+      margin-top: 30px;
+    }
     p, #text{
       font-size: 12px;
-    }
-    .produktEgenskaper{
-      margin-top: 30px;
     }
   }
   </style>
