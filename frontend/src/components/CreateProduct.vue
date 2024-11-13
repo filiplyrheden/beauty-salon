@@ -32,26 +32,31 @@
           placeholder="Enter product description"
         ></textarea>
       </div>
-
       <div class="form-group">
-        <label for="categoryId">Category ID ÄNDRA</label>
-        <input
-          type="number"
-          id="categoryId"
-          v-model="categoryId"
-          required
-          placeholder="Enter category ID"
-        />
+        <label for="categoryId">Kategori</label>
+        <select v-model="categoryId">
+            <option value="" disabled selected>Välj en kategori</option>
+            <option
+              v-for="(category, index) in categoriesOnLoad"
+              :key="index"
+              :value="category.category_id"
+            >
+              {{ category.category_name }}
+            </option>
+          </select>
       </div>
       <div class="form-group">
-        <label for="brand">BRAND ID ÄNDRA</label>
-        <input
-          type="number"
-          id="brand"
-          v-model="brand"
-          required
-          placeholder="märke, typ Circadia"
-        />
+        <label for="brand">Märke</label>
+        <select v-model="brand">
+            <option value="" disabled selected>Välj ett märke</option>
+            <option
+              v-for="(brand, index) in brandsOnLoad"
+              :key="index"
+              :value="brand.brand_id"
+            >
+              {{ brand.brand_name }}
+            </option>
+          </select>
       </div>
       <!-- Sizes Section -->
       <div class="form-group-sizes">
@@ -203,10 +208,14 @@ export default {
       message: "",
       propertiesOnLoad: "",
       selectedProperty: "",
+      brandsOnLoad: "",
+      categoriesOnLoad: "",
     };
   },
   created() {
     this.fetchProductProperties();
+    this.fetchBrands();
+    this.fetchCategories();
   },
   methods: {
     async fetchProductProperties() {
@@ -222,7 +231,43 @@ export default {
         );
         Swal.fire(
           "Fel",
-          "Fel vid hämtning av Event: Misslyckades med att hämta Event. Försök igen senare",
+          "Fel vid hämtning av Produkt Egenskaper: Misslyckades med att hämta Produkt Egenskaper. Försök igen senare",
+          "error"
+        );
+      }
+    },
+    async fetchBrands() {
+      try {
+        const response = await axiosInstance.get(`/brands`);
+        this.brandsOnLoad = response.data.map((brandsOnLoad) => ({
+          ...brandsOnLoad,
+        }));
+      } catch (error) {
+        console.error(
+          "Error fetching Brands:",
+          error.response || error.message
+        );
+        Swal.fire(
+          "Fel",
+          "Fel vid hämtning av märken: Misslyckades med att hämta märken. Försök igen senare",
+          "error"
+        );
+      }
+    },
+    async fetchCategories() {
+      try {
+        const response = await axiosInstance.get(`/categories`);
+        this.categoriesOnLoad = response.data.map((categoriesOnLoad) => ({
+          ...categoriesOnLoad,
+        }));
+      } catch (error) {
+        console.error(
+          "Error fetching Categories:",
+          error.response || error.message
+        );
+        Swal.fire(
+          "Fel",
+          "Fel vid hämtning av kategorier: Misslyckades med att hämta kategorier. Försök igen senare",
           "error"
         );
       }
