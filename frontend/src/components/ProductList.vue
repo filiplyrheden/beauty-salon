@@ -349,7 +349,7 @@ export default {
     },
     deleteProduct(productId) {
       axiosInstance.delete(`admin/products/${productId}`).then(() => {
-        Swal.fire("Product deleted");
+        Swal.fire("Produkt borttagen");
         this.$emit("product-deleted", productId);
       });
     },
@@ -472,11 +472,20 @@ export default {
       headers: { "Content-Type": "multipart/form-data" },
     }) // Corrected syntax here
     .then(() => {
-      Swal.fire("Product saved successfully");
+      Swal.fire(
+          "Produkt sparad!",
+          `Produkten "${this.editProduct.productName}" har ändrats.`,
+          "success"
+        );
       this.cancelEdit();
     })
     .catch((error) => {
       console.error("Error saving product:", error);
+      Swal.fire(
+          "Något gick fel!",
+          `Produkten "${this.editProduct.productName}" gick inte att spara.`,
+          "error"
+        );
     });
     },
     cancelEdit() {

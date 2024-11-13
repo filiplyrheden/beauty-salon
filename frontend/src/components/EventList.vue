@@ -20,7 +20,6 @@
         </div>
 
         <!-- Event Content -->
-<!--         <p>{{ event }}</p> -->
         <div class="event-content">
           <div class="event-details">
             <div class="detail-group">
@@ -127,6 +126,7 @@
 
 <script>
 import axiosInstance from "@/services/axiosConfig";
+import Swal from "sweetalert2";
 
 export default {
   name: "EventList",
@@ -146,17 +146,34 @@ export default {
     getImageUrl(imageName) {
       return `${process.env.VUE_APP_API_BASE_URL}${imageName}`;
     },
-    deleteEvent(eventId) {
-      if (confirm("Are you sure you want to delete this event?")) {
-        axiosInstance
-          .delete(`/admin/events/${eventId}`)
-          .then((response) => {
-            console.log("Event deleted successfully:", response.data);
-            this.$emit("event-deleted", eventId);
-          })
-          .catch((error) => {
-            console.error("Error deleting event:", error);
-          });
+    async deleteEvent(eventId) {
+      const result = await Swal.fire({
+        title: "Är du säker?",
+        text: "Vill du verkligen ta bort detta event?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ja, ta bort",
+        cancelButtonText: "Avbryt",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const response = await axiosInstance.delete(`/admin/events/${eventId}`);
+          console.log("Event deleted successfully:", response.data);
+          this.$emit("event-deleted", eventId);
+          Swal.fire(
+            "Event borttaget!",
+            `Eventet med ID nr: ${eventId} har blivit borttaget.`,
+            "success"
+          );
+        } catch (error) {
+          console.error("Error deleting event:", error);
+          Swal.fire(
+            "Något gick fel!",
+            `Eventet kunde inte tas bort. Försök igen senare.`,
+            "error"
+          );
+        }
       }
     },
     editEvent(event) {
@@ -215,14 +232,22 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((response) => {
-          console.log("Event saved successfully:", response.data);
-          alert(event.name + " saved successfully!");
+        .then(() => {
+          Swal.fire(
+          "Event sparat!",
+          `Eventet "${this.eventName}" har sparats.`,
+          "success"
+          );
           this.selectedFile = null;
           this.editingEvent = null;
         })
         .catch((error) => {
           console.error("Error saving event:", error);
+          Swal.fire(
+          "Något gick fel!",
+          `Eventet "${this.eventName}" kunde inte sparas.`,
+          "error"
+          );
         });
     },
     cancelEdit() {

@@ -45,6 +45,7 @@
 
 <script>
 import axiosInstance from "@/services/axiosConfig";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -72,12 +73,16 @@ export default {
       formData.append("schedule", this.schedule);
 
       try {
-        const response = await axiosInstance.post("/admin/events", formData, {
+        await axiosInstance.post("/admin/events", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
-        this.message = "Event added successfully! Event ID: " + response.data.event_id;
+        Swal.fire(
+          "Event skapat!",
+          `Eventet "${this.eventName}" har skapats.`,
+          "success"
+        );
         this.resetForm();
       } catch (error) {
         if (error.response && error.response.data) {
@@ -85,6 +90,11 @@ export default {
         } else {
           this.message = "Error adding event: " + (error.message || "Internal Server Error");
         }
+        Swal.fire(
+          "Något gick fel!",
+          `Eventet "${this.eventName}" kunde inte sparas.`,
+          "error"
+        );
       }
     },
     resetForm() {
