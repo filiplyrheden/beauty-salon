@@ -372,6 +372,7 @@ h1,
 h2 {
   text-align: center;
   margin-bottom: 20px;
+  font-family: "Playfair Display", serif;
 }
 
 .form-container,
@@ -558,6 +559,11 @@ tr:nth-child(2n) {
     display: block;
   }
 
+  h1,
+  h2 {
+    margin-top: 30px;
+  }
+
   th {
     position: absolute;
     top: -9999px;
@@ -583,6 +589,7 @@ tr:nth-child(2n) {
     padding-right: 10px;
     white-space: nowrap;
     font-weight: bold;
+    font-size: 14px;
   }
 
   td:nth-of-type(1)::before {

@@ -1,65 +1,59 @@
 <template>
-  <div class="course-container">
-    <router-link to="/admin" class="back"
-      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
-    >
-    <h1>Produkt Egenskaper</h1>
+    <div class="course-container">
+      <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link>
+      <h1>Produkt Egenskaper</h1>
+  
+      <!-- Loading Indicator -->
+      <div v-if="isLoading" class="loading-overlay">
+        <div class="spinner"></div>
+      </div>
 
-    <!-- Loading Indicator -->
-    <div v-if="isLoading" class="loading-overlay">
-      <div class="spinner"></div>
-    </div>
-
-    <!-- Add/Edit Course Form -->
-    <div class="form-container" ref="formContainer">
-      <h2>
-        {{
-          isEditing ? "Ändra ProduktEgenskap" : "Lägg till ny Produkt Egenskap"
-        }}
-      </h2>
-      <form @submit.prevent="isEditing ? updateProperty() : addProperty()">
-        <!-- Name -->
-        <div class="form-group">
-          <label for="name">Namn för egenskap:</label>
-          <input v-model="form.name" type="text" id="name" required />
-        </div>
-
-        <!-- Buttons -->
-        <div class="button-group">
-          <button type="submit">
-            {{ isEditing ? "Updatera" : "Lägg till" }} Egenskap
-          </button>
-          <button type="button" v-if="isEditing" @click="cancelEdit">
-            Avbryt
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Courses List -->
-    <div class="list-container">
-      <h2>Alla Egenskaper</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Egenskapsnamn</th>
-            <th>Åtgärder</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="property in properties" :key="property.property_id">
-            <td>{{ property.name }}</td>
-
-            <td>
-              <button @click="editProperty(property)">Edit</button>
-              <button @click="deleteProperty(property.property_id)">
-                Delete
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <!-- Add/Edit Course Form -->
+      <div class="form-container" ref="formContainer">
+        <h2>{{ isEditing ? "Ändra ProduktEgenskap" : "Lägg till ny Produkt Egenskap" }}</h2>
+        <form
+          @submit.prevent="isEditing ? updateProperty() : addProperty()"
+        >
+          <!-- Name -->
+          <div class="form-group">
+            <label for="name">Namn för egenskap:</label>
+            <input v-model="form.name" type="text" id="name" required />
+          </div>
+  
+          <!-- Buttons -->
+          <div class="button-group">
+            <button type="submit">
+              {{ isEditing ? "Updatera" : "Lägg till" }} Egenskap
+            </button>
+            <button type="button" v-if="isEditing" @click="cancelEdit">
+              Avbryt
+            </button>
+          </div>
+        </form>
+      </div>
+  
+      <!-- Courses List -->
+      <div class="list-container">
+        <h2>Alla Egenskaper</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Egenskapsnamn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="property in properties" :key="property.property_id">
+              <td>{{ property.name }}</td>
+              
+              <td>
+                <button @click="editProperty(property)">Edit</button>
+                <button @click="deleteProperty(property.property_id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
   </div>
 </template>
 <script>
@@ -268,9 +262,9 @@ export default {
 
 h1,
 h2 {
+  font-family: "Playfair Display", serif;
   text-align: center;
   margin-bottom: 20px;
-}
 
 .form-container,
 .list-container {
@@ -514,4 +508,17 @@ tr:nth-child(2n) {
     content: "Actions";
   }
 }
-</style>
+
+  @media (max-width: 600px) {
+    h1, h2{
+      font-size: 18px;
+    }
+    h1{
+      margin-top: 30px;
+    }
+    p, #text{
+      font-size: 12px;
+    }
+  }
+  </style>
+  
