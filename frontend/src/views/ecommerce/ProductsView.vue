@@ -271,7 +271,10 @@
                 :alt="product.product_name"
                 class="product-image"
               />
-              <div class="card-overlay" @mouseleave="hideSizeOptions(product.product_id)">
+              <div
+                class="card-overlay"
+                @mouseleave="hideSizeOptions(product.product_id)"
+              >
                 <div class="card-overlay-container">
                   <div
                     class="select-size"
@@ -324,64 +327,11 @@
                   </button>
                 </div>
                 <div class="card-overlay-container-mobile">
-                  <button @click="toggleBuyMobile">
+                  <button @click="toggleBuyMobile(product)">
                     <div class="buyMobileWrapper">
-                      <img src="../../assets/buymobilelogo.svg" alt="">
+                      <img src="../../assets/buymobilelogo.svg" alt="" />
                     </div>
                   </button>
-                </div>
-                <div v-if="showSizesMobile" class="showSizesMobileWrapper">
-                  <div class="sizesMobileOverlay" @click="showSizesMobile = false"></div>
-                  <div class="sizesMobilePopup">
-                    <div class="sizesMobilePopupWrapper">
-                      <div class="select-size extraselect-size" @click="toggleSizeMenu(product.product_id)">
-                        <div class="size-toggle">
-                          {{
-                            product.selectedSize
-                              ? product.variants.find(
-                                  (v) => v.size_id === product.selectedSize
-                                )?.size + " (vald)"
-                              : product.variants[0]?.size + " (vald)" ||
-                                "Välj storlek"
-                          }}
-                        </div>
-                        <font-awesome-icon icon="chevron-up" />
-                      </div>
-  
-                      <transition name="size-options">
-                        <div
-                          v-if="showSizeOptions[product.product_id]"
-                          class="size-options"
-                        >
-                          <p
-                            v-if="
-                              !product.variants || product.variants.length === 0
-                            "
-                          >
-                            Inga Varianter :()
-                          </p>
-                          <div
-                            v-else
-                            v-for="variant in product.variants"
-                            :key="variant.size_id"
-                          >
-                            <div
-                              @click="
-                                selectSize(product.product_id, variant.size_id)
-                              "
-                              class="variant-options"
-                            >
-                              <p>{{ variant.size }}</p>
-                              <p>{{ variant.price }} kr</p>
-                            </div>
-                          </div>
-                        </div>
-                      </transition>
-                      <button class="add-to-cart-mobile" @click="addItemToCart(product)">
-                        LÄGG I VARUKORG
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -418,17 +368,25 @@
         </div>
       </div>
     </div>
+    <MobileSizePicker
+      v-if="showSizesMobile"
+      :product="selectedProduct"
+      @close="showSizesMobile = false"
+      @add-to-cart="addItemToMobileCart"
+    />
   </div>
 </template>
 
 <script>
 import axiosInstance from "@/services/axiosConfig";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import MobileSizePicker from "../../components/MobileSizePicker.vue";
 
 export default {
   name: "ProductsPage",
   components: {
     FontAwesomeIcon,
+    MobileSizePicker,
   },
   data() {
     return {
@@ -447,6 +405,7 @@ export default {
       sortOption: "",
       showSizeOptions: {}, // Object to track size option visibility
       showSizesMobile: false,
+      selectedProduct: null,
       properties: [],
     };
   },
@@ -579,10 +538,15 @@ export default {
         console.error("Error fetching categories:", error);
       }
     },
-    toggleBuyMobile() {
-      this.showSizesMobile = !this.showSizesMobile;
+    toggleBuyMobile(product) {
+      this.selectedProduct = product;
+      console.log("selected product" + this.selectedProduct);
+      this.showSizesMobile = true;
     },
-
+    addItemToMobileCart({ product, size }) {
+      this.$store.commit("addToCart", { product, size_id: size.size_id });
+      this.showSizesMobile = false;
+    },
     toggleDropdown(type) {
       this.showDropdown[type] = !this.showDropdown[type];
     },
@@ -1030,11 +994,12 @@ a:hover {
   transition: transform 0.3s ease;
 }
 
-.card-overlay-container-mobile{
+.card-overlay-container-mobile {
   display: none;
 }
 
-.slide-enter, .slide-leave-to {
+.slide-enter,
+.slide-leave-to {
   transform: translateX(0);
 }
 
@@ -1081,7 +1046,7 @@ a:hover {
   max-height: 60vh;
 }
 
-.extraselect-size{
+.extraselect-size {
   gap: 20px;
   width: 100%;
 }
@@ -1111,22 +1076,22 @@ a:hover {
     width: 100%;
   }
 
-  .card-overlay{
+  .card-overlay {
     opacity: 1;
   }
 
-  .card-overlay-container{
+  .card-overlay-container {
     display: none;
   }
 
-  .card-overlay-container-mobile{
+  .card-overlay-container-mobile {
     display: flex;
     justify-content: end;
     padding: 10px;
     opacity: 1;
   }
 
-  .buyMobileWrapper{
+  .buyMobileWrapper {
     height: 40px;
     width: 40px;
     background-color: black;
@@ -1134,12 +1099,12 @@ a:hover {
     opacity: 1;
   }
 
-  .card-overlay-container-mobile button{
+  .card-overlay-container-mobile button {
     border: none;
     background-color: transparent;
   }
 
-  .showSizesMobileWrapper{
+  .showSizesMobileWrapper {
     display: flex;
   }
 
