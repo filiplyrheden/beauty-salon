@@ -132,6 +132,26 @@ export default {
   font-family: "Playfair Display", serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+.size-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.extraselect-size {
+  width: 100%;
+}
+.size-toggle {
+  display: flex;
+  justify-content: space-between;
+}
+.variant-options {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0px;
+  cursor: pointer;
+}
 
 @keyframes slideUp {
   from {
