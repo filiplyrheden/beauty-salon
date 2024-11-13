@@ -224,7 +224,7 @@ a:hover {
   transform: translateX(0);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .products-header h1 {
     font-size: 30px;
   }
