@@ -265,6 +265,7 @@ h2 {
   font-family: "Playfair Display", serif;
   text-align: center;
   margin-bottom: 20px;
+}
 
 .form-container,
 .list-container {
@@ -507,8 +508,9 @@ tr:nth-child(2n) {
   td:nth-of-type(8)::before {
     content: "Actions";
   }
+}
 
-  @media (max-width: 600px) {
+@media (max-width: 600px) {
     h1, h2{
       font-size: 18px;
     }
@@ -519,5 +521,5 @@ tr:nth-child(2n) {
       font-size: 12px;
     }
   }
-  </style>
+</style>
   
