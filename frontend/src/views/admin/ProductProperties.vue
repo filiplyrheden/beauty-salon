@@ -507,6 +507,7 @@ tr:nth-child(2n) {
   td:nth-of-type(8)::before {
     content: "Actions";
   }
+}
 
   @media (max-width: 600px) {
     h1, h2{
