@@ -74,7 +74,6 @@ import axiosInstance from "@/services/axiosConfig";
 import visa from "../assets/payment/visa.svg";
 import mastercard from "../assets/payment/mastercard.svg";
 import { mapState, mapMutations } from "vuex";
-import Swal from "sweetalert2";
 
 export default {
   name: "ShoppingCart",
