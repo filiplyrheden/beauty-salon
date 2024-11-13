@@ -172,34 +172,39 @@
                   placeholder="Enter usage instructions"
                 ></textarea>
               </div>
-
               <div class="form-group">
                 <label for="categoryId"
-                  >Kategori ID ÄNDRA DENNA(Current:
-                  {{ editingProduct.category.category_name }})</label
+                  >Kategori:
+                  {{ editingProduct.category.category_name }}</label
                 >
-                <input
-                  type="number"
-                  id="categoryId"
-                  v-model="editingProduct.category.category_id"
-                  required
-                  placeholder="Enter category ID"
-                />
+                <select v-model="editingProduct.category.category_id">
+                  <option value="" disabled selected>Välj en kategori</option>
+                  <option
+                    v-for="(category, index) in categoriesOnLoad"
+                    :key="index"
+                    :value="category.category_id"
+                  >
+                    {{ category.category_name }}
+                  </option>
+                </select>
               </div>
               <div class="form-group">
                 <label for="brandId"
-                  >Märkes ID ÄNDRA DENNA(Current:
-                  {{ editingProduct.brand.brand_name }})</label
+                  >Märke:
+                  {{ editingProduct.brand.brand_name }}</label
                 >
-                <input
-                  type="number"
-                  id="brandId"
-                  v-model="editingProduct.brand.brand_id"
-                  required
-                  placeholder="Enter brand ID"
-                />
+                <select v-model="editingProduct.brand.brand_id">
+                  <option value="" disabled selected>Välj ett märke</option>
+                  <option
+                    v-for="(brand, index) in brandsOnLoad"
+                    :key="index"
+                    :value="brand.brand_id"
+                  >
+                    {{ brand.brand_name }}
+                  </option>
+                </select>
               </div>
-
+                
             <fieldset>
               <legend>Sizes</legend>
               <div
@@ -275,10 +280,14 @@ export default {
       editingProduct: null,
       selectedProperty: "",
       propertiesOnLoad: [], // Load properties as needed
+      brandsOnLoad: "",
+      categoriesOnLoad: "",
     };
   },
   created() {
     this.fetchProductProperties();
+    this.fetchCategories();
+    this.fetchBrands();
   },
   methods: {
     getImageUrl(image) {
@@ -298,6 +307,42 @@ export default {
         Swal.fire(
           "Fel",
           "Fel vid hämtning av Event: Misslyckades med att hämta Event. Försök igen senare",
+          "error"
+        );
+      }
+    },
+    async fetchBrands() {
+      try {
+        const response = await axiosInstance.get(`/brands`);
+        this.brandsOnLoad = response.data.map((brandsOnLoad) => ({
+          ...brandsOnLoad,
+        }));
+      } catch (error) {
+        console.error(
+          "Error fetching Brands:",
+          error.response || error.message
+        );
+        Swal.fire(
+          "Fel",
+          "Fel vid hämtning av märken: Misslyckades med att hämta märken. Försök igen senare",
+          "error"
+        );
+      }
+    },
+    async fetchCategories() {
+      try {
+        const response = await axiosInstance.get(`/categories`);
+        this.categoriesOnLoad = response.data.map((categoriesOnLoad) => ({
+          ...categoriesOnLoad,
+        }));
+      } catch (error) {
+        console.error(
+          "Error fetching Categories:",
+          error.response || error.message
+        );
+        Swal.fire(
+          "Fel",
+          "Fel vid hämtning av kategorier: Misslyckades med att hämta kategorier. Försök igen senare",
           "error"
         );
       }
