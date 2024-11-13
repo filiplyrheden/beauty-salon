@@ -74,6 +74,7 @@ import axiosInstance from "@/services/axiosConfig";
 import visa from "../assets/payment/visa.svg";
 import mastercard from "../assets/payment/mastercard.svg";
 import { mapState, mapMutations } from "vuex";
+import Swal from "sweetalert2";
 
 export default {
   name: "ShoppingCart",
@@ -135,6 +136,15 @@ export default {
       }
     },
     async handleCheckout() {
+      // Check if the user is logged in
+      if (!this.$store.state.isLoggedIn) {
+        // Redirect to login page or show a message
+        this.hideCart();
+        this.$router.push({ path: "/login" }); // Redirect to login page
+        return;
+      }
+
+      // Disable outside click while processing
       this.disableOutsideClick();
       try {
         console.log(this.$store.state.userId);
