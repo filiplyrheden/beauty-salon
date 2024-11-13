@@ -364,23 +364,29 @@ export const getProductsWithInfo = async () => {
 export const getProductById = async (productId) => {
   // Query to get product details
   const productQuery = `
-    SELECT 
-      p.product_id, 
-      p.product_name, 
-      p.description, 
-      p.image_url_primary,
-      p.image_url_secondary,
-      p.image_url_third,
-      p.usage_products,
-      p.ingredients,
-      p.brand_id,
-      p.featured,
-      p.category_id,
-      c.category_name
-    FROM Products p
-    INNER JOIN Categories c ON p.category_id = c.category_id
-    WHERE p.product_id = ? 
-    LIMIT 1
+  SELECT 
+  p.product_id, 
+  p.product_name, 
+  p.description, 
+  p.image_url_primary,
+  p.image_url_secondary,
+  p.image_url_third,
+  p.usage_products,
+  p.ingredients,
+  p.brand_id,
+  p.featured,
+  p.category_id,
+  c.category_name,
+  JSON_OBJECT(
+    'brand_id', b.brand_id,
+    'brand_name', b.brand_name
+  ) AS brand
+FROM Products p
+INNER JOIN Categories c ON p.category_id = c.category_id
+LEFT JOIN Brands b ON p.brand_id = b.brand_id
+WHERE p.product_id = ? 
+LIMIT 1;
+
   `;
 
   // Query to get the product sizes
