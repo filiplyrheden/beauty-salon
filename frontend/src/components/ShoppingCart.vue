@@ -135,6 +135,15 @@ export default {
       }
     },
     async handleCheckout() {
+      // Check if the user is logged in
+      if (!this.$store.state.isLoggedIn) {
+        // Redirect to login page or show a message
+        this.hideCart();
+        this.$router.push({ path: "/login" }); // Redirect to login page
+        return;
+      }
+
+      // Disable outside click while processing
       this.disableOutsideClick();
       try {
         console.log(this.$store.state.userId);
