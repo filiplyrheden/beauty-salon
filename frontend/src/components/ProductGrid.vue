@@ -87,8 +87,8 @@ export default {
     async fetchProducts() {
       try {
         const response = await axiosInstance.get(`/featuredproducts`);
-        // Initialize selectedSize for each product
-        this.productItems = response.data.map((product) => {
+        // Only take the first 4 products
+        this.productItems = response.data.slice(0, 4).map((product) => {
           const defaultSizeId = product.variants
             ? product.variants[0].size_id
             : null;
@@ -118,7 +118,7 @@ export default {
 .product-grid {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .product-info {
