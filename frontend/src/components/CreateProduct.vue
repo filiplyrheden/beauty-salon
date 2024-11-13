@@ -63,7 +63,7 @@
         <label for="sizes">Storlekar och Priser</label>
         <div v-for="(size, index) in sizes" :key="index" class="size-entry">
           <input
-            v-model="size.sizeName"
+            v-model="size.size"
             type="text"
             placeholder="Storlek (Tex, 50 ml)"
             required
@@ -76,7 +76,7 @@
             required
           />
           <input
-            v-model.number="size.quantity"
+            v-model.number="size.stock_quantity"
             type="number"
             placeholder="Kvantitet (10, 20, 30)"
             required
@@ -195,7 +195,7 @@ export default {
     return {
       productName: "",
       description: "",
-      sizes: [{ sizeName: "", price: "", quantity: "" }],
+      sizes: [{ size: "", price: "", stock_quantity: ""}],
       usageProducts: "",
       ingredients: "",
       properties: [],
@@ -273,7 +273,7 @@ export default {
       }
     },
     addSize() {
-      this.sizes.push({ sizeName: "", price: 0, quantity: 0 });
+      this.sizes.push({ size: "", price: 0, stock_quantity: 0 });
     },
     removeSize(index) {
       this.sizes.splice(index, 1);
@@ -333,7 +333,6 @@ export default {
       const formData = new FormData();
       formData.append("product_name", this.productName);
       formData.append("description", this.description);
-      formData.append("sizes", JSON.stringify(this.sizes));
       formData.append("usage_products", this.usageProducts);
       formData.append("ingredients", this.ingredients);
       formData.append("category_id", parseInt(this.categoryId));
@@ -347,6 +346,12 @@ export default {
         formData.append("secondaryImage", this.secondaryImageFile);
       if (this.thirdImageFile)
         formData.append("thirdImage", this.thirdImageFile);
+
+      this.sizes.forEach((size, i) => {
+        formData.append(`variants[${i}][size]`, size.size);
+        formData.append(`variants[${i}][price]`, size.price);
+        formData.append(`variants[${i}][stock_quantity]`, size.stock_quantity);
+      });
 
       try {
         const response = await axiosInstance.post(`admin/products`, formData, {
@@ -365,9 +370,14 @@ export default {
           error.response?.data?.error ||
           error.message ||
           "Internal Server Error";
+
+          // Get all error messages from the response
+          const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+  
+          // Display all error messages in the alert
           Swal.fire(
-          "Något blev fel under skapandet av din produkt.",
-          `Produkten "${this.productName}" kunde inte skapas.`,
+          "Error",
+          `Märke kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
           "error"
         );
       }
@@ -375,7 +385,7 @@ export default {
     resetForm() {
       this.productName = "";
       this.description = "";
-      this.sizes = [{ sizeName: "", price: 0, quantity: 0 }];
+      this.sizes = [{ size: "", price: 0, stock_quantity: 0 }];
       this.usageProducts = "";
       this.ingredients = "";
       this.properties = []; // Reset properties to an empty array

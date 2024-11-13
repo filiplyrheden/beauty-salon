@@ -118,15 +118,19 @@ export default {
         const addedBrand = { ...response.data };
         this.brands.push(addedBrand);
         this.resetForm();
-        Swal.fire("Success", "Kategori tillagd!", "success");
+        Swal.fire("Success", "Märke tillagt!", "success");
       } catch (error) {
         console.error(
           "Error adding category:",
           error.response || error.message
         );
+        // Get all error messages from the response
+        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+
+        // Display all error messages in the alert
         Swal.fire(
           "Error",
-          "Kategori kunde inte läggas till. Kolla vad du har skrivit in och försök igen!",
+          `Märke kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
           "error"
         );
       } finally {
@@ -176,9 +180,10 @@ export default {
         console.error("Error updating brand:", error.response || error.message);
         Swal.fire(
           "Error",
-          "Märke kunde inte uppdateras. Kolla vad du har skrivit in och prova igen!",
+          `Märke kunde inte uppdateras. Kolla vad du har skrivit in och prova igen! ${error.response.data.errors[0].msg}`,
           "error"
         );
+        console.log(error.response.data);
       } finally {
         this.isLoading = false;
       }

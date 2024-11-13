@@ -5,6 +5,8 @@ import {
   deleteBrand,
   createBrand,
 } from "../models/BrandModel.js";
+import { handleValidationErrors } from "../verificationMiddleware/validator.js"
+import { body, validationResult } from "express-validator";
 
 /**
  * Handler to show all services.
@@ -47,40 +49,54 @@ export const deleteBrandById = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-export const updateBrandById = async (req, res) => {
-  try {
-    const id = req.params.id;
-
-    // Validate input
-    const { brand_name } = req.body;
-    if (!brand_name || brand_name.trim() === "") {
-      return res.status(400).json({ error: "brand name is required" });
+export const updateBrandById = [
+  // Validation middleware for brand_name
+  body('brand_name')
+  .trim()
+  .notEmpty().withMessage('Brand name is required')
+  .isLength({ min: 3, max: 50 }).withMessage('Brand name should be between 3 and 50 characters'),
+  
+  handleValidationErrors, // Middleware to handle validation errors
+  
+  async (req, res) => {
+      console.log("im inside async now");
+      try {
+        const id = req.params.id;
+        
+        // Call the service to update the brand
+        const updatedBrand = await updateBrand(id, req.body);
+        
+        if (!updatedBrand) {
+          return res.status(500).json({ error: "Failed to update Brand" });
+        }
+        
+        res.status(200).json(updatedBrand);
+      } catch (err) {
+        console.error("Error in updateServicesCategoriesById:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
-
-    // Call the service to update the brand
-    const updatedBrand = await updateBrand(id, req.body);
-
-    if (!updatedBrand) {
-      return res.status(500).json({ error: "Failed to update Brand" });
-    }
-
-    res.status(200).json(updatedBrand);
-  } catch (err) {
-    console.error("Error in updateServicesCategoriesById:", err);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-};
+];
 
-export const createNewBrand = async (req, res) => {
-  try {
-    const { brand_name } = req.body;
-    if (!brand_name || brand_name.trim() === "") {
-      return res.status(400).json({ error: "Brand name is required" });
+export const createNewBrand = [
+  body('brand_name')
+  .trim()
+  .notEmpty().withMessage('Du måste skriva in ett Märkesnamn')
+  .isLength({ min: 3, max: 50 }).withMessage('Märkesnamnet skall vara mellan 3 och 50 karaktärer'),
+  
+  handleValidationErrors, // Middleware to handle validation errors
+  
+    async (req, res) => {
+      try {
+        const { brand_name } = req.body;
+
+        const newBrand = await createBrand({ brand_name });
+
+        res.status(201).json(newBrand);
+      } catch (err) {
+        
+      console.error("Error in createServicesCategories:", err);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-    const newBrand = await createBrand({ brand_name });
-    res.status(201).json(newBrand);
-  } catch (err) {
-    console.error("Error in createServicesCategories:", err);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-};
+];
