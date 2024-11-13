@@ -84,7 +84,7 @@ export const insertProduct = async (product) => {
   const {
     product_name,
     description,
-    sizes,
+    variants,
     usage_products,
     ingredients,
     brand_id,
@@ -97,8 +97,9 @@ export const insertProduct = async (product) => {
   } = product;
 
   try {
+    console.log(product);
     // Check if sizes or properties are missing and throw an error
-    if (!sizes || sizes.length === 0) {
+    if (!variants || variants.length === 0) {
       throw new Error("Product sizes are missing");
     }
 
@@ -129,16 +130,17 @@ export const insertProduct = async (product) => {
     const productId = productResult.insertId;
 
     // Step 2: Insert sizes into the ProductSizes table
-    const sizeValues = sizes.map(({ sizeName, price, quantity }) => [
+    console.log(variants);
+    const sizeValues = variants.map(({ size, price, stock_quantity }) => [
       productId,
-      sizeName,
+      size,
       price,
-      quantity,
+      stock_quantity,
     ]);
 
     const sizeQuery = `
       INSERT INTO ProductSizes (product_id, size, price, stock_quantity)
-      VALUES ${sizes.map(() => "(?, ?, ?, ?)").join(", ")}
+      VALUES ${variants.map(() => "(?, ?, ?, ?)").join(", ")}
     `;
     await db.query(sizeQuery, sizeValues.flat());
 
@@ -164,6 +166,7 @@ export const insertProduct = async (product) => {
 };
 
 export const editProduct = async (product) => {
+
   const {
     product_id,
     product_name,
@@ -173,14 +176,12 @@ export const editProduct = async (product) => {
     ingredients,
     category_id,
     brand_id,
-    featuredValue,
+    featured,
     image_url_primary,
     image_url_secondary,
     image_url_third,
     properties,
   } = product;
-
-  console.log(properties);
 
   try {
     const productQuery = `
@@ -195,7 +196,7 @@ export const editProduct = async (product) => {
       ingredients,
       category_id,
       brand_id,
-      featuredValue,
+      featured,
       image_url_primary,
       image_url_secondary,
       image_url_third,

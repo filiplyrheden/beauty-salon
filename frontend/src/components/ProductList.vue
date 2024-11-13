@@ -78,8 +78,8 @@
           >
           <form 
           id="uploadForm"
-          @submit.prevent="saveProduct"
-          enctype="multipart/form-data">
+          enctype="multipart/form-data"
+          @submit.prevent="saveProduct">
 
             <h3>Ändra Produkt</h3>
             <h4>{{ product }}</h4>
@@ -115,7 +115,7 @@
                     {{ property.name }}
                   </option>
                 </select>
-                <button class="save-btn" @click="addProperty">
+                <button type="button" class="save-btn" @click="addProperty">
                   Lägg till Egenskap
                 </button>
                 <ul>
@@ -124,7 +124,7 @@
                     :key="property.property_id"
                   >
                     {{ property.name }}
-                    <button @click="removeProperty(index)">Remove</button>
+                    <button type="button" @click="removeProperty(index)">Remove</button>
                   </li>
                 </ul>
               </fieldset>
@@ -212,7 +212,7 @@
                 :key="index"
                 class="size-variant"
               >
-                <input v-model="variant.size" placeholder="Size" />
+                <input v-model="variant.size" type="text" placeholder="Size" />
                 <input
                   v-model.number="variant.price"
                   type="number"
@@ -223,11 +223,11 @@
                   type="number"
                   placeholder="Stock Quantity"
                 />
-                <button class="delete-btn" @click="removeSize(index)">
+                <button type="button" class="delete-btn" @click="removeSize(index)">
                   Ta Bort Storlek
                 </button>
               </div>
-              <button @click.prevent="addSize">Lägg Till Storlek</button>
+              <button type="button" @click="addSize">Lägg Till Storlek</button>
             </fieldset>
 
             <div class="form-group">
@@ -235,14 +235,14 @@
               <input
                 type="radio"
                 id="featuredYes"
-                value="true"
+                value="1"
                 v-model="editingProduct.featured"
               />
               <label for="featuredYes">Ja</label>
               <input
                 type="radio"
                 id="featuredNo"
-                value="false"
+                value="0"
                 v-model="editingProduct.featured"
               />
               <label for="featuredNo">Nej</label>
@@ -251,14 +251,15 @@
             <div class="button-group">
               <button
                 class="delete-btn"
+                type="button"
                 @click="deleteProduct(product.product_id)"
               >
                 <font-awesome-icon :icon="['fas', 'trash']" /> Ta bort
               </button>
-              <button class="cancel-btn" @click="cancelEdit(product)">
+              <button type="button" class="cancel-btn" @click="cancelEdit(product)">
                 <font-awesome-icon :icon="['fas', 'times']" /> Avbryt
               </button>
-              <button class="save-btn" type="submit">
+              <button type="button" class="save-btn" @click="saveProduct">
                 <font-awesome-icon :icon="['fas', 'save']" /> Spara
               </button>
             </div>
@@ -481,11 +482,13 @@ export default {
     })
     .catch((error) => {
       console.error("Error saving product:", error);
+      const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+
       Swal.fire(
-          "Något gick fel!",
-          `Produkten "${this.editProduct.productName}" gick inte att spara.`,
-          "error"
-        );
+        "Error",
+        `Märke kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+        "error"
+      );      
     });
     },
     cancelEdit() {
