@@ -1,8 +1,6 @@
 <template>
   <div class="service-category-container">
-    <router-link to="/admin" class="back"
-      >Tillbaka</router-link
-    >
+    <router-link to="/admin" class="back">Tillbaka</router-link>
     <h1>Behandlings Kategorier</h1>
 
     <!-- Loading Indicator -->
@@ -292,6 +290,11 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  color: #555;
+}
+
+h1 {
+  color: #333;
 }
 
 h1,
@@ -423,7 +426,7 @@ button:hover {
   transform: translate(0%, -50%);
 }
 
-.back:hover{
+.back:hover {
   color: white;
   background-color: #202020;
 }
@@ -474,6 +477,13 @@ tr:nth-child(2n) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  h1 {
+    margin-top: 31px;
+    font-size: 1.5em;
+  }
+  h2 {
+    font-size: 1.3em;
+  }
   .form-group {
     flex-direction: column;
     align-items: flex-start;
