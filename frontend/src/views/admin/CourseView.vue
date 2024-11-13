@@ -727,6 +727,13 @@ tr:nth-child(2n) {
     font-weight: bold;
   }
 
+  h1,
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 30px;
+  }
+
   td:nth-of-type(1)::before {
     content: "ID";
   }

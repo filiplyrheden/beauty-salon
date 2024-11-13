@@ -2,7 +2,7 @@
     <div class="course-container">
       <router-link to="/admin" class="back"
       ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link>
-      <h1>Produkt Egenskaper</h1>
+      <h1 class="produktEgenskaper">Produkt Egenskaper</h1>
   
       <!-- Loading Indicator -->
       <div v-if="isLoading" class="loading-overlay">
@@ -257,6 +257,7 @@
   
   h1,
   h2 {
+    font-family: "Playfair Display", serif;
     text-align: center;
     margin-bottom: 20px;
   }
@@ -501,6 +502,18 @@
     }
     td:nth-of-type(8)::before {
       content: "Actions";
+    }
+  }
+
+  @media (max-width: 600px) {
+    h1, h2{
+      font-size: 18px;
+    }
+    p, #text{
+      font-size: 12px;
+    }
+    .produktEgenskaper{
+      margin-top: 30px;
     }
   }
   </style>

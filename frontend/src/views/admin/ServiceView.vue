@@ -613,6 +613,7 @@ export default {
 
 h1,
 h2 {
+  font-family: "Playfair Display", serif;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -865,5 +866,10 @@ tr:nth-child(2n) {
   td:nth-of-type(9)::before {
     content: "Åtgärder";
   }
+
+  h1,
+  h2 {
+  margin-top: 30px;
+}
 }
 </style>

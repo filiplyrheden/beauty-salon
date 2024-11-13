@@ -304,6 +304,7 @@ h1,
 h2 {
   text-align: center;
   margin-bottom: 20px;
+  font-family: "Playfair Display", serif;
 }
 
 .form-container,

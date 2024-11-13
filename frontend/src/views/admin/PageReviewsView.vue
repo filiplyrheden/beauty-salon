@@ -474,6 +474,13 @@ tr:nth-child(2n) {
     margin-bottom: 5px;
   }
 
+  h1,
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 30px;
+  }
+
   table,
   thead,
   tbody,
