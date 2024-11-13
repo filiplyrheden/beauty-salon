@@ -3,7 +3,7 @@
     <router-link to="/admin" class="back"
       ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
     >
-    <h1>Orders</h1>
+    <h1>Ordrar</h1>
 
     <!-- Loading Indicator -->
     <div v-if="isLoading" class="loading-overlay">
@@ -61,24 +61,24 @@
               {{ order.user.first_name + " " + order.user.last_name }}
 
               <br />
-              {{ order.user.address_line1 || "Ingen Address Angiven" }}
+              {{ order.address_line1 || "Ingen Address Angiven" }}
 
-              <template v-if="order.user.address_line2">
+              <template v-if="order.address_line2">
                 <br />
-                {{ order.user.address_line2 }}
+                {{ order.address_line2 }}
               </template>
 
               <br />
               {{
-                order.user.postal_code && order.user.city
-                  ? `${order.user.postal_code} ${order.user.city}`
+                order.postal_code && order.city
+                  ? `${order.postal_code} ${order.city}`
                   : "Ingen postkod angiven"
               }}
 
               <br />
-              {{ order.user.country || "Inget land Angivet" }}
+              {{ order.country || "Inget land Angivet" }}
               <br />
-              {{ order.user.phone || "Inget telefonnummer angivet" }}
+              {{ order.phone || "Inget telefonnummer angivet" }}
             </td>
 
             <td>{{ order.order_status }}</td>
@@ -277,7 +277,6 @@ export default {
 </script>
 
 <style scoped>
-
 .back {
   text-decoration: none;
   color: black;
@@ -289,7 +288,7 @@ export default {
   transform: translate(0%, -50%);
 }
 
-.back:hover{
+.back:hover {
   color: white;
   background-color: #202020;
 }

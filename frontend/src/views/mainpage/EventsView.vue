@@ -46,8 +46,15 @@
             >
               <div class="event-item">
                 <img
+                  v-if="event.image_url"
+                  :src="event.image_url"
+                  alt="event bild"
+                  class="event-image"
+                />
+                <img
+                  v-if="!event.image_url"
                   src="../../assets/events.png"
-                  alt="Event bild"
+                  :alt="event.name"
                   class="event-image"
                 />
                 <div class="event-name">{{ event.name }}</div>
@@ -56,7 +63,6 @@
                 </div>
                 <div class="event-description">{{ event.description }}</div>
               </div>
-              <!-- todo: change to :src="event.image_url" to reflect the images of each event-->
               <div class="buttons">
                 <a :href="event.booking_link"
                   ><button class="booking-link">BOKA</button></a
