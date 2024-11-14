@@ -17,7 +17,9 @@
               Unna dig massage, ansiktsbehandlingar och sminkning i en lugn och
               omsorgsfull miljö. Vi tar hand om dig!
             </p>
-            <button>BOKA BEHANDLING</button>
+            <router-link to="/behandlingar">
+              <button>BOKA BEHANDLING</button>
+            </router-link>
           </div>
         </div>
       </div>
@@ -45,7 +47,11 @@
                 <p class="carousel__content__description">
                   {{ slide.description }}
                 </p>
-                <button class="carousel__content__button">TILL BOKNING</button>
+                <router-link to="/behandlingar">
+                  <button class="carousel__content__button">
+                    TILL BOKNING
+                  </button>
+                </router-link>
               </div>
             </div>
           </Slide>

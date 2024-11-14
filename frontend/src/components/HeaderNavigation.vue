@@ -1,5 +1,5 @@
 <template>
-  <header :class="['header-nav', 'sticky']">
+  <header :class="['header-nav', 'sticky', { hidden: isTopBarHidden }]">
     <!-- Top bar section -->
     <div :class="['top-bar']">
       <nav>
@@ -130,6 +130,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import throttle from "lodash-es/throttle";
 
 export default {
   data() {
@@ -152,28 +153,22 @@ export default {
       currentTopBarLinkIndex: 0,
       lastScrollPosition: 0,
       isMobileMenuVisible: false,
+      isTopBarHidden: false,
+      throttledScrollHandler: null, // Store throttled function reference
     };
   },
   watch: {
     isMobileMenuVisible(value) {
-      if (value) {
-        document.body.style.overflow = "hidden"; // Prevent scrolling
-      } else {
-        document.body.style.overflow = ""; // Restore scrolling
-      }
+      document.body.style.overflow = value ? "hidden" : "";
     },
   },
   computed: {
     ...mapState(["isLoggedIn", "isAdmin", "isCartVisible"]),
-
     lastAddedItem() {
       return this.$store.getters.lastAddedItem;
     },
     cartCount() {
       return this.$store.getters.cartCount;
-    },
-    cartItems() {
-      return this.$store.getters.cartItems;
     },
     isCartPopupVisible() {
       return this.$store.getters.cartPopup;
@@ -185,17 +180,17 @@ export default {
       return this.topBarLinks[this.currentTopBarLinkIndex];
     },
   },
-
   created() {
     this.checkAuthentication();
   },
   mounted() {
     this.startLinkRotation();
-    window.addEventListener("scroll", this.handleScroll);
+    this.throttledScrollHandler = throttle(this.handleScroll, 200);
+    window.addEventListener("scroll", this.throttledScrollHandler);
   },
   beforeUnmount() {
     clearInterval(this.linkRotationInterval);
-    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("scroll", this.throttledScrollHandler);
   },
   methods: {
     ...mapMutations({
@@ -206,35 +201,12 @@ export default {
       showCartPopup: "showCartPopup",
       showCart: "showCart",
     }),
+    handleScroll() {
+      this.isTopBarHidden = window.scrollY > 50;
+      console.log("aaaah");
+    },
     openCart() {
       this.showCart();
-    },
-
-    toggleCartPopup() {
-      if (this.isCartPopupVisible) {
-        this.hideCartPopup();
-        this.$store.commit("clearLastAddedItem");
-      } else {
-        this.showCartPopup();
-      }
-    },
-    handleDecrementOrRemove(productId, sizeId) {
-      console.log(productId, sizeId);
-      const item = this.$store.state.cart.find(
-        (item) => item.product_id === productId && item.size_id === sizeId
-      );
-      if (item.quantity === 1) {
-        console.log("removing" + productId + sizeId);
-        this.removeFromCart({
-          productId: productId,
-          sizeId: sizeId,
-        }); // Remove the item if quantity is 1
-      } else {
-        this.decrementItemInCart({
-          productId: productId,
-          sizeId: sizeId,
-        }); // Otherwise, decrement the quantity
-      }
     },
     toggleMobileMenu() {
       this.isMobileMenuVisible = !this.isMobileMenuVisible;
@@ -249,7 +221,7 @@ export default {
       this.linkRotationInterval = setInterval(() => {
         this.currentTopBarLinkIndex =
           (this.currentTopBarLinkIndex + 1) % this.topBarLinks.length;
-      }, 3000); // Adjust time (in ms) as desired for rotation speed
+      }, 3000);
     },
   },
 };
@@ -261,6 +233,8 @@ export default {
   background-color: #000;
   color: #fff;
   padding: 8px 72px;
+  height: 100%;
+  transition: all 0.3s ease-in-out;
 }
 .top-bar nav {
   max-width: 1280px;
@@ -473,8 +447,12 @@ export default {
   width: 100%;
   z-index: 1000;
 }
+.hidden {
+  transform: translate(0px, -37px);
+}
 .header-nav {
   background-color: white;
+  transition: all 0.3s ease-in-out;
 }
 .burger-menu {
   display: none;
