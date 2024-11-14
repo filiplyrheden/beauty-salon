@@ -409,7 +409,7 @@ app.put("/brands/:id", authMiddleware, adminMiddleware, updateBrandById); // Upd
 app.delete("/brands/:id", authMiddleware, adminMiddleware, deleteBrandById); // Delete
 
 //Routes for PageReviews
-app.get("/page-reviews", authMiddleware, adminMiddleware, showPageReviews); // Get all PageReviews
+app.get("/page-reviews", showPageReviews); // Get all PageReviews
 app.post(
   "/page-reviews",
   authMiddleware,

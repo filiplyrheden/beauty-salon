@@ -65,12 +65,12 @@
           <h2>SHAHAD NASIR</h2>
           <div class="about-me-content-text">
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse et commodo ligula. Orci varius natoque penatibus et
-              magnis dis parturient montes, nascetur ridiculus mus. Pellentesque
-              euismod tempus lectus, et auctor enim tempus et.
+              Shahad Nazir är en passionerad brudsminkös och auktoriserad
+              hudterapeut med gedigen utbildning inom skönhet och hudvård.Genom
+              skräddarsydda behandlingar och rådgivning hjälper hon sina kunder
+              att känna sig både vackra och välmående.
             </p>
-            <button>MER OM MIG</button>
+            <router-link to="/om-mig"> <button>MER OM MIG</button></router-link>
           </div>
         </div>
       </div>
@@ -92,15 +92,22 @@
       <div class="courses">
         <h2 class="courses-title">Kurser & Utbildningar</h2>
         <div class="courses-content">
-          <img class="courses-image" src="../assets/noImage.png" alt="" />
+          <img class="courses-image" src="../assets/courses.png" alt="" />
           <div class="courses-text-content">
             <p class="courses-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse et commodo ligula. Orci varius natoque penatibus et
-              magnis dis parturient montes, nascetur ridiculus mus. Pellentesque
-              euismod tempus lectus, et auctor enim tempus et.
+              Vill du utveckla dina sminkkunskaper eller kanske ta dina
+              färdigheter till nästa nivå? Shahad erbjuder en rad kurser och
+              utbildningar inom makeup och skönhet – från grundläggande
+              sminkkurser till avancerade tekniker och workshops för både
+              nybörjare och erfarna entusiaster. Varje kurs är noggrant utformad
+              för att ge dig verktygen och kunskapen du behöver för att skapa
+              imponerande looks med självförtroende. Anmäl dig nu via
+              Bokadirekt, eller kontakta oss direkt för en skräddarsydd kurs och
+              fördjupa dig i en värld av färg, teknik och kreativitet!
             </p>
-            <button class="courses-button">LÄS MER</button>
+            <router-link to="/kurser">
+              <button class="courses-button">TILL BOKNING</button>
+            </router-link>
           </div>
         </div>
       </div>
@@ -109,14 +116,19 @@
       <div class="events">
         <h2 class="events-title">Boka Event</h2>
         <p class="events-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-          et commodo ligula. Orci varius natoque penatibus et magnis dis
-          parturient montes, nascetur ridiculus mus. Pellentesque euismod tempus
-          lectus, et auctor enim tempus et.
+          Oavsett om det är möhippa, födelsedag eller sminkworkshop erbjuder
+          Shahad skräddarsydda skönhetsupplevelser som gör ditt event
+          minnesvärt. Perfekt för alla gruppstorlekar – varje session anpassas
+          med sminktips, tutorials och en härlig atmosfär. Skapa oförglömliga
+          minnen och stråla med hjälp av en professionell som balanserar stil,
+          kreativitet och glädje!
         </p>
-        <Button class="events-button">BOKA</Button>
+        <router-link to="/events">
+          <Button class="events-button">TILL BOKNING</Button>
+        </router-link>
       </div>
     </div>
+    <HomepageReviews></HomepageReviews>
   </div>
 </template>
 
@@ -126,6 +138,7 @@ import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import noImage from "@/assets/noImage.png";
 import ProductCarousel from "@/components/ProductCarousel.vue";
 import ProductGrid from "@/components/ProductGrid.vue";
+import HomepageReviews from "@/components/HomepageReviews.vue";
 
 export default {
   data() {
@@ -162,6 +175,7 @@ export default {
     Navigation,
     ProductCarousel,
     ProductGrid,
+    HomepageReviews,
   },
   name: "HomeView",
 };
@@ -170,6 +184,7 @@ export default {
 <style scoped>
 .product-grid {
   display: none;
+  padding: 16px;
 }
 .carousel__item {
   text-align: center;
@@ -275,7 +290,6 @@ export default {
   position: relative;
 }
 .products-container {
-  height: 90vh;
   width: 100%;
 }
 .products-header {
@@ -288,6 +302,8 @@ export default {
   margin: 0 auto;
   padding-top: 80px;
   padding-bottom: 40px;
+  padding-right: 26px;
+  padding-left: 26px;
 }
 .products-header-title {
   font-family: "Playfair Display", serif !important;
@@ -320,10 +336,11 @@ export default {
 
 .events-container {
   width: 100%;
-  height: 50vh;
   background-color: #dddddd;
 }
 .events {
+  padding-top: 32px;
+  padding-bottom: 32px;
   max-width: 362px;
   margin: 0 auto;
   display: flex;
@@ -416,15 +433,12 @@ export default {
 }
 .courses-container {
   width: 100%;
-  height: 90vh;
 }
 .courses {
   max-width: 940px;
-
-  margin: 0 auto;
-  padding: 0px 40px 0px 40px;
+  margin: 80px auto;
+  padding: 40px;
   height: 100%;
-  margin-top: 80px;
 }
 .courses-title {
   font-family: "Playfair Display", serif !important;
@@ -438,18 +452,33 @@ export default {
 }
 .courses-content {
   display: flex;
-  gap: 16px;
+  gap: 32px;
 }
 .courses-image {
   width: 50%;
   object-fit: cover;
+  height: 400px;
+}
+.courses-button {
+  font-family: "Playfair Display", serif !important;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 17.6px;
+  letter-spacing: 0.04em;
+  text-align: left;
+  align-self: flex-start;
+  padding: 16px 24px;
+  background-color: #202020;
+  color: #f3f3f3;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
 }
 .courses-text-content {
   width: 50%;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  justify-content: center;
 }
 
 .hero {
@@ -674,7 +703,7 @@ button:hover {
   }
 
   .products-header {
-    padding: 32px 16px;
+    padding: 32px 26px;
   }
   .products-header-title {
     font-size: 1.3em;
@@ -686,12 +715,11 @@ button:hover {
   .products-header .line {
     display: none;
   }
-  .courses-container {
-    height: unset;
-  }
+
   .courses {
     padding: 32px;
     margin-top: 0px;
+    margin-bottom: 0px;
   }
   .courses-title {
     font-size: 33.18px;
