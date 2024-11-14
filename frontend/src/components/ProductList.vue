@@ -348,12 +348,34 @@ export default {
         );
       }
     },
-    deleteProduct(productId) {
-      axiosInstance.delete(`admin/products/${productId}`).then(() => {
-        Swal.fire("Produkt borttagen");
-        this.$emit("product-deleted", productId);
-      });
+    async deleteProduct(productId) {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Är du säker på att du vill ta bort denna kursen? Du kan inte ändra dig sen.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ja, ta bort den!",
+      cancelButtonText: "Avbryt",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      // Attempt to delete the product
+      await axiosInstance.delete(`admin/products/${productId}`);
+      
+      // Emit event to parent component to notify that the product was deleted
+      this.$emit("product-deleted", productId);
+
+      await Swal.fire("Borttagen!", "Produkt borttagen", "success");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+
+      // Show error alert if deletion fails
+      await Swal.fire("Fel", "Kunde inte ta bort produkten. Försök igen senare.", "error");
+      }
     },
+
     editProduct(product) {
       this.editingProduct = JSON.parse(JSON.stringify(product));
     },
@@ -518,7 +540,7 @@ li {
   flex-direction: column;
   gap: 10px;
   margin: 0 auto;
-  padding: 20px;
+  margin-top: 20px;
 }
 
 .product-card {
@@ -598,6 +620,10 @@ fieldset {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.productListWrapper{
+  width: 100%;
 }
 
 .fieldset {

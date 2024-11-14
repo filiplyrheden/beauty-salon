@@ -8,6 +8,12 @@ import {
   fetchCheckoutProductsByIds,
   getFeaturedProducts,
 } from "../models/ProductModel.js";
+import {
+  getBrandById,
+} from "../models/BrandModel.js";
+import {
+  getCategoriesById
+} from "../models/productCategoriesModel.js";
 import path from "path";
 import fs from "fs";
 import { handleValidationErrors } from "../verificationMiddleware/validator.js";
@@ -240,10 +246,24 @@ export const createProduct = [
         image_url_secondary: secondaryImageUrl,
         image_url_third: thirdImageUrl, 
       };
-
+    
+    // get brandnames and category names to send it to the user when the product has been created.
+    
     try {
+      const fetchedBrands = await getBrandById(newProductData.brand_id);
+      console.log(fetchedBrands);
+      
+      const fetchedCategories = await getCategoriesById(newProductData.category_id);
+      console.log(fetchedCategories);
+
       const result = await insertProduct(newProductData);
-      res.status(201).json({ message: "Product created successfully" });
+      const productWithInsertId = {
+        ...newProductData,
+        product_id: result.insertId,
+        brand: { brand_id: newProductData.brand_id, brand_name: fetchedBrands.brand_name },
+        category: { category_id: newProductData.category_id, category_name: fetchedCategories.category_name }
+      }
+      res.status(201).json({ message: "Product created successfully", product: productWithInsertId });
     } catch (err) {
       console.error("Error in createProduct:", err);
       res.status(500).json({ error: "Internal Server Error" });
