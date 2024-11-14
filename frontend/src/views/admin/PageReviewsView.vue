@@ -143,11 +143,15 @@ export default {
         Swal.fire("Success", "Review added successfully!", "success");
       } catch (error) {
         console.error("Error adding review:", error.response || error.message);
+        // Get all error messages from the response
+        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+
+        // Display all error messages in the alert
         Swal.fire(
-          "Error",
-          "Failed to add review. Please check your input and try again.",
-          "error"
-        );
+        "Error",
+        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+        "error"
+      );
       } finally {
         this.isLoading = false;
       }
@@ -198,10 +202,14 @@ export default {
           "Error updating review:",
           error.response || error.message
         );
+        // Get all error messages from the response
+        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+
+        // Display all error messages in the alert
         Swal.fire(
-          "Error",
-          "Failed to update review. Please check your input and try again.",
-          "error"
+        "Error",
+        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+        "error"
         );
       } finally {
         this.isLoading = false;

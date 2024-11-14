@@ -53,8 +53,8 @@ export const updateBrandById = [
   // Validation middleware for brand_name
   body('brand_name')
   .trim()
-  .notEmpty().withMessage('Brand name is required')
-  .isLength({ min: 3, max: 50 }).withMessage('Brand name should be between 3 and 50 characters'),
+  .notEmpty().withMessage('Märkesnamn är obligatoriskt')
+  .isLength({ min: 3, max: 50 }).withMessage('Märkesnamn måste vara minst 3 karaktärer'),
   
   handleValidationErrors, // Middleware to handle validation errors
   
@@ -94,7 +94,7 @@ export const createNewBrand = [
 
         res.status(201).json(newBrand);
       } catch (err) {
-        
+
       console.error("Error in createServicesCategories:", err);
       res.status(500).json({ error: "Internal Server Error" });
     }

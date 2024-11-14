@@ -32,11 +32,11 @@
             </div>
             <div class="detail-group">
               <label>Tid för event:</label>
-              <p>{{ convertToCET(event.schedule) }}</p>
+              <p>{{ convertToCET(event.schedule) || 'Kunde inte hämta schema för event' }}</p>
             </div>
             <div class="detail-group">
               <label>Skapades den:</label>
-              <p>{{ event.created_at }}</p>
+              <p>{{ convertToCET(event.created_at) || 'Kunde inte hämta när eventet skapades' }}</p>
             </div>
             <div class="detail-group">
               <label>Bokning:</label>
@@ -170,7 +170,7 @@ export default {
           console.error("Error deleting event:", error);
           Swal.fire(
             "Något gick fel!",
-            `Eventet kunde inte tas bort. Försök igen senare.`,
+            `Eventet kunde inte tas bort. Försök igen senare eller ladda om sidan.`,
             "error"
           );
         }
@@ -200,19 +200,34 @@ export default {
       this.selectedFile = event.target.files[0];
     },
     convertToCET(utcTime) {
+    if (!utcTime || typeof utcTime !== 'string') {
+        console.error("Invalid input:", utcTime);
+        return 'Invalid date'; // Return a fallback message if input is invalid
+    }
+
+    // Ensure the UTC string ends with 'Z' for proper parsing
+    if (!utcTime.endsWith('Z')) {
+        utcTime += 'Z';
+    }
+
     const date = new Date(utcTime);
+    if (isNaN(date.getTime())) {
+        console.error("Invalid date:", utcTime);
+        return 'Invalid date'; // Handle invalid date
+    }
+
     const cetTime = new Intl.DateTimeFormat('sv-SE', {
-      timeZone: 'Europe/Stockholm',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
+        timeZone: 'Europe/Stockholm',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
     }).format(date);
 
-      return cetTime;
+    return cetTime;
     },
     saveEvent(event) {
       const formData = new FormData();
@@ -243,11 +258,15 @@ export default {
         })
         .catch((error) => {
           console.error("Error saving event:", error);
+          // Get all error messages from the response
+          const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+  
+          // Display all error messages in the alert
           Swal.fire(
-          "Något gick fel!",
-          `Eventet "${this.eventName}" kunde inte sparas.`,
+          "Error",
+          `Event kunde inte ändras. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
           "error"
-          );
+        );
         });
     },
     cancelEdit() {

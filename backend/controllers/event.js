@@ -2,6 +2,8 @@ import { getEvents, insertEvent, editEvent, trashEvent, getEventById } from "../
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { handleValidationErrors } from "../verificationMiddleware/validator.js";
+import { check } from "express-validator";
 
 /**
  * Handler to show all events.
@@ -23,96 +25,133 @@ export const showEvents = async (req, res) => {
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  */
-export const createEvent = async (req, res) => {
-    // Get event details from the request body
-    const event = req.body;
-    // Check if an image was uploaded
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null; // Construct the image URL
+
+const validationRules = [
+  check("name")
+    .notEmpty().withMessage("Eventnamn är obligatoriskt")
+    .isLength({ min: 3 }).withMessage("Eventnamnet måste vara minst 3 tecken långt"),
   
-    // If needed, add the imageUrl to the event object
+  check("description")
+    .notEmpty().withMessage("Beskrivning är obligatorisk")
+    .isLength({ min: 10 }).withMessage("Beskrivningen måste vara minst 10 tecken lång"),
+
+  check("price")
+    .notEmpty().withMessage("Pris är obligatoriskt")
+    .isNumeric().withMessage("Pris måste vara ett numeriskt värde")
+    .isFloat({ gt: 0 }).withMessage("Pris måste vara ett positivt tal"),
+
+  check("booking_link")
+    .optional()
+    .isURL().withMessage("Bokningslänk måste vara en giltig URL"),
+
+  check("schedule")
+    .notEmpty().withMessage("Schema är obligatoriskt")
+    .isISO8601().withMessage("Schema måste vara i ett giltigt datum/tid-format (ISO 8601)"),
+];
+
+// Create event handler
+export const createEvent = [
+  ...validationRules,
+  handleValidationErrors,
+
+  async (req, res) => {
+    const event = req.body;
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
     const newEvent = {
       ...event,
-      image_url: imageUrl, // Add the image URL to the event object
+      image_url: imageUrl,
     };
-  
+
     try {
-      // Assuming insertEvent function accepts the event object including the image URL
       const result = await insertEvent(newEvent);
-      res.status(201).json({ message: "Event created successfully", event: newEvent });
+      const eventWithInsertId = {
+        ...newEvent,
+        event_id: result.insertId,
+      }
+      res.status(201).json({ message: "Eventet skapades framgångsrikt", event: eventWithInsertId });
     } catch (err) {
-      console.error("Error in createEvent:", err);
-      res.status(500).json({ error: "Internal Server Error" });
+      console.error("Fel i createEvent:", err);
+      res.status(500).json({ error: "Internt serverfel" });
     }
-  };  
+  }
+];
 
-/**
- * Handler to update an existing event.
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- */
-
+// dirname in ES Modulees
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const updateEvent = async (req, res) => {
-  const eventId = req.params.id; // Get event ID from request parameters
-  const eventData = req.body; // Get event details from the request body
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null; // New image URL if an image was uploaded
+// Update event handler
+export const updateEvent = [
+  ...validationRules,
+  handleValidationErrors,
 
-  try {
-    // Retrieve the existing event data
-    const [oldEvent] = await getEventById(eventId); // Await getEventById and destructure result to get the first row
+  async (req, res) => {
+    const eventId = req.params.id;
+    const eventData = req.body;
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-    if (!oldEvent) {
-      return res.status(404).json({ error: "Event not found" });
-    }
-
-    // If an image was uploaded, delete the old image and update the event data
-    if (imageUrl) {
-      const oldPicture = oldEvent.image_url;
-
-      // Optionally delete the old image if it exists
-      if (oldPicture) {
-        const oldPicturePath = path.join(__dirname, '..', oldPicture);
-        fs.unlink(oldPicturePath, (err) => {
-          if (err) console.error("Error deleting old image:", err);
-        });
+    try {
+      const [oldEvent] = await getEventById(eventId);
+      if (!oldEvent) {
+        return res.status(404).json({ error: "Event not found" });
       }
 
-      eventData.image_url = imageUrl; // Update event data with the new image URL
-    }
-    if (!imageUrl) {
-      eventData.image_url = oldEvent.image_url;
-    }
+      if (imageUrl) {
+        const oldPicture = oldEvent.image_url;
+        if (oldPicture) {
+          const oldPicturePath = path.join(__dirname, '..', oldPicture);
+          fs.unlink(oldPicturePath, (err) => {
+            if (err) console.error("Error deleting old image:", err);
+          });
+        }
+        eventData.image_url = imageUrl;
+      } else {
+        eventData.image_url = oldEvent.image_url;
+      }
 
-    // Update the event in the database
-    const result = await editEvent(eventId, eventData);
+      const result = await editEvent(eventId, eventData);
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Event not found" });
+      }
 
-    // Check if the event was found and updated
-    if (result.affectedRows === 0) {
+      res.status(200).json({ message: "Event updated successfully", event: eventData });
+    } catch (err) {
+      console.error("Error in updateEvent:", err);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+];
+
+
+/* Handler to delete an event from the database. */
+export const deleteEvent = async (req, res) => {
+  const eventId = req.params.id;
+
+  try {
+    // Retrieve the event and its image URL
+    const [event] = await getEventById(eventId);
+    if (!event) {
       return res.status(404).json({ error: "Event not found" });
     }
 
-    res.status(200).json({ message: "Event updated successfully", event: eventData });
-  } catch (err) {
-    console.error("Error in updateEvent:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+    // Delete the image file if it exists
+    const imageUrl = event.image_url;
+    if (imageUrl) {
+      const imagePath = path.join(__dirname, "..", imageUrl);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error("Error deleting image:", err);
+        }
+      });
+    }
 
-/**
- * Handler to delete an event from the database.
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- */
-export const deleteEvent = async (req, res) => {
-  const eventId = req.params.id; // Get event ID from request parameters
-
-  try {
+    // Proceed to delete the event from the database
     const result = await trashEvent(eventId);
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "Event not found" });
     }
+
     res.status(200).json({ message: "Event deleted successfully" });
   } catch (err) {
     console.error("Error in deleteEvent:", err);

@@ -8,6 +8,8 @@ import {
 } from "../models/CourseModel.js";
 import path from "path";
 import fs from "fs";
+import { handleValidationErrors } from "../verificationMiddleware/validator.js";
+import { check } from "express-validator";
 
 /**
  * Handler to show all courses.
@@ -44,97 +46,147 @@ export const showCourseById = async (req, res) => {
 /**
  * Handler to create a new course.
  */
-export const createNewCourse = async (req, res) => {
-  try {
-    const courseData = req.body;
+const validationRules = [
+  check("name")
+    .notEmpty().withMessage("Kursnamn är obligatoriskt")
+    .isLength({ min: 3 }).withMessage("Kursnamnet måste vara minst 3 tecken långt"),
 
-    // Check if image was uploaded
-    if (!req.file) {
-      return res.status(400).json({ error: "Image is required" });
-    }
+  check("description")
+    .notEmpty().withMessage("Beskrivning är obligatorisk")
+    .isLength({ min: 10 }).withMessage("Beskrivningen måste vara minst 10 tecken lång"),
 
-    // Construct image URL
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
-      req.file.filename
-    }`;
+  check("price")
+    .isFloat({ gt: 0 }).withMessage("Priset måste vara ett positivt tal"),
 
-    // Add image_url to course data
-    const newCourseData = {
-      ...courseData,
-      image_url: imageUrl,
-    };
+  check("schedule")
+    .notEmpty().withMessage("Schema är obligatoriskt")
+    .isISO8601().withMessage("Schema måste vara i ett giltigt datum-tid format (YYYY-MM-DD HH:MM:SS)"),
 
-    const newCourse = await createCourse(newCourseData);
+  check("booking_link")
+    .notEmpty().withMessage("Bokningslänk är obligatorisk")
+    .isURL().withMessage("Bokningslänken måste vara en giltig URL"),
+];
 
-    res.status(201).json(newCourse);
-  } catch (err) {
-    console.error("Error in createNewCourse:", err);
+export const createNewCourse = [
+  ...validationRules,
+  handleValidationErrors,
 
-    // If there was an error and the image was uploaded, remove the image to prevent orphaned files
-    if (req.file) {
-      fs.unlink(path.join("uploads", req.file.filename), (unlinkErr) => {
-        if (unlinkErr) {
-          console.error(
-            "Error deleting uploaded image after failed course creation:",
-            unlinkErr
-          );
-        }
-      });
-    }
-
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-/**
- * Handler to update an existing course by ID.
- */
-export const updateCourseById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const courseData = req.body;
-
-    // Get existing course
-    const existingCourse = await getCourseById(id);
-    if (!existingCourse) {
-      // If a new image was uploaded, remove it since the course doesn't exist
+  async (req, res) => {
+    try {
+      const courseData = req.body;
+  
+      // Check if image was uploaded
+      if (!req.file) {
+        return res.status(400).json({ error: "Image is required" });
+      }
+  
+      // Construct image URL
+      const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+        req.file.filename
+      }`;
+  
+      // Add image_url to course data
+      const newCourseData = {
+        ...courseData,
+        image_url: imageUrl,
+      };
+  
+      const newCourse = await createCourse(newCourseData);
+  
+      res.status(201).json(newCourse);
+    } catch (err) {
+      console.error("Error in createNewCourse:", err);
+  
+      // If there was an error and the image was uploaded, remove the image to prevent orphaned files
       if (req.file) {
         fs.unlink(path.join("uploads", req.file.filename), (unlinkErr) => {
           if (unlinkErr) {
             console.error(
-              "Error deleting uploaded image after course not found:",
+              "Error deleting uploaded image after failed course creation:",
               unlinkErr
             );
           }
         });
       }
-      return res.status(404).json({ error: "Course not found" });
+  
+      res.status(500).json({ error: "Internal Server Error" });
     }
+  }
+]; 
 
-    // If a new image is uploaded, set the new image_url and delete the old image
-    if (req.file) {
-      const newImageUrl = `${req.protocol}://${req.get("host")}/uploads/${
-        req.file.filename
-      }`;
-      courseData.image_url = newImageUrl;
 
-      // Delete the old image file
-      const oldImagePath = path.join(
-        "uploads",
-        path.basename(existingCourse.image_url)
-      );
-      fs.unlink(oldImagePath, (unlinkErr) => {
-        if (unlinkErr) {
-          console.error("Error deleting old image:", unlinkErr);
-          // Proceed even if the old image deletion fails
+
+/**
+ * Handler to update an existing course by ID.
+*/
+export const updateCourseById = [
+  ...validationRules,
+  handleValidationErrors,
+
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const courseData = req.body;
+  
+      // Get existing course
+      const existingCourse = await getCourseById(id);
+      if (!existingCourse) {
+        // If a new image was uploaded, remove it since the course doesn't exist
+        if (req.file) {
+          fs.unlink(path.join("uploads", req.file.filename), (unlinkErr) => {
+            if (unlinkErr) {
+              console.error(
+                "Error deleting uploaded image after course not found:",
+                unlinkErr
+              );
+            }
+          });
         }
-      });
-    }
-
-    const updatedCourse = await updateCourse(id, courseData);
-
-    if (!updatedCourse) {
-      // If updating failed and a new image was uploaded, remove the new image to prevent orphaned files
+        return res.status(404).json({ error: "Course not found" });
+      }
+  
+      // If a new image is uploaded, set the new image_url and delete the old image
+      if (req.file) {
+        const newImageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+          req.file.filename
+        }`;
+        courseData.image_url = newImageUrl;
+  
+        // Delete the old image file
+        const oldImagePath = path.join(
+          "uploads",
+          path.basename(existingCourse.image_url)
+        );
+        fs.unlink(oldImagePath, (unlinkErr) => {
+          if (unlinkErr) {
+            console.error("Error deleting old image:", unlinkErr);
+            // Proceed even if the old image deletion fails
+          }
+        })
+      };
+  
+      const updatedCourse = await updateCourse(id, courseData);
+  
+      if (!updatedCourse) {
+        // If updating failed and a new image was uploaded, remove the new image to prevent orphaned files
+        if (req.file) {
+          fs.unlink(path.join("uploads", req.file.filename), (unlinkErr) => {
+            if (unlinkErr) {
+              console.error(
+                "Error deleting uploaded image after failed update:",
+                unlinkErr
+              );
+            }
+          });
+        }
+        return res.status(500).json({ error: "Failed to update course" });
+      }
+  
+      res.status(200).json(updatedCourse);
+    } catch (err) {
+      console.error("Error in updateCourseById:", err);
+  
+      // If there was an error and a new image was uploaded, remove the new image to prevent orphaned files
       if (req.file) {
         fs.unlink(path.join("uploads", req.file.filename), (unlinkErr) => {
           if (unlinkErr) {
@@ -145,28 +197,12 @@ export const updateCourseById = async (req, res) => {
           }
         });
       }
-      return res.status(500).json({ error: "Failed to update course" });
+  
+      res.status(500).json({ error: "Internal Server Error" });
     }
-
-    res.status(200).json(updatedCourse);
-  } catch (err) {
-    console.error("Error in updateCourseById:", err);
-
-    // If there was an error and a new image was uploaded, remove the new image to prevent orphaned files
-    if (req.file) {
-      fs.unlink(path.join("uploads", req.file.filename), (unlinkErr) => {
-        if (unlinkErr) {
-          console.error(
-            "Error deleting uploaded image after failed update:",
-            unlinkErr
-          );
-        }
-      });
-    }
-
-    res.status(500).json({ error: "Internal Server Error" });
   }
-};
+];
+
 
 /**
  * Handler to delete a course by ID.
