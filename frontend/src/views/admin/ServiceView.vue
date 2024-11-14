@@ -239,10 +239,6 @@ export default {
           price: Number(service.price), // Ensure 'price' is a number
         }));
       } catch (error) {
-        console.error(
-          "Error fetching services:",
-          error.response || error.message
-        );
         Swal.fire(
           "Fel",
           "Fel vid hämtning av behandlingar: Misslyckades med att hämta behandlingar. Försök igen senare",
@@ -262,10 +258,6 @@ export default {
         const response = await axiosInstance.get(`/services-categories`);
         this.categories = response.data;
       } catch (error) {
-        console.error(
-          "Error fetching categories:",
-          error.response || error.message
-        );
         Swal.fire(
           "Fel",
           "Det gick inte att hämta kategorier. Vänligen försök igen senare.",
@@ -376,10 +368,14 @@ export default {
           "success"
         );
       } catch (error) {
-        console.error("Error adding service:", error.response || error.message);
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
+
+        // Display all error messages in the alert
         Swal.fire(
-          "Fel",
-          "Det gick inte att lägga till tjänsten. Vänligen kontrollera din inmatning och försök igen.",
+          "Error",
+          `Behandling kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
           "error"
         );
       } finally {
@@ -466,13 +462,14 @@ export default {
           "success"
         );
       } catch (error) {
-        console.error(
-          "Error updating service:",
-          error.response || error.message
-        );
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
+
+        // Display all error messages in the alert
         Swal.fire(
-          "Fel",
-          "Det gick inte att uppdatera tjänsten. Vänligen kontrollera din inmatning och försök igen.",
+          "Error",
+          `Behandlingen kunde inte uppdateras. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
           "error"
         );
       } finally {
@@ -509,10 +506,6 @@ export default {
           "success"
         );
       } catch (error) {
-        console.error(
-          "Error deleting service:",
-          error.response || error.message
-        );
         Swal.fire(
           "Fel",
           "Det gick inte att ta bort tjänsten. Vänligen försök igen senare.",
@@ -880,7 +873,7 @@ tr:nth-child(2n) {
 
   h1,
   h2 {
-  margin-top: 30px;
-}
+    margin-top: 30px;
+  }
 }
 </style>
