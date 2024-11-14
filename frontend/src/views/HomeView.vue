@@ -2,11 +2,11 @@
   <div>
     <div class="hero-container">
       <div class="hero">
-        <img src="https://picsum.photos/1200/600" alt="big" class="big-image" />
+        <img src="../assets/landingBig.png" alt="big image" class="big-image" />
         <div class="big-image-overlay"></div>
         <img
-          src="https://picsum.photos/500/600"
-          alt="big"
+          src="../assets/landingSmall.png"
+          alt="small image"
           class="small-image"
         />
         <div class="overlay">
