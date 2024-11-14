@@ -239,10 +239,6 @@ export default {
           price: Number(service.price), // Ensure 'price' is a number
         }));
       } catch (error) {
-        console.error(
-          "Error fetching services:",
-          error.response || error.message
-        );
         Swal.fire(
           "Fel",
           "Fel vid hämtning av behandlingar: Misslyckades med att hämta behandlingar. Försök igen senare",
@@ -262,10 +258,6 @@ export default {
         const response = await axiosInstance.get(`/services-categories`);
         this.categories = response.data;
       } catch (error) {
-        console.error(
-          "Error fetching categories:",
-          error.response || error.message
-        );
         Swal.fire(
           "Fel",
           "Det gick inte att hämta kategorier. Vänligen försök igen senare.",
@@ -514,10 +506,6 @@ export default {
           "success"
         );
       } catch (error) {
-        console.error(
-          "Error deleting service:",
-          error.response || error.message
-        );
         Swal.fire(
           "Fel",
           "Det gick inte att ta bort tjänsten. Vänligen försök igen senare.",
