@@ -20,7 +20,7 @@ import {
 import { getUserById } from "../models/userModel.js";
 import pool from "../config/database.js";
 import { handleValidationErrors } from "../verificationMiddleware/validator.js";
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 
 /**
  * Handler to show all services.

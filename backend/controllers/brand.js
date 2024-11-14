@@ -6,7 +6,7 @@ import {
   createBrand,
 } from "../models/BrandModel.js";
 import { handleValidationErrors } from "../verificationMiddleware/validator.js";
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 
 /**
  * Handler to show all services.
@@ -54,12 +54,12 @@ export const updateBrandById = [
   body("brand_name")
     .trim()
     .notEmpty()
-    .withMessage("Brand name is required")
+    .withMessage("Varumärkesnamn är obligatoriskt")
     .isLength({ min: 3, max: 50 })
-    .withMessage("Brand name should be between 3 and 50 characters")
+    .withMessage("Varumärkesnamn ska vara mellan 3 och 50 tecken")
     .matches(/^[a-zA-Z0-9_ åäöÅÄÖ]*$/)
     .withMessage(
-      "Egenskapsnamn får endast innehålla bokstäver, siffror, understreck och mellanslag"
+      "Varumärkesnamn får endast innehålla bokstäver, siffror, understreck och mellanslag"
     ),
   handleValidationErrors, // Middleware to handle validation errors
 
@@ -87,12 +87,12 @@ export const createNewBrand = [
   body("brand_name")
     .trim()
     .notEmpty()
-    .withMessage("Du måste skriva in ett Märkesnamn")
+    .withMessage("Varumärkesnamn är obligatoriskt")
     .isLength({ min: 3, max: 50 })
-    .withMessage("Märkesnamnet skall vara mellan 3 och 50 karaktärer")
+    .withMessage("Varumärkesnamn ska vara mellan 3 och 50 tecken")
     .matches(/^[a-zA-Z0-9_ åäöÅÄÖ]*$/)
     .withMessage(
-      "Egenskapsnamn får endast innehålla bokstäver, siffror, understreck och mellanslag"
+      "Varumärkesnamn får endast innehålla bokstäver, siffror, understreck och mellanslag"
     ),
   handleValidationErrors, // Middleware to handle validation errors
 

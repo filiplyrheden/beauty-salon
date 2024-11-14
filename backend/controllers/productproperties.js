@@ -8,7 +8,7 @@ import {
 } from "../models/productPropertyModel.js";
 
 import { handleValidationErrors } from "../verificationMiddleware/validator.js";
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 /**
  * Handler to show all Properties.
  */
