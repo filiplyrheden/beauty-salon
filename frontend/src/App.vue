@@ -114,11 +114,11 @@ html {
   border-radius: 6px;
 }
 
-.swal2-title{
+.swal2-title {
   font-family: "Playfair Display", serif;
 }
 
-.swal2-styled{
+.swal2-styled {
   background-color: white;
   color: #202020;
   width: 200px;
@@ -127,12 +127,12 @@ html {
   font-family: "Playfair Display", serif;
 }
 
-.swal2-styled:hover{
+.swal2-styled:hover {
   background-color: #202020;
   color: white;
 }
 
-.swal2-popup{
+.swal2-popup {
   box-sizing: border-box;
   border: 1px solid #202020;
   border-radius: 0px;
@@ -156,6 +156,24 @@ html {
   .carousel__icon {
     width: 24px !important;
     height: 24px !important;
+  }
+  .reviews .carousel__prev,
+  .reviews .carousel__next {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+  .reviews .carousel__prev {
+    left: 0 !important;
+  }
+  .reviews .carousel__next {
+    right: 0 !important;
+  }
+  .reviews .carousel__prev,
+  .reviews .carousel__next,
+  .reviews .carousel__icon {
+    width: 40px !important;
+    height: 40px !important;
+    fill: white !important;
   }
 }
 </style>
