@@ -19,6 +19,8 @@ import {
 } from "../models/OrderDetailModel.js";
 import { getUserById } from "../models/userModel.js";
 import pool from "../config/database.js";
+import { handleValidationErrors } from "../verificationMiddleware/validator.js";
+import { body, validationResult } from "express-validator";
 
 /**
  * Handler to show all services.
@@ -105,26 +107,36 @@ export const deleteOrderById = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-export const updateOrderById = async (req, res) => {
-  try {
-    const id = req.params.id;
+export const updateOrderById = [
+  body("order_status")
+    .trim()
+    .notEmpty()
+    .withMessage("Order status krävs")
+    .matches(/^[a-zA-Z0-9_ åäöÅÄÖ]*$/)
+    .withMessage(
+      "Orderstatus får endast innehålla bokstäver, siffror, understreck och mellanslag"
+    ),
+  handleValidationErrors, // Middleware to handle validation errors
 
-    // Validate input
-    const { order_status } = req.body;
+  async (req, res) => {
+    try {
+      const id = req.params.id;
+      // Validate input
+      const { order_status } = req.body;
+      // Call the service to update the category
+      const updatedOrder = await updateOrder(id, req.body);
 
-    // Call the service to update the category
-    const updatedOrder = await updateOrder(id, req.body);
+      if (!updatedOrder) {
+        return res.status(500).json({ error: "Failed to update category" });
+      }
 
-    if (!updatedOrder) {
-      return res.status(500).json({ error: "Failed to update category" });
+      res.status(200).json(updatedOrder);
+    } catch (err) {
+      console.error("Error in updateCategoriesById:", err);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-
-    res.status(200).json(updatedOrder);
-  } catch (err) {
-    console.error("Error in updateCategoriesById:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+  },
+];
 
 export const createOrderByHook = async (
   user_id,

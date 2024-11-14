@@ -151,7 +151,7 @@ export default {
         );
         Swal.fire(
           "Error",
-          "Failed to fetch orders. Please try again later.",
+          "Kunde inte hämta ordrar. Försök igen senare.",
           "error"
         );
       } finally {
@@ -183,12 +183,12 @@ export default {
 
         this.resetForm();
         this.isEditing = false;
-        Swal.fire("Success", "Order updated successfully!", "success");
+        Swal.fire("Success", "Order uppdaterades!", "success");
       } catch (error) {
         console.error("Error updating order:", error.response || error.message);
         Swal.fire(
           "Error",
-          "Failed to update order. Please check your input and try again.",
+          `Order kunde inte uppdateras. Kolla vad du har skrivit in och prova igen! ${error.response.data.errors[0].msg}`,
           "error"
         );
       } finally {
@@ -212,14 +212,14 @@ export default {
      */
     async deleteOrder(order_id) {
       const result = await Swal.fire({
-        title: "Are you sure?",
+        title: "Är du säker?",
         html: "Vill du verkligen ta bort den här Ordern? Detta kan inte ångras!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "Cancel",
+        confirmButtonText: "Ja ta bort den!",
+        cancelButtonText: "Avbryt",
       });
 
       // Check if the user confirmed the action
@@ -231,14 +231,9 @@ export default {
         this.orders = this.orders.filter(
           (order) => order.order_id !== order_id
         );
-        Swal.fire("Deleted!", "Order deleted successfully!", "success");
+        Swal.fire("Deleted!", "Order borttagen!", "success");
       } catch (error) {
-        console.error("Error deleting Order:", error.response || error.message);
-        Swal.fire(
-          "Error",
-          "Failed to delete Order. Please try again later.",
-          "error"
-        );
+        Swal.fire("Error", "Kunde inte ta bort order. Försök igen.", "error");
       } finally {
         this.isLoading = false;
       }
