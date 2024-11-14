@@ -1,59 +1,65 @@
 <template>
-    <div class="course-container">
-      <router-link to="/admin" class="back"
-      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link>
-      <h1>Produkt Egenskaper</h1>
-  
-      <!-- Loading Indicator -->
-      <div v-if="isLoading" class="loading-overlay">
-        <div class="spinner"></div>
-      </div>
+  <div class="course-container">
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
+    <h1>Produkt Egenskaper</h1>
 
-      <!-- Add/Edit Course Form -->
-      <div class="form-container" ref="formContainer">
-        <h2>{{ isEditing ? "Ändra ProduktEgenskap" : "Lägg till ny Produkt Egenskap" }}</h2>
-        <form
-          @submit.prevent="isEditing ? updateProperty() : addProperty()"
-        >
-          <!-- Name -->
-          <div class="form-group">
-            <label for="name">Namn för egenskap:</label>
-            <input v-model="form.name" type="text" id="name" required />
-          </div>
-  
-          <!-- Buttons -->
-          <div class="button-group">
-            <button type="submit">
-              {{ isEditing ? "Updatera" : "Lägg till" }} Egenskap
-            </button>
-            <button type="button" v-if="isEditing" @click="cancelEdit">
-              Avbryt
-            </button>
-          </div>
-        </form>
-      </div>
-  
-      <!-- Courses List -->
-      <div class="list-container">
-        <h2>Alla Egenskaper</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Egenskapsnamn</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="property in properties" :key="property.property_id">
-              <td>{{ property.name }}</td>
-              
-              <td>
-                <button @click="editProperty(property)">Edit</button>
-                <button @click="deleteProperty(property.property_id)">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- Loading Indicator -->
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Add/Edit Course Form -->
+    <div class="form-container" ref="formContainer">
+      <h2>
+        {{
+          isEditing ? "Ändra ProduktEgenskap" : "Lägg till ny Produkt Egenskap"
+        }}
+      </h2>
+      <form @submit.prevent="isEditing ? updateProperty() : addProperty()">
+        <!-- Name -->
+        <div class="form-group">
+          <label for="name">Namn för egenskap:</label>
+          <input v-model="form.name" type="text" id="name" required />
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+          <button type="submit">
+            {{ isEditing ? "Updatera" : "Lägg till" }} Egenskap
+          </button>
+          <button type="button" v-if="isEditing" @click="cancelEdit">
+            Avbryt
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Courses List -->
+    <div class="list-container">
+      <h2>Alla Egenskaper</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Egenskapsnamn</th>
+            <th>Åtgärder</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="property in properties" :key="property.property_id">
+            <td>{{ property.name }}</td>
+
+            <td>
+              <button @click="editProperty(property)">Edit</button>
+              <button @click="deleteProperty(property.property_id)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 <script>
@@ -88,13 +94,9 @@ export default {
           ...property,
         }));
       } catch (error) {
-        console.error(
-          "Error fetching properties:",
-          error.response || error.message
-        );
         Swal.fire(
           "Error",
-          "Failed to fetch properties. Please try again later.",
+          "Kunde inte hämta produktegenskaper. Försök igen.",
           "error"
         );
       } finally {
@@ -114,12 +116,11 @@ export default {
         );
         this.properties.push(response.data);
         this.resetForm();
-        Swal.fire("Success", "Property added successfully!", "success");
+        Swal.fire("Success", "Produktegenskap lades till!", "success");
       } catch (error) {
-        console.error("Error adding property:", error);
         Swal.fire(
           "Error",
-          "Failed to add property. Please try again.",
+          `Produktegenskap kunde inte uppdateras. Kolla vad du har skrivit in och prova igen! ${error.response.data.errors[0].msg}`,
           "error"
         );
       } finally {
@@ -164,15 +165,11 @@ export default {
 
         this.resetForm();
         this.isEditing = false;
-        Swal.fire("Success", "Property updated successfully!", "success");
+        Swal.fire("Success", "Egenskap uppdaterades!", "success");
       } catch (error) {
-        console.error(
-          "Error updating property:",
-          error.response || error.message
-        );
         Swal.fire(
           "Error",
-          "Failed to update property. Please check your input and try again.",
+          `Produktegenskap kunde inte uppdateras. Kolla vad du har skrivit in och prova igen! ${error.response.data.errors[0].msg}`,
           "error"
         );
       } finally {
@@ -185,14 +182,14 @@ export default {
      */
     async deleteProperty(property_id) {
       const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "Do you really want to delete this property? This action cannot be undone.",
+        title: "Är du säker?",
+        text: "Vill du verkligen ta bort denna produktegenskap? Det går inte att ångra detta!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "Cancel",
+        confirmButtonText: "Ja ta bort den!",
+        cancelButtonText: "Avbryt",
       });
 
       if (!result.isConfirmed) return;
@@ -203,15 +200,11 @@ export default {
         this.properties = this.properties.filter(
           (property) => property.property_id !== property_id
         );
-        Swal.fire("Deleted!", "Property deleted successfully!", "success");
+        Swal.fire("Deleted!", "Egenskap borttagen!", "success");
       } catch (error) {
-        console.error(
-          "Error deleting property:",
-          error.response || error.message
-        );
         Swal.fire(
           "Error",
-          "Failed to delete property. Please try again later.",
+          "Kunde inte ta bort Egenskap. Försök igen.",
           "error"
         );
       } finally {
@@ -523,15 +516,16 @@ tr:nth-child(2n) {
 }
 
 @media (max-width: 600px) {
-    h1, h2{
-      font-size: 18px;
-    }
-    h1{
-      margin-top: 30px;
-    }
-    p, #text{
-      font-size: 12px;
-    }
+  h1,
+  h2 {
+    font-size: 18px;
   }
+  h1 {
+    margin-top: 30px;
+  }
+  p,
+  #text {
+    font-size: 12px;
+  }
+}
 </style>
-  

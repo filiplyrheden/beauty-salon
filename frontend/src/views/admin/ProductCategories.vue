@@ -130,13 +130,9 @@ export default {
           ...category,
         }));
       } catch (error) {
-        console.error(
-          "Error fetching categories:",
-          error.response || error.message
-        );
         Swal.fire(
           "Error",
-          "Failed to fetch categories. Please try again later.",
+          "Kunde inte hämta kategorier. försök igen.",
           "error"
         );
       } finally {
@@ -151,15 +147,7 @@ export default {
           ...product,
         }));
       } catch (error) {
-        console.error(
-          "Error fetching categories:",
-          error.response || error.message
-        );
-        Swal.fire(
-          "Error",
-          "Failed to fetch categories. Please try again later.",
-          "error"
-        );
+        Swal.fire("Error", "Kunde inte hämta produkter. försök igen.", "error");
       } finally {
         this.isLoading = false;
       }
@@ -185,15 +173,16 @@ export default {
         const addedCategory = { ...response.data };
         this.categories.push(addedCategory);
         this.resetForm();
-        Swal.fire("Success", "Category added successfully!", "success");
+        Swal.fire("Success", "Kategori tillagd!", "success");
       } catch (error) {
-        console.error(
-          "Error adding category:",
-          error.response || error.message
-        );
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
+
+        // Display all error messages in the alert
         Swal.fire(
           "Error",
-          "Failed to add category. Please check your input and try again.",
+          `Kategori kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
           "error"
         );
       } finally {
@@ -246,15 +235,16 @@ export default {
 
         this.resetForm();
         this.isEditing = false;
-        Swal.fire("Success", "Category updated successfully!", "success");
+        Swal.fire("Success", "Kategori uppdaterad!", "success");
       } catch (error) {
-        console.error(
-          "Error updating category:",
-          error.response || error.message
-        );
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
+
+        // Display all error messages in the alert
         Swal.fire(
           "Error",
-          "Failed to update category. Please check your input and try again.",
+          `Kategori kunde inte uppdateras. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
           "error"
         );
       } finally {
@@ -303,15 +293,11 @@ export default {
         this.categories = this.categories.filter(
           (category) => category.category_id !== category_id
         );
-        Swal.fire("Deleted!", "Category deleted successfully!", "success");
+        Swal.fire("Deleted!", "Kategori har tagits bort!", "success");
       } catch (error) {
-        console.error(
-          "Error deleting category:",
-          error.response || error.message
-        );
         Swal.fire(
           "Error",
-          "Failed to delete category. Please try again later.",
+          "Kunde inte ta bort kategori. försök igen.",
           "error"
         );
       } finally {

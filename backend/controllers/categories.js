@@ -5,6 +5,8 @@ import {
   deleteCategories,
   createCategories,
 } from "../models/productCategoriesModel.js";
+import { handleValidationErrors } from "../verificationMiddleware/validator.js";
+import { body } from "express-validator";
 
 /**
  * Handler to show all services.
@@ -47,40 +49,86 @@ export const deleteCategoriesById = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-export const updateCategoriesById = async (req, res) => {
-  try {
-    const id = req.params.id;
+export const updateCategoriesById = [
+  body("category_name")
+    .trim()
+    .notEmpty()
+    .withMessage("Kategorinamn är obligatoriskt")
+    .isLength({ min: 3, max: 50 })
+    .withMessage("Kategorinamn ska vara mellan 3 och 50 tecken")
+    .matches(/^[a-zA-Z0-9_ åäöÅÄÖ]*$/)
+    .withMessage(
+      "Kategorinamn får endast innehålla bokstäver, siffror, understreck och mellanslag"
+    ),
 
-    // Validate input
-    const { category_name, parent_category_id } = req.body;
+  // Validation for optional parent_category_id
+  body("parent_category_id")
+    .optional({ nullable: true })
+    .isInt({ gt: 0 })
+    .withMessage(
+      "Föräldrakategori-ID måste vara ett positivt heltal om det anges"
+    ),
 
-    // Call the service to update the category
-    const updatedCategory = await updateCategories(id, req.body);
+  handleValidationErrors,
 
-    if (!updatedCategory) {
-      return res.status(500).json({ error: "Failed to update category" });
+  async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      // Validate input
+      const { category_name, parent_category_id } = req.body;
+
+      // Call the service to update the category
+      const updatedCategory = await updateCategories(id, req.body);
+
+      if (!updatedCategory) {
+        return res.status(500).json({ error: "Failed to update category" });
+      }
+
+      res.status(200).json(updatedCategory);
+    } catch (err) {
+      console.error("Error in updateCategoriesById:", err);
+      res.status(500).json({ error: "Internal Server Error" });
     }
+  },
+];
 
-    res.status(200).json(updatedCategory);
-  } catch (err) {
-    console.error("Error in updateCategoriesById:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+export const createNewCategories = [
+  body("category_name")
+    .trim()
+    .notEmpty()
+    .withMessage("Kategorinamn är obligatoriskt")
+    .isLength({ min: 3, max: 50 })
+    .withMessage("Kategorinamn ska vara mellan 3 och 50 tecken")
+    .matches(/^[a-zA-Z0-9_ åäöÅÄÖ]*$/)
+    .withMessage(
+      "Kategorinamn får endast innehålla bokstäver, siffror, understreck och mellanslag"
+    ),
 
-export const createNewCategories = async (req, res) => {
-  try {
-    const { category_name, parent_category_id } = req.body;
-    if (!category_name || category_name.trim() === "") {
-      return res.status(400).json({ error: "Category name is required" });
+  // Validation for optional parent_category_id
+  body("parent_category_id")
+    .optional({ nullable: true })
+    .isInt({ gt: 0 })
+    .withMessage(
+      "Föräldrakategori-ID måste vara ett positivt heltal om det anges"
+    ),
+
+  handleValidationErrors,
+
+  async (req, res) => {
+    try {
+      const { category_name, parent_category_id } = req.body;
+      if (!category_name || category_name.trim() === "") {
+        return res.status(400).json({ error: "Category name is required" });
+      }
+      const newCategory = await createCategories({
+        category_name,
+        parent_category_id,
+      });
+      res.status(201).json(newCategory);
+    } catch (err) {
+      console.error("Error in createNewCategories:", err);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-    const newCategory = await createCategories({
-      category_name,
-      parent_category_id,
-    });
-    res.status(201).json(newCategory);
-  } catch (err) {
-    console.error("Error in createServicesCategories:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+  },
+];
