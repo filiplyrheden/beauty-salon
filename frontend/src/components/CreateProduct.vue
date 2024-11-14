@@ -363,6 +363,9 @@ export default {
           `Produkten "${this.productName}" har skapats.`,
           "success"
         );
+        this.$emit('product-created', response.data.product);
+        console.log("res.data");
+        console.log(response.data);
         this.resetForm();
       } catch (error) {
         console.error("Error adding product:", error);

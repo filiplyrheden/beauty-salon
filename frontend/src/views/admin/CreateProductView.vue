@@ -1,6 +1,6 @@
 <template>
     <div>
-      <CreateProduct />
+      <CreateProduct @product-created="handleProductCreated" />
       <ProductList :items="productItems" @product-deleted="handleProductDelete" />
     </div>
   </template>
@@ -39,6 +39,11 @@
       // Remove the deleted product from the products array
       this.productItems = this.productItems.filter(product => product.product_id !== productId);
       },
+      handleProductCreated(newProduct) {
+      // Add the new product to the product list without re-fetching from the API
+      console.log("newProduct to be added: ", newProduct);
+      this.productItems.push(newProduct);
+      }
     }
   };
   </script>
