@@ -73,7 +73,7 @@ export default {
       formData.append("schedule", this.schedule);
 
       try {
-        await axiosInstance.post("/admin/events", formData, {
+        const response = await axiosInstance.post("/admin/events", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -83,18 +83,24 @@ export default {
           `Eventet "${this.eventName}" har skapats.`,
           "success"
         );
+        this.$emit('event-created', response.data.event);
+        console.log("res.data");
+        console.log(response.data);
         this.resetForm();
       } catch (error) {
-        if (error.response && error.response.data) {
-          this.message = "Error adding event: " + error.response.data.error;
-        } else {
-          this.message = "Error adding event: " + (error.message || "Internal Server Error");
-        }
-        Swal.fire(
-          "Något gick fel!",
-          `Eventet "${this.eventName}" kunde inte sparas.`,
-          "error"
+        console.error(
+          "Error adding category:",
+          error.response || error.message
         );
+        // Get all error messages from the response
+        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+
+        // Display all error messages in the alert
+        Swal.fire(
+        "Error",
+        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+        "error"
+      );
       }
     },
     resetForm() {

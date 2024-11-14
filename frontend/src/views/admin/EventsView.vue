@@ -1,6 +1,6 @@
 <template>
     <div>
-        <CreateEvent />
+        <CreateEvent @event-created="handleEventCreated" />
         <EventList :items="eventItems" @event-deleted="handleEventDelete" />
     </div>
 </template>
@@ -42,6 +42,10 @@ export default {
             // Remove the deleted event from the eventItems array
             this.eventItems = this.eventItems.filter(event => event.event_id !== eventId);
         },
+        handleEventCreated(newEvent) {
+            // Add the new event to the event list without re-fetching from the API
+            this.eventItems.push(newEvent);
+        }
     }
 };
 </script>

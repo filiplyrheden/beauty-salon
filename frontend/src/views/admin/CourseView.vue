@@ -261,11 +261,15 @@ export default {
         Swal.fire("Success", "Course added successfully!", "success");
       } catch (error) {
         console.error("Error adding course:", error.response || error.message);
+        // Get all error messages from the response
+        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+
+        // Display all error messages in the alert
         Swal.fire(
-          "Error",
-          "Failed to add course. Please check your input and try again.",
-          "error"
-        );
+        "Error",
+        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+        "error"
+      );
       } finally {
         this.isLoading = false;
       }
@@ -344,11 +348,16 @@ export default {
           "Error updating course:",
           error.response || error.message
         );
+        console.error("Error adding course:", error.response || error.message);
+        // Get all error messages from the response
+        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+
+        // Display all error messages in the alert
         Swal.fire(
-          "Error",
-          "Failed to update course. Please check your input and try again.",
-          "error"
-        );
+        "Error",
+        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+        "error"
+      );
       } finally {
         this.isLoading = false;
       }
@@ -360,13 +369,11 @@ export default {
     async deleteCourse(course_id) {
       const result = await Swal.fire({
         title: "Are you sure?",
-        text: "Do you really want to delete this course? This action cannot be undone.",
+        text: "Är du säker på att du vill ta bort denna kursen? Du kan inte ändra dig sen.",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "Cancel",
+        confirmButtonText: "Ja, ta bort den!",
+        cancelButtonText: "Avbryt",
       });
 
       // Check if the user confirmed the action

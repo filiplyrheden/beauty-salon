@@ -5,7 +5,8 @@ import {
   deletePageReviews,
   createPageReviews,
 } from "../models/pageReviewsModel.js";
-
+import { handleValidationErrors } from "../verificationMiddleware/validator.js";
+import { check } from "express-validator";
 /**
  * Handler to show all services.
  */
@@ -48,34 +49,56 @@ export const deletePageReviewsById = async (req, res) => {
   }
 };
 
-export const updatePageReviewsById = async (req, res) => {
-  try {
-    const id = req.params.id;
+const validationRules = [
+  check("rating")
+    .isInt({ min: 1, max: 5 }).withMessage("Betyg måste vara mellan 1 och 5"),
+  
+  check("review_text")
+    .notEmpty().withMessage("Recension är obligatorisk")
+    .isLength({ min: 10 }).withMessage("Recensionen måste vara minst 10 tecken lång"),
+];
 
-    // Validate input
-    const { rating, review_text } = req.body;
+export const updatePageReviewsById = [
+  ...validationRules,
+  handleValidationErrors,
 
-    // Call the service to update the PageReview
-    const updatedPageReview = await updatePageReviews(id, req.body);
-
-    if (!updatedPageReview) {
-      return res.status(500).json({ error: "Failed to update Page Review" });
+  async (req, res) => {
+    try {
+      const id = req.params.id;
+  
+      // Validate input
+      const { rating, review_text } = req.body;
+  
+      // Call the service to update the PageReview
+      const updatedPageReview = await updatePageReviews(id, req.body);
+  
+      if (!updatedPageReview) {
+        return res.status(500).json({ error: "Failed to update Page Review" });
+      }
+  
+      res.status(200).json(updatedPageReview);
+    } catch (err) {
+      console.error("Error in updatePageReviewsById:", err);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-
-    res.status(200).json(updatedPageReview);
-  } catch (err) {
-    console.error("Error in updatePageReviewsById:", err);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-};
+];
 
-export const createNewPageReviews = async (req, res) => {
-  try {
-    const { rating, review_text } = req.body;
-    const newPageReview = await createPageReviews({ rating, review_text });
-    res.status(201).json(newPageReview);
-  } catch (err) {
-    console.error("Error in createPageReviews:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+
+export const createNewPageReviews = [
+  ...validationRules,
+  handleValidationErrors,
+
+  async (req, res) => {
+    try {
+      const { rating, review_text } = req.body;
+      const newPageReview = await createPageReviews({ rating, review_text });
+      res.status(201).json(newPageReview);
+    } catch (err) {
+      console.error("Error in createPageReviews:", err);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-};
+];
+
+

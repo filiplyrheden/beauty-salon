@@ -180,7 +180,7 @@ export default {
         console.error("Error updating brand:", error.response || error.message);
         Swal.fire(
           "Error",
-          `Märke kunde inte uppdateras. Kolla vad du har skrivit in och prova igen! ${error.response.data.errors[0].msg}`,
+          `Märke kunde inte uppdateras. Kolla vad du har skrivit in och prova igen! <br> ${error.response.data.errors[0].msg}`,
           "error"
         );
         console.log(error.response.data);
