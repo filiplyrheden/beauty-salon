@@ -234,7 +234,7 @@ export default {
 
       // Create FormData object
       const formData = new FormData();
-      formData.append("image", this.selectedImage);
+      formData.append("courseImage", this.selectedImage);
       formData.append("name", this.form.name);
       formData.append("description", this.form.description);
       formData.append("price", this.form.price);
@@ -262,14 +262,16 @@ export default {
       } catch (error) {
         console.error("Error adding course:", error.response || error.message);
         // Get all error messages from the response
-        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
 
         // Display all error messages in the alert
         Swal.fire(
-        "Error",
-        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-        "error"
-      );
+          "Error",
+          `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          "error"
+        );
       } finally {
         this.isLoading = false;
       }
@@ -303,7 +305,7 @@ export default {
 
       // Always append the course_id to the FormData
       if (this.selectedImage) {
-        formData.append("image", this.selectedImage);
+        formData.append("courseImage", this.selectedImage);
       } else {
         formData.append("image_url", this.imagePreview);
       }
@@ -350,14 +352,16 @@ export default {
         );
         console.error("Error adding course:", error.response || error.message);
         // Get all error messages from the response
-        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
 
         // Display all error messages in the alert
         Swal.fire(
-        "Error",
-        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-        "error"
-      );
+          "Error",
+          `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          "error"
+        );
       } finally {
         this.isLoading = false;
       }

@@ -69,142 +69,142 @@
             <font-awesome-icon :icon="['fas', 'edit']" /> Ändra
           </button>
         </div>
-        
-        <div
-        v-if="
-            editingProduct && editingProduct.product_id === product.product_id
-            "
-          class="edit-form"
-          >
-          <form 
-          id="uploadForm"
-          enctype="multipart/form-data"
-          @submit.prevent="saveProduct">
 
+        <div
+          v-if="
+            editingProduct && editingProduct.product_id === product.product_id
+          "
+          class="edit-form"
+        >
+          <form
+            id="uploadForm"
+            enctype="multipart/form-data"
+            @submit.prevent="saveProduct"
+          >
             <h3>Ändra Produkt</h3>
             <h4>{{ product }}</h4>
             <br />
             <h4>{{ editingProduct }}</h4>
-              <div class="form-group">
-                <label for="productName">Prouktnamn</label>
-                <input
-                  class="productNameInput"
-                  id="productName"
-                  v-model="editingProduct.product_name"
-                  placeholder="Product Name"
-                />
-              </div>
-              <div class="form-group">
-                <label for="productDescription">Beskrivning</label>
-                <textarea
-                  id="productDescription"
-                  v-model="editingProduct.description"
-                  placeholder="Description"
-                ></textarea>
-              </div>
+            <div class="form-group">
+              <label for="productName">Prouktnamn</label>
+              <input
+                class="productNameInput"
+                id="productName"
+                v-model="editingProduct.product_name"
+                placeholder="Product Name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="productDescription">Beskrivning</label>
+              <textarea
+                id="productDescription"
+                v-model="editingProduct.description"
+                placeholder="Description"
+              ></textarea>
+            </div>
 
-              <fieldset class="fieldsetFlex">
-                <legend>Egenskaper</legend>
-                <label for="property">Välj Egenskap:</label>
-                <select id="property" v-model="selectedProperty">
-                  <option
-                    v-for="property in propertiesOnLoad"
-                    :key="property.property_id"
-                    :value="property.property_id"
-                  >
-                    {{ property.name }}
-                  </option>
-                </select>
-                <button type="button" class="save-btn" @click="addProperty">
-                  Lägg till Egenskap
-                </button>
-                <ul>
-                  <li
-                    v-for="(property, index) in editingProduct.properties"
-                    :key="property.property_id"
-                  >
-                    {{ property.name }}
-                    <button type="button" @click="removeProperty(index)">Remove</button>
-                  </li>
-                </ul>
-              </fieldset>
+            <fieldset class="fieldsetFlex">
+              <legend>Egenskaper</legend>
+              <label for="property">Välj Egenskap:</label>
+              <select id="property" v-model="selectedProperty">
+                <option
+                  v-for="property in propertiesOnLoad"
+                  :key="property.property_id"
+                  :value="property.property_id"
+                >
+                  {{ property.name }}
+                </option>
+              </select>
+              <button type="button" class="save-btn" @click="addProperty">
+                Lägg till Egenskap
+              </button>
+              <ul>
+                <li
+                  v-for="(property, index) in editingProduct.properties"
+                  :key="property.property_id"
+                >
+                  {{ property.name }}
+                  <button type="button" @click="removeProperty(index)">
+                    Remove
+                  </button>
+                </li>
+              </ul>
+            </fieldset>
 
-              <fieldset>
-                <legend>Bilder</legend>
-                <div class="editingImageWrapper">
-                  <div class="form-group">
-                    <label for="primaryImage">Första Bilden:</label>
-                    <input
-                      type="file"
-                      id="primaryImage"
-                      @change="onImageChangeEditing($event, 'primary')"
-                      accept="image/*"
-                      />
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="secondaryImage">Andra Bilden:</label>
-                    <input
+            <fieldset>
+              <legend>Bilder</legend>
+              <div class="editingImageWrapper">
+                <div class="form-group">
+                  <label for="primaryImage">Första Bilden:</label>
+                  <input
+                    type="file"
+                    id="primaryImage"
+                    @change="onImageChangeEditing($event, 'primary')"
+                    accept="image/*"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="secondaryImage">Andra Bilden:</label>
+                  <input
                     type="file"
                     id="secondaryImage"
                     @change="onImageChangeEditing($event, 'secondary')"
                     accept="image/*"
-                    />
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="thirdImage">Tredje Bilden:</label>
-                    <input
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="thirdImage">Tredje Bilden:</label>
+                  <input
                     type="file"
                     id="thirdImage"
                     @change="onImageChangeEditing($event, 'third')"
                     accept="image/*"
-                    />
-                  </div>
+                  />
                 </div>
-              </fieldset>
+              </div>
+            </fieldset>
 
-              <div class="form-group">
-                <label for="usageProducts">Användningsinstruktioner</label>
-                <textarea
-                  id="usageProducts"
-                  v-model="editingProduct.usage_products"
-                  placeholder="Enter usage instructions"
-                ></textarea>
-              </div>
-              <div class="form-group">
-                <label for="categoryId"
-                  >Kategori:
-                  {{ editingProduct.category.category_name }}</label
+            <div class="form-group">
+              <label for="usageProducts">Användningsinstruktioner</label>
+              <textarea
+                id="usageProducts"
+                v-model="editingProduct.usage_products"
+                placeholder="Enter usage instructions"
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label for="categoryId"
+                >Kategori: {{ editingProduct.category.category_name }}</label
+              >
+              <select v-model="editingProduct.category.category_id">
+                <option value="" disabled selected>Välj en kategori</option>
+                <option
+                  v-for="(category, index) in categoriesOnLoad"
+                  :key="index"
+                  :value="category.category_id"
                 >
-                <select v-model="editingProduct.category.category_id">
-                  <option value="" disabled selected>Välj en kategori</option>
-                  <option
-                    v-for="(category, index) in categoriesOnLoad"
-                    :key="index"
-                    :value="category.category_id"
-                  >
-                    {{ category.category_name }}
-                  </option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="brandId"
-                  >Märke:
-                  {{ editingProduct.brand.brand_name }}</label
+                  {{ category.category_name }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="brandId"
+                >Märke: {{ editingProduct.brand.brand_name }}</label
+              >
+              <select v-model="editingProduct.brand.brand_id">
+                <option value="" disabled selected>Välj ett märke</option>
+                <option
+                  v-for="(brand, index) in brandsOnLoad"
+                  :key="index"
+                  :value="brand.brand_id"
                 >
-                <select v-model="editingProduct.brand.brand_id">
-                  <option value="" disabled selected>Välj ett märke</option>
-                  <option
-                    v-for="(brand, index) in brandsOnLoad"
-                    :key="index"
-                    :value="brand.brand_id"
-                  >
-                    {{ brand.brand_name }}
-                  </option>
-                </select>
-              </div>
-                
+                  {{ brand.brand_name }}
+                </option>
+              </select>
+            </div>
+
             <fieldset>
               <legend>Sizes</legend>
               <div
@@ -223,7 +223,11 @@
                   type="number"
                   placeholder="Stock Quantity"
                 />
-                <button type="button" class="delete-btn" @click="removeSize(index)">
+                <button
+                  type="button"
+                  class="delete-btn"
+                  @click="removeSize(index)"
+                >
                   Ta Bort Storlek
                 </button>
               </div>
@@ -256,7 +260,11 @@
               >
                 <font-awesome-icon :icon="['fas', 'trash']" /> Ta bort
               </button>
-              <button type="button" class="cancel-btn" @click="cancelEdit(product)">
+              <button
+                type="button"
+                class="cancel-btn"
+                @click="cancelEdit(product)"
+              >
                 <font-awesome-icon :icon="['fas', 'times']" /> Avbryt
               </button>
               <button type="button" class="save-btn" @click="saveProduct">
@@ -349,30 +357,34 @@ export default {
       }
     },
     async deleteProduct(productId) {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Är du säker på att du vill ta bort denna kursen? Du kan inte ändra dig sen.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Ja, ta bort den!",
-      cancelButtonText: "Avbryt",
-    });
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "Är du säker på att du vill ta bort denna kursen? Du kan inte ändra dig sen.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ja, ta bort den!",
+        cancelButtonText: "Avbryt",
+      });
 
-    if (!result.isConfirmed) return;
+      if (!result.isConfirmed) return;
 
-    try {
-      // Attempt to delete the product
-      await axiosInstance.delete(`admin/products/${productId}`);
-      
-      // Emit event to parent component to notify that the product was deleted
-      this.$emit("product-deleted", productId);
+      try {
+        // Attempt to delete the product
+        await axiosInstance.delete(`admin/products/${productId}`);
 
-      await Swal.fire("Borttagen!", "Produkt borttagen", "success");
-    } catch (error) {
-      console.error("Error deleting product:", error);
+        // Emit event to parent component to notify that the product was deleted
+        this.$emit("product-deleted", productId);
 
-      // Show error alert if deletion fails
-      await Swal.fire("Fel", "Kunde inte ta bort produkten. Försök igen senare.", "error");
+        await Swal.fire("Borttagen!", "Produkt borttagen", "success");
+      } catch (error) {
+        console.error("Error deleting product:", error);
+
+        // Show error alert if deletion fails
+        await Swal.fire(
+          "Fel",
+          "Kunde inte ta bort produkten. Försök igen senare.",
+          "error"
+        );
       }
     },
 
@@ -457,18 +469,23 @@ export default {
       formData.append("usage_products", this.editingProduct.usage_products); // Usage instructions
       formData.append("ingredients", this.editingProduct.ingredients); // Ensure 'ingredients' is part of editingProduct
       formData.append("brand_id", this.editingProduct.brand.brand_id);
-
       if (this.editingProduct.primaryImageFile)
         formData.append("primaryImage", this.editingProduct.primaryImageFile);
       if (this.editingProduct.secondaryImageFile)
-        formData.append("secondaryImage", this.editingProduct.secondaryImageFile);
+        formData.append(
+          "secondaryImage",
+          this.editingProduct.secondaryImageFile
+        );
       if (this.editingProduct.thirdImageFile)
         formData.append("thirdImage", this.editingProduct.thirdImageFile);
 
       this.editingProduct.variants.forEach((variant, i) => {
         formData.append(`variants[${i}][size]`, variant.size);
         formData.append(`variants[${i}][price]`, variant.price);
-        formData.append(`variants[${i}][stock_quantity]`, variant.stock_quantity);
+        formData.append(
+          `variants[${i}][stock_quantity]`,
+          variant.stock_quantity
+        );
       });
 
       if (Array.isArray(this.editingProduct.properties)) {
@@ -487,31 +504,33 @@ export default {
       }
 
       for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
+        console.log(pair[0] + ": " + pair[1]);
       }
-      
-      axiosInstance
-    .put(`admin/products/${this.editingProduct.product_id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }) // Corrected syntax here
-    .then(() => {
-      Swal.fire(
-          "Produkt sparad!",
-          `Produkten "${this.editProduct.productName}" har ändrats.`,
-          "success"
-        );
-      this.cancelEdit();
-    })
-    .catch((error) => {
-      console.error("Error saving product:", error);
-      const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
 
-      Swal.fire(
-        "Error",
-        `Märke kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-        "error"
-      );      
-    });
+      axiosInstance
+        .put(`admin/products/${this.editingProduct.product_id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        }) // Corrected syntax here
+        .then(() => {
+          Swal.fire(
+            "Produkt sparad!",
+            `Produkten "${this.editProduct.productName}" har ändrats.`,
+            "success"
+          );
+          this.cancelEdit();
+        })
+        .catch((error) => {
+          console.error("Error saving product:", error);
+          const errorMessages = error.response.data.errors
+            .map((error) => error.msg)
+            .join("<br>");
+
+          Swal.fire(
+            "Error",
+            `Märke kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+            "error"
+          );
+        });
     },
     cancelEdit() {
       this.editingProduct = null;
@@ -622,7 +641,7 @@ fieldset {
   gap: 10px;
 }
 
-.productListWrapper{
+.productListWrapper {
   width: 100%;
 }
 
