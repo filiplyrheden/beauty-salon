@@ -133,7 +133,7 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-.buttons a {
+.booking-link {
   color: black;
 }
 .contact {
