@@ -1065,7 +1065,7 @@ a:hover {
   transform: translateX(0);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .products-header h1 {
     font-size: 30px;
   }
@@ -1147,6 +1147,12 @@ a:hover {
 @media (max-width: 340px) {
   .product-item {
     width: calc(100% - 17.2px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+  .product-item {
+    width: calc(48% - 17.2px);
   }
 }
 </style>
