@@ -256,7 +256,10 @@ export const createProduct = [
       const fetchedCategories = await getCategoriesById(newProductData.category_id);
       console.log(fetchedCategories);
 
+      newProductData.featured = newProductData.featured ? 1 : 0;
+
       const result = await insertProduct(newProductData);
+      console.log(newProductData);
       const productWithInsertId = {
         ...newProductData,
         product_id: result.insertId,
