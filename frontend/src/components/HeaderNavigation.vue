@@ -307,14 +307,18 @@ export default {
 }
 
 .cart-badge {
+  display: flex;
+  height: 19px;
+  width: 19px;
   position: absolute;
   top: -8px;
   right: -18px;
   background-color: black;
   color: white;
   border-radius: 50%;
-  padding: 2px 7px;
   font-size: 12px;
+  justify-content: center;
+  align-items: center;
 }
 
 .menu-icon {
@@ -594,6 +598,13 @@ export default {
   }
   .desktop-top-bar {
     display: none;
+  }
+}
+@media (max-width: 450px) {
+  .cartPopupWrapper {
+    right: 50%; /* ändra sen? */
+    transform: translate(50%, 0);
+    width: 90%;
   }
 }
 </style>

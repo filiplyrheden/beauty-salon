@@ -39,15 +39,7 @@
                 }}
               </p>
             </div>
-            <div class="detail-group">
-              <label>Skapades den:</label>
-              <p>
-                {{
-                  convertToCET(event.created_at) ||
-                  "Kunde inte hämta när eventet skapades"
-                }}
-              </p>
-            </div>
+
             <div class="detail-group">
               <label>Bokning:</label>
               <a
@@ -501,6 +493,9 @@ export default {
 
   .form-actions {
     flex-direction: column;
+  }
+  .event-name {
+    word-break: break-word;
   }
 }
 </style>

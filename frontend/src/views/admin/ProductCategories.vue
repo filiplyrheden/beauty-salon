@@ -20,7 +20,13 @@
         <!-- Name -->
         <div class="form-group">
           <label for="name">Namn:</label>
-          <input v-model="form.name" type="text" id="name" required />
+          <input
+            v-model="form.name"
+            type="text"
+            id="name"
+            required
+            placeholder="Skriv in kategorinamn"
+          />
         </div>
         <div class="form-group">
           <label for="name">Huvudkategori:</label>

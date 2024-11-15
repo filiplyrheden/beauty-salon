@@ -4,7 +4,7 @@
       <div class="footer-top">
         <div class="contact">
           <div class="title">KONTAKTA MIG</div>
-          <div class="phone">0761457735</div>
+          <a href="tel:0761457735">0761457735</a>
           <div class="email">
             <a href="mailto:info@snbeauty.se">info@snbeauty.se</a>
           </div>
@@ -24,14 +24,14 @@
           <router-link to="/behandlingar">Behandlingar</router-link>
           <router-link to="/events">Events</router-link>
           <router-link to="kurser">Kurser</router-link>
-          <router-link to="/about-me">Salongen</router-link>
+          <router-link to="/om-mig">Salongen</router-link>
           <router-link to="/shop">Shop</router-link>
-          <router-link to="/user">Kundportal</router-link>
+          <router-link to="/user/profil">Kundportal</router-link>
         </div>
         <div class="social-media">
           <div class="title">SOCIAL MEDIA</div>
-          <a href="www.instagram.com">Instagram</a>
-          <a href="www.facebook.com">Facebook</a>
+          <a href="https://www.instagram.com/beautyby_shahad_">Instagram</a>
+          <a href="https://www.tiktok.com/@snbeauty__">Tiktok</a>
         </div>
       </div>
       <div class="footer-bottom">

@@ -749,6 +749,9 @@ button:hover {
   .events {
     padding: 32px;
   }
+  .overlay {
+    justify-content: center;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1090px) {
