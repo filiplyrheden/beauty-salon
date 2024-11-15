@@ -32,11 +32,21 @@
             </div>
             <div class="detail-group">
               <label>Tid för event:</label>
-              <p>{{ convertToCET(event.schedule) || 'Kunde inte hämta schema för event' }}</p>
+              <p>
+                {{
+                  convertToCET(event.schedule) ||
+                  "Kunde inte hämta schema för event"
+                }}
+              </p>
             </div>
             <div class="detail-group">
               <label>Skapades den:</label>
-              <p>{{ convertToCET(event.created_at) || 'Kunde inte hämta när eventet skapades' }}</p>
+              <p>
+                {{
+                  convertToCET(event.created_at) ||
+                  "Kunde inte hämta när eventet skapades"
+                }}
+              </p>
             </div>
             <div class="detail-group">
               <label>Bokning:</label>
@@ -65,7 +75,7 @@
           class="edit-form"
         >
           <h4 class="edit-form-title">Ändra Event</h4>
-          <p>{{  editingEvent }}</p>
+          <p>{{ editingEvent }}</p>
           <div class="form-group">
             <label for="editName">Namn:</label>
             <input v-model="editingEvent.name" id="editName" type="text" />
@@ -83,8 +93,9 @@
             <input
               v-model="editingEvent.schedule"
               id="editDescription"
-              type="datetime-local" 
-              required ref="scheduleInput"
+              type="datetime-local"
+              required
+              ref="scheduleInput"
             />
           </div>
           <div class="form-group">
@@ -158,7 +169,9 @@ export default {
 
       if (result.isConfirmed) {
         try {
-          const response = await axiosInstance.delete(`/admin/events/${eventId}`);
+          const response = await axiosInstance.delete(
+            `/admin/events/${eventId}`
+          );
           console.log("Event deleted successfully:", response.data);
           this.$emit("event-deleted", eventId);
           Swal.fire(
@@ -178,7 +191,9 @@ export default {
     },
     editEvent(event) {
       this.editingEvent = { ...event };
-      this.editingEvent.schedule = this.formatScheduleForFrontend(event.schedule);
+      this.editingEvent.schedule = this.formatScheduleForFrontend(
+        event.schedule
+      );
     },
     formatScheduleForFrontend(schedule) {
       if (!schedule) return "";
@@ -200,34 +215,34 @@ export default {
       this.selectedFile = event.target.files[0];
     },
     convertToCET(utcTime) {
-    if (!utcTime || typeof utcTime !== 'string') {
+      if (!utcTime || typeof utcTime !== "string") {
         console.error("Invalid input:", utcTime);
-        return 'Invalid date'; // Return a fallback message if input is invalid
-    }
+        return "Invalid date"; // Return a fallback message if input is invalid
+      }
 
-    // Ensure the UTC string ends with 'Z' for proper parsing
-    if (!utcTime.endsWith('Z')) {
-        utcTime += 'Z';
-    }
+      // Ensure the UTC string ends with 'Z' for proper parsing
+      if (!utcTime.endsWith("Z")) {
+        utcTime += "Z";
+      }
 
-    const date = new Date(utcTime);
-    if (isNaN(date.getTime())) {
+      const date = new Date(utcTime);
+      if (isNaN(date.getTime())) {
         console.error("Invalid date:", utcTime);
-        return 'Invalid date'; // Handle invalid date
-    }
+        return "Invalid date"; // Handle invalid date
+      }
 
-    const cetTime = new Intl.DateTimeFormat('sv-SE', {
-        timeZone: 'Europe/Stockholm',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-    }).format(date);
+      const cetTime = new Intl.DateTimeFormat("sv-SE", {
+        timeZone: "Europe/Stockholm",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }).format(date);
 
-    return cetTime;
+      return cetTime;
     },
     saveEvent(event) {
       const formData = new FormData();
@@ -238,7 +253,7 @@ export default {
       formData.append("schedule", this.editingEvent.schedule);
 
       if (this.selectedFile) {
-        formData.append("image", this.selectedFile);
+        formData.append("eventImage", this.selectedFile);
       }
 
       axiosInstance
@@ -249,9 +264,9 @@ export default {
         })
         .then(() => {
           Swal.fire(
-          "Event sparat!",
-          `Eventet "${this.eventName}" har sparats.`,
-          "success"
+            "Event sparat!",
+            `Eventet "${this.eventName}" har sparats.`,
+            "success"
           );
           this.selectedFile = null;
           this.editingEvent = null;
@@ -259,14 +274,16 @@ export default {
         .catch((error) => {
           console.error("Error saving event:", error);
           // Get all error messages from the response
-          const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
-  
+          const errorMessages = error.response.data.errors
+            .map((error) => error.msg)
+            .join("<br>");
+
           // Display all error messages in the alert
           Swal.fire(
-          "Error",
-          `Event kunde inte ändras. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-          "error"
-        );
+            "Error",
+            `Event kunde inte ändras. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+            "error"
+          );
         });
     },
     cancelEdit() {

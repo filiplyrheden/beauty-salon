@@ -166,7 +166,6 @@ export const insertProduct = async (product) => {
 };
 
 export const editProduct = async (product) => {
-
   const {
     product_id,
     product_name,
@@ -183,6 +182,7 @@ export const editProduct = async (product) => {
     properties,
   } = product;
 
+  console.log(featured);
   try {
     const productQuery = `
       UPDATE Products

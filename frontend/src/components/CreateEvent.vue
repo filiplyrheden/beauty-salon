@@ -4,8 +4,7 @@
       <router-link to="/admin" class="back">Tillbaka</router-link>
       <h2>Lägg Till Event</h2>
     </div>
-    <form @submit.prevent="saveEvent"
-    enctype="multipart/form-data">
+    <form @submit.prevent="saveEvent" enctype="multipart/form-data">
       <div>
         <label for="eventName">Event Namn:</label>
         <input type="text" id="eventName" v-model="eventName" required />
@@ -18,17 +17,35 @@
 
       <div>
         <label for="eventPrice">Pris:</label>
-        <input type="number" id="eventPrice" v-model="eventPrice" step="0.01" required />
+        <input
+          type="number"
+          id="eventPrice"
+          v-model="eventPrice"
+          step="0.01"
+          required
+        />
       </div>
 
       <div>
         <label for="schedule">Tid:</label>
-        <input v-model="schedule" id="schedule" type="datetime-local" required ref="scheduleInput" />
+        <input
+          v-model="schedule"
+          id="schedule"
+          type="datetime-local"
+          required
+          ref="scheduleInput"
+        />
       </div>
 
       <div>
         <label for="image">Bild:</label>
-        <input type="file" id="image" @change="onImageChange" accept="image/*" required />
+        <input
+          type="file"
+          id="image"
+          @change="onImageChange"
+          accept="image/*"
+          required
+        />
       </div>
 
       <div>
@@ -68,7 +85,7 @@ export default {
       formData.append("name", this.eventName);
       formData.append("description", this.description);
       formData.append("price", parseFloat(this.eventPrice));
-      formData.append("image", this.imageFile);
+      formData.append("eventImage", this.imageFile);
       formData.append("booking_link", this.bookingLink);
       formData.append("schedule", this.schedule);
 
@@ -83,7 +100,7 @@ export default {
           `Eventet "${this.eventName}" har skapats.`,
           "success"
         );
-        this.$emit('event-created', response.data.event);
+        this.$emit("event-created", response.data.event);
         console.log("res.data");
         console.log(response.data);
         this.resetForm();
@@ -93,14 +110,16 @@ export default {
           error.response || error.message
         );
         // Get all error messages from the response
-        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
 
         // Display all error messages in the alert
         Swal.fire(
-        "Error",
-        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-        "error"
-      );
+          "Error",
+          `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          "error"
+        );
       }
     },
     resetForm() {

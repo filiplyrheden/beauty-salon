@@ -316,14 +316,14 @@ app.post(
   "/courses",
   authMiddleware,
   adminMiddleware,
-  upload.single("image"),
+  upload.single("courseImage"),
   createNewCourse
 ); // Create a new course with image upload
 app.put(
   "/courses/:id",
   authMiddleware,
   adminMiddleware,
-  upload.single("image"),
+  upload.single("courseImage"),
   updateCourseById
 ); // Update a course with image upload
 app.delete("/courses/:id", authMiddleware, adminMiddleware, deleteCourseById); // Delete a course
@@ -335,14 +335,14 @@ app.post(
   "/admin/events",
   authMiddleware,
   adminMiddleware,
-  upload.single("image"),
+  upload.single("eventImage"),
   createEvent
 ); // Added image upload to events
 app.put(
   "/admin/events/:id",
   authMiddleware,
   adminMiddleware,
-  upload.single("image"),
+  upload.single("eventImage"),
   updateEvent
 ); // Added image upload to events
 app.delete("/admin/events/:id", authMiddleware, adminMiddleware, deleteEvent);
