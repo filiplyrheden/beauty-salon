@@ -38,7 +38,7 @@
             v-model="form.review_text"
             type="text"
             id="review_text"
-            placeholder="i really liked the salon!"
+            placeholder="Det var fantastiskt!"
             required
           />
         </div>
@@ -144,14 +144,16 @@ export default {
       } catch (error) {
         console.error("Error adding review:", error.response || error.message);
         // Get all error messages from the response
-        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
 
         // Display all error messages in the alert
         Swal.fire(
-        "Error",
-        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-        "error"
-      );
+          "Error",
+          `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          "error"
+        );
       } finally {
         this.isLoading = false;
       }
@@ -203,13 +205,15 @@ export default {
           error.response || error.message
         );
         // Get all error messages from the response
-        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
 
         // Display all error messages in the alert
         Swal.fire(
-        "Error",
-        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-        "error"
+          "Error",
+          `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          "error"
         );
       } finally {
         this.isLoading = false;
@@ -538,9 +542,12 @@ tr:nth-child(2n) {
   }
 
   td:nth-of-type(1)::before {
-    content: "Kategori Namn";
+    content: "Rating";
   }
   td:nth-of-type(2)::before {
+    content: "Recensions Text";
+  }
+  td:nth-of-type(3)::before {
     content: "Åtgärder";
   }
 }

@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="header">
-      <router-link to="/admin" class="back">Tillbaka</router-link>
+      <router-link to="/admin" class="back"
+        ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+      >
       <h2>Lägg Till Event</h2>
     </div>
     <form @submit.prevent="saveEvent" enctype="multipart/form-data">
@@ -255,6 +257,7 @@ p.error {
   h2 {
     font-size: 1.3em;
     margin-bottom: 16px;
+    margin-top: 24px;
   }
 
   label {

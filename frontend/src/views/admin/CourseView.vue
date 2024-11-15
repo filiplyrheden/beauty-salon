@@ -758,28 +758,25 @@ tr:nth-child(2n) {
   }
 
   td:nth-of-type(1)::before {
-    content: "ID";
+    content: "Namn";
   }
   td:nth-of-type(2)::before {
-    content: "Name";
+    content: "Beskrivning";
   }
   td:nth-of-type(3)::before {
-    content: "Description";
+    content: "Pris";
   }
   td:nth-of-type(4)::before {
-    content: "Price ($)";
+    content: "Tid";
   }
   td:nth-of-type(5)::before {
-    content: "Schedule";
+    content: "Bild";
   }
   td:nth-of-type(6)::before {
-    content: "Image";
+    content: "Booknings länk";
   }
   td:nth-of-type(7)::before {
-    content: "Booking Link";
-  }
-  td:nth-of-type(8)::before {
-    content: "Actions";
+    content: "Åtgärder";
   }
 }
 </style>

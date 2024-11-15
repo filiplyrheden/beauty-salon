@@ -21,7 +21,13 @@
         <!-- Name -->
         <div class="form-group">
           <label for="name">Namn för egenskap:</label>
-          <input v-model="form.name" type="text" id="name" required />
+          <input
+            v-model="form.name"
+            type="text"
+            id="name"
+            required
+            placeholder="Exfolierande, Upplysande"
+          />
         </div>
 
         <!-- Buttons -->
@@ -490,27 +496,10 @@ tr:nth-child(2n) {
   }
 
   td:nth-of-type(1)::before {
-    content: "ID";
+    content: "Egenskapsnamn";
   }
+
   td:nth-of-type(2)::before {
-    content: "Name";
-  }
-  td:nth-of-type(3)::before {
-    content: "Description";
-  }
-  td:nth-of-type(4)::before {
-    content: "Price ($)";
-  }
-  td:nth-of-type(5)::before {
-    content: "Schedule";
-  }
-  td:nth-of-type(6)::before {
-    content: "Image";
-  }
-  td:nth-of-type(7)::before {
-    content: "Booking Link";
-  }
-  td:nth-of-type(8)::before {
     content: "Actions";
   }
 }

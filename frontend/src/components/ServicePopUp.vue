@@ -111,6 +111,10 @@ button:hover {
   gap: 20px;
   width: 100%;
 }
+.before,
+.after {
+  width: 50%;
+}
 .before img,
 .after img {
   width: 100%;
