@@ -153,6 +153,8 @@ app.post(
       (async () => {
         try {
           const shippingAddress = session.customer_details.address;
+          const totalCost = session.amount_total / 100;
+          console.log("amount_total", totalCost);
           const items = await getCheckoutSession(session.id);
           const lineItems = await stripe.checkout.sessions.listLineItems(
             session.id,
@@ -162,7 +164,12 @@ app.post(
           );
           const user_id = session.metadata.user_id;
           /* const adress = get the adress from the stripe input */
-          await createOrderByHook(user_id, lineItems, shippingAddress);
+          await createOrderByHook(
+            user_id,
+            lineItems,
+            shippingAddress,
+            totalCost
+          );
         } catch (error) {
           console.error("Error creating order: ", error);
         }
@@ -235,7 +242,7 @@ app.get("/api/get-session-details", async (req, res) => {
   try {
     // Fetch the session details from Stripe
     const session = await stripe.checkout.sessions.retrieve(session_id);
-
+    console.log("Session details:", session);
     // Get the user ID from the session metadata
     const user_id = session.metadata.user_id;
 

@@ -1,8 +1,11 @@
 <template>
   <div class="order-confirmation-container">
     <div class="order-confirmation">
+      <!-- Loading State -->
       <p v-if="isLoading">Loading your order details...</p>
-      <div v-if="!sessionDetails">
+
+      <!-- Error State -->
+      <div v-else-if="hasError">
         <h1 class="title">NÅGOT GICK FEL!</h1>
         <p>
           Något gick fel, testa att lägga beställningen igen, om felet kvarstår
@@ -10,7 +13,9 @@
           <a :href="emailLink">info@snbeauty.se</a>.
         </p>
       </div>
-      <div v-else-if="sessionDetails" class="order-details">
+
+      <!-- Success State -->
+      <div v-else class="order-details">
         <h1 class="title">TACK FÖR DIN BESTÄLLNING</h1>
         <p>
           Vi uppskattar att du handlar hos oss, din beställning
@@ -27,7 +32,7 @@
           <strong>{{ formatDate(sessionDetails.order_date) }}</strong>
         </p>
 
-        <!-- Display products in the order -->
+        <!-- Display Products -->
         <div v-if="sessionDetails.products && sessionDetails.products.length">
           <h2 class="sub-title">PRODUKTER I DIN BESTÄLLNING:</h2>
           <ul>
@@ -59,22 +64,28 @@ export default {
     return {
       emailLink: "mailto:orders@example.com",
       sessionDetails: null, // Holds the session information
-      isLoading: false, // Loading state
+      isLoading: false, // Tracks loading state
+      hasError: false, // Tracks error state
     };
   },
   methods: {
     async fetchSessionDetails(sessionId) {
-      this.isLoading = true; // Set loading state
+      this.isLoading = true;
+      this.hasError = false; // Reset error state before fetching
       try {
         const response = await axiosInstance.get(
           `/api/get-session-details?session_id=${sessionId}`
         );
-        this.sessionDetails = response.data;
-        console.log(response.data);
+        if (response.data) {
+          this.sessionDetails = response.data;
+        } else {
+          throw new Error("No session details found");
+        }
       } catch (error) {
         console.error("Failed to fetch session details", error);
+        this.hasError = true; // Set error state if the request fails
       } finally {
-        this.isLoading = false; // Reset loading state
+        this.isLoading = false; // End loading state
       }
     },
     formatCurrency(amount) {
@@ -91,7 +102,11 @@ export default {
   created() {
     localStorage.removeItem("cart");
     const sessionId = this.$route.query.session_id;
-    this.fetchSessionDetails(sessionId);
+    if (sessionId) {
+      this.fetchSessionDetails(sessionId);
+    } else {
+      this.hasError = true;
+    }
   },
 };
 </script>
@@ -153,5 +168,16 @@ ul {
 }
 .order-details p {
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .order-confirmation {
+    padding: 20px;
+    margin: 32px;
+  }
+
+  .order-confirmation-container {
+    height: auto;
+  }
 }
 </style>
