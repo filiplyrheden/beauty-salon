@@ -63,10 +63,10 @@
             ><img src="../assets/User.svg" alt="" />
           </router-link>
           <router-link v-if="isLoggedIn && !isAdmin" to="/user/profil"
-            ><font-awesome-icon icon="user"
+            ><img src="../assets/User.svg" alt=""
           /></router-link>
           <router-link v-if="isLoggedIn && isAdmin" to="/admin"
-            ><img src="../assets/Lock.svg" alt="" />
+            ><img src="../assets/admin.svg" alt="" />
           </router-link>
         </li>
 
