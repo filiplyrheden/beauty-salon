@@ -214,7 +214,7 @@ h1 {
 
   .input-field {
     padding: 10px; /* Reduce padding for input fields on smaller screens */
-    font-size: 14px; /* Smaller font for input fields */
+    font-size: 16px; /* Smaller font for input fields */
   }
 
   .submit-button {

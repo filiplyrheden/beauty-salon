@@ -82,9 +82,7 @@
             @submit.prevent="saveProduct"
           >
             <h3>Ändra Produkt</h3>
-            <h4>{{ product }}</h4>
             <br />
-            <h4>{{ editingProduct }}</h4>
             <div class="form-group">
               <label for="productName">Prouktnamn</label>
               <input
@@ -131,7 +129,7 @@
               </ul>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="fieldsetFlex">
               <legend>Bilder</legend>
               <div class="editingImageWrapper">
                 <div class="form-group">
@@ -142,36 +140,39 @@
                     @change="onImageChangeEditing($event, 'primary')"
                     accept="image/*"
                   />
+                  <img class="editingImage" :src=editingProduct.image_url_primary alt="">
                 </div>
-
+                
                 <div class="form-group">
                   <label for="secondaryImage">Andra Bilden:</label>
                   <input
-                    type="file"
-                    id="secondaryImage"
-                    @change="onImageChangeEditing($event, 'secondary')"
-                    accept="image/*"
+                  type="file"
+                  id="secondaryImage"
+                  @change="onImageChangeEditing($event, 'secondary')"
+                  accept="image/*"
                   />
+                  <img class="editingImage" :src=editingProduct.image_url_secondary alt="">
                 </div>
-
+                
                 <div class="form-group">
                   <label for="thirdImage">Tredje Bilden:</label>
                   <input
-                    type="file"
-                    id="thirdImage"
-                    @change="onImageChangeEditing($event, 'third')"
-                    accept="image/*"
+                  type="file"
+                  id="thirdImage"
+                  @change="onImageChangeEditing($event, 'third')"
+                  accept="image/*"
                   />
+                  <img class="editingImage" :src=editingProduct.image_url_third alt="">
                 </div>
               </div>
             </fieldset>
-
+            
             <div class="form-group">
               <label for="usageProducts">Användningsinstruktioner</label>
               <textarea
-                id="usageProducts"
-                v-model="editingProduct.usage_products"
-                placeholder="Enter usage instructions"
+              id="usageProducts"
+              v-model="editingProduct.usage_products"
+              placeholder="Enter usage instructions"
               ></textarea>
             </div>
             <div class="form-group">
@@ -575,7 +576,7 @@ fieldset {
 }
 
 .productNameInput {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .action-buttons {
@@ -651,6 +652,12 @@ fieldset {
   padding: 0; /* Optional: remove padding */
 }
 
+.editingImage{
+  width: 75px;
+  height: 75px;
+  padding: 5px;
+}
+
 legend {
   margin-bottom: 10px;
   font-weight: bold;
@@ -671,13 +678,15 @@ select {
   border: none; /* Remove border from input fields */
   border-radius: 5px;
   margin-top: 5px;
+  color: black;
   background-color: #dddddd; /* Optional: background color for inputs */
 }
 
 .editingImageWrapper {
   display: flex;
   flex-flow: wrap;
-  align-items: center;
+  flex-direction: column;
+  width: 100%;
 }
 
 textarea {

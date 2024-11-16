@@ -19,7 +19,7 @@
           id="productName"
           v-model="productName"
           required
-          placeholder="Enter product name"
+          placeholder="Skriv Produktnamn"
         />
       </div>
 
@@ -29,7 +29,7 @@
           id="description"
           v-model="description"
           required
-          placeholder="Enter product description"
+          placeholder="Skriv Produktbeskrivning"
         ></textarea>
       </div>
       <div class="form-group">
@@ -621,7 +621,11 @@ input[type="number"]::-webkit-inner-spin-button {
 .custom-radio:checked {
   background-color: #000000; /* Change to your preferred color */
   border-color: #ffffff;
-}   
+}
+
+select{
+  color: #000000;
+}
 
 /* Responsive design */
 @media (max-width: 768px) {

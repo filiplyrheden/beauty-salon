@@ -67,7 +67,6 @@
           class="edit-form"
         >
           <h4 class="edit-form-title">Ändra Event</h4>
-          <p>{{ editingEvent }}</p>
           <div class="form-group">
             <label for="editName">Namn:</label>
             <input v-model="editingEvent.name" id="editName" type="text" />

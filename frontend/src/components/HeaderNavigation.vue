@@ -15,11 +15,21 @@
           <li class="desktop-top-bar">
             <a
               href="https://www.google.com/maps/place/Vasaplatsen+7B,+411+26+G%C3%B6teborg/@57.6993155,11.9686789,17z/data=!4m6!3m5!1s0x464ff36e4641dd05:0x616043b9427a534e!8m2!3d57.6993155!4d11.9686789!16s%2Fg%2F11csfkmj2n?entry=ttu&g_ep=EgoyMDI0MTEwNS4wIKXMDSoASAFQAw%3D%3D"
+              target="_blank"
+              rel="noopener noreferrer"
               >Vasaplatsen - Göteborg</a
             >
           </li>
           <li class="mobile-top-bar">
-            <router-link :to="currentTopBarLink.path">
+            <a
+              v-if="isCurrentLinkExternal"
+              :href="currentTopBarLink.path"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ currentTopBarLink.name }}
+            </a>
+            <router-link v-else :to="currentTopBarLink.path">
               {{ currentTopBarLink.name }}
             </router-link>
           </li>
@@ -173,6 +183,9 @@ export default {
     isCartPopupVisible() {
       return this.$store.getters.cartPopup;
     },
+    isCurrentLinkExternal() {
+      return this.currentTopBarLink.path.startsWith("http");
+    },
     cartTotalPrice() {
       return this.$store.getters.cartTotalPrice;
     },
@@ -203,7 +216,6 @@ export default {
     }),
     handleScroll() {
       this.isTopBarHidden = window.scrollY > 50;
-      console.log("aaaah");
     },
     openCart() {
       this.showCart();

@@ -207,6 +207,7 @@ export default {
 }
 .items {
   padding: 32px 0px;
+  padding-right: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -214,6 +215,44 @@ export default {
   height: 65%;
   overflow: scroll;
 }
+/* ---------------------------------------- */
+/* Custom scrollbar styles */
+div::-webkit-scrollbar {
+  width: 8px; /* Width for the vertical scrollbar */
+  height: 8px; /* Hide the horizontal scrollbar */
+}
+
+/* Hide the horizontal scrollbar specifically */
+div::-webkit-scrollbar:horizontal {
+  height: 8px; /* No horizontal scrollbar */
+}
+
+/* Vertical scrollbar thumb styling */
+div::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+div::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+/* Vertical scrollbar track styling */
+div::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+div::-webkit-scrollbar:horizontal {
+  height: 0px;
+}
+
+div::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  margin-left: 20px; /* Adds padding-like effect to the left of the scrollbar */
+}
+
+/* ----------------------- */
+
 .total-item {
   font-weight: 600;
 }
@@ -274,6 +313,9 @@ export default {
   justify-content: space-between;
   font-weight: 600;
   flex-direction: column;
+}
+.item-header p{
+  word-break:break-word;
 }
 .item-info {
   flex-grow: 1;
@@ -346,9 +388,26 @@ ul {
   opacity: 1;
 }
 
+@media (max-width: 1200px) {
+  .cart {
+    width: 45%;
+  }
+}
+
 @media (max-width: 768px) {
   .cart {
     width: 100%;
   }
+  div::-webkit-scrollbar {
+  width: 4px; /* Width for the vertical scrollbar */
+  height: 4px; /* Hide the horizontal scrollbar */
+  }
 }
+@media (max-width: 350px) {}
+.items{
+    padding-right: 5px;
+  }
+  .item img{
+    width: 50px;
+  }
 </style>
