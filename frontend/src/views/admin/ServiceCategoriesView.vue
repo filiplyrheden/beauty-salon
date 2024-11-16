@@ -495,6 +495,10 @@ tr:nth-child(2n) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  input {
+    font-size: 16px;
+  }
+
   h1 {
     margin-top: 31px;
     font-size: 1.5em;
@@ -555,7 +559,7 @@ tr:nth-child(2n) {
   }
 
   td:nth-of-type(1)::before {
-    content: "Kategori Namn";
+    content: "Namn";
   }
   td:nth-of-type(2)::before {
     content: "Åtgärder";
