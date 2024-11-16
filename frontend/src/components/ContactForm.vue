@@ -148,7 +148,8 @@ form {
 }
 @media (max-width: 768px) {
   input,
-  select {
+  select,
+  textarea {
     font-size: 16px;
   }
 }
