@@ -627,6 +627,18 @@ select{
   color: #000000;
 }
 
+button{
+  color: black;
+}
+
+button:hover{
+  color: white;
+}
+
+input{
+  color: black;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .create-product {
