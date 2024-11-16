@@ -783,6 +783,7 @@ a:hover {
   line-height: 22.4px;
   letter-spacing: 0.02em;
   text-align: left;
+  word-break: break-word;
 }
 .product-info-header {
   display: flex;
@@ -1068,6 +1069,10 @@ a:hover {
 @media (max-width: 768px) {
   .products-header h1 {
     font-size: 30px;
+  }
+
+  .search-input{
+    font-size: 16px;
   }
   .products-header {
     flex-direction: column;

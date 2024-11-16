@@ -215,7 +215,7 @@ h1 {
 
   .input-field,
   .submit-button {
-    font-size: 14px;
+    font-size: 16px;
     padding: 10px;
   }
 

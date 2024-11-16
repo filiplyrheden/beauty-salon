@@ -130,7 +130,7 @@
           kreativitet och glädje!
         </p>
         <router-link to="/events">
-          <Button class="events-button">TILL BOKNING</Button>
+          <button class="events-button">TILL BOKNING</button>
         </router-link>
       </div>
     </div>

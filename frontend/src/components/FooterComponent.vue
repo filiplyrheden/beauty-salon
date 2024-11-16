@@ -11,6 +11,8 @@
           <div class="address">
             <a
               href="https://www.google.com/maps/place/Vasaplatsen+7B,+411+26+G%C3%B6teborg/@57.6993155,11.9686789,473"
+              target="_blank"
+              rel="noopener noreferrer"
               >VASAGATAN 2b, Göteborg</a
             >
           </div>
@@ -24,7 +26,7 @@
           <router-link to="/behandlingar">Behandlingar</router-link>
           <router-link to="/events">Events</router-link>
           <router-link to="kurser">Kurser</router-link>
-          <router-link to="/about-me">Salongen</router-link>
+          <router-link to="/om-mig">Salongen</router-link>
           <router-link to="/shop">Shop</router-link>
           <router-link to="/user">Kundportal</router-link>
         </div>
