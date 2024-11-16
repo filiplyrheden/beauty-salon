@@ -19,8 +19,8 @@
         <!-- Popup Header -->
         <div class="filter-popup-header">
           <h2>Filter</h2>
-          <button class="" @click="toggleFilterPopup">
-            <img src="@/assets/x.svg" alt="" />
+          <button class="filter-exit-button" @click="toggleFilterPopup">
+            <img src="@/assets/exit.svg" alt="" />
           </button>
         </div>
 
@@ -1017,7 +1017,11 @@ a:hover {
   z-index: 1000;
   transition: opacity 0.3s ease;
 }
-
+.filter-exit-button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
 .sizesMobileOverlay {
   position: absolute;
   top: 0;
