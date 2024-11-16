@@ -180,5 +180,18 @@ html {
     height: 40px !important;
     fill: white !important;
   }
+
+  textarea,
+  input.text,
+  input[type="text"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="”search”"],
+  .input-checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none; /* firefox browser */
+
+    border-radius: 0;
+  }
 }
 </style>
