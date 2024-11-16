@@ -139,6 +139,11 @@ html {
 }
 
 @media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
   .carousel__prev,
   .carousel__next {
     top: unset !important;
