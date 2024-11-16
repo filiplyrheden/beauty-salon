@@ -751,7 +751,8 @@ button:hover {
 
 @media (max-width: 767px) {
   input,
-  select {
+  select,
+  textarea {
     font-size: 16px;
   }
   .product-list {
