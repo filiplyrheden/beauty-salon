@@ -251,7 +251,8 @@ p.error {
 
 @media (max-width: 600px) {
   input,
-  select {
+  select,
+  textarea {
     font-size: 16px;
   }
   form {
@@ -265,12 +266,6 @@ p.error {
   }
 
   label {
-    font-size: 0.9rem;
-  }
-
-  input[type="text"],
-  input[type="number"],
-  textarea {
     font-size: 0.9rem;
   }
 
