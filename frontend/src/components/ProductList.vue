@@ -689,6 +689,18 @@ select {
   width: 100%;
 }
 
+button{
+  color: black;
+}
+
+button:hover{
+  color: white;
+}
+
+input{
+  color: black;
+}
+
 textarea {
   height: 100px;
 }
