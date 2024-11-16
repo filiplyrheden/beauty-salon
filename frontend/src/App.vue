@@ -187,6 +187,8 @@ html {
   input[type="button"],
   input[type="submit"],
   input[type="”search”"],
+  input[type="datetime-local"],
+  select,
   .input-checkbox {
     -webkit-appearance: none;
     -moz-appearance: none; /* firefox browser */
