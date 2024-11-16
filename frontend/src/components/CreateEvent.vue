@@ -250,6 +250,10 @@ p.error {
 }
 
 @media (max-width: 600px) {
+  input,
+  select {
+    font-size: 16px;
+  }
   form {
     padding: 15px;
   }

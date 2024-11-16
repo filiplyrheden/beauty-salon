@@ -482,6 +482,10 @@ export default {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  input,
+  select {
+    font-size: 16px;
+  }
   .event-content {
     grid-template-columns: 1fr;
   }
