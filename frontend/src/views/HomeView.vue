@@ -32,12 +32,12 @@
             <div class="carousel__item">
               <div class="carousel__images">
                 <img
-                  :src="slide.image"
+                  :src="slide.image1"
                   alt="Slide image"
                   class="carousel__image carousel__image__back"
                 />
                 <img
-                  :src="slide.image"
+                  :src="slide.image2"
                   alt="Slide image"
                   class="carousel__image carousel__image__front"
                 />
@@ -126,9 +126,10 @@
           Shahad skräddarsydda skönhetsupplevelser som gör ditt event
           minnesvärt. Perfekt för alla gruppstorlekar – varje session anpassas
           med sminktips, tutorials och en härlig atmosfär. Skapa oförglömliga
-          minnen och stråla med hjälp av en professionell som balanserar stil,
+          minnen och stråla med hjälp av ett proffs som balanserar stil,
           kreativitet och glädje!
         </p>
+
         <router-link to="/events">
           <Button class="events-button">TILL BOKNING</Button>
         </router-link>
@@ -141,10 +142,15 @@
 <script>
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-import noImage from "@/assets/noImage.png";
 import ProductCarousel from "@/components/ProductCarousel.vue";
 import ProductGrid from "@/components/ProductGrid.vue";
 import HomepageReviews from "@/components/HomepageReviews.vue";
+import brudmakeup1 from "../assets/brudsminkning1.jpg";
+import brudmakeup2 from "../assets/brudsminkning2.jpg";
+import ansiktsbehandling1 from "../assets/ansiktsbehandling1.jpg";
+import ansiktsbehandling2 from "../assets/ansiktsbehandling2.jpg";
+import massage1 from "../assets/massage1.jpg";
+import massage2 from "../assets/massage2.jpg";
 
 export default {
   data() {
@@ -153,19 +159,22 @@ export default {
       slides: [
         {
           title: "Brudmakeup",
-          image: noImage,
+          image1: brudmakeup2,
+          image2: brudmakeup1,
           description:
             "På din stora dag förtjänar du att stråla. Vår brudmakeup är designad för att framhäva din naturliga skönhet och hålla hela dagen och natten. Vi skapar en look som harmonierar med din stil, klänning och tema – från klassiskt elegant till modernt och fräscht.",
         },
         {
           title: "Ansiktsbehandlingar",
-          image: noImage,
+          image1: ansiktsbehandling2,
+          image2: ansiktsbehandling1,
           description:
             "Ge din hud nytt liv med våra ansiktsbehandlingar, skräddarsydda efter din hudtyp och behov. Perfekt för att rengöra på djupet, återfukta och få en naturlig lyster.",
         },
         {
           title: "Massage",
-          image: noImage,
+          image1: massage1,
+          image2: massage2,
           description:
             "Koppla av med våra avslappnande massager, designade för att lösa upp spänningar och främja cirkulation. Vi anpassar behandlingen för att du ska känna dig balanserad och återhämtad.",
         },
@@ -248,7 +257,7 @@ export default {
 .carousel__image {
   width: 60%;
   height: auto;
-  height: 50%;
+  height: 70%;
   object-fit: cover;
 }
 .carousel__image__front,
@@ -653,7 +662,7 @@ button:hover {
     top: -30px;
   }
   .treatments-container {
-    padding: 32px 0px;
+    padding: 64px 0px;
   }
   .treatments .carousel__item {
     flex-direction: column;
@@ -776,6 +785,36 @@ button:hover {
   }
   .title {
     font-size: 3em;
+  }
+  .treatments .carousel__content > p {
+    display: none;
+  }
+}
+@media (max-width: 450px) {
+  .treatments .carousel__item {
+    height: 70vh;
+  }
+
+  .treatments .carousel__image {
+    width: 70%;
+    min-height: 200px;
+    height: 58%;
+  }
+  .treatments .carousel__image__front {
+    bottom: 50%;
+    right: 32px;
+    transform: translate(0, 80%);
+  }
+  .treatments .carousel__image__back {
+    top: 50%;
+    left: 32px;
+    transform: translate(0, -80%);
+  }
+  .treatments-container {
+    padding: 32px 0px;
+  }
+  .carousel__content__title {
+    font-size: 1.4em;
   }
 }
 </style>
