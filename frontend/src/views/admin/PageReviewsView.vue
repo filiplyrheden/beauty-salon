@@ -12,7 +12,7 @@
 
     <!-- Add/Edit PageReview Form -->
     <div class="form-container" ref="formContainer">
-      <h2>{{ isEditing ? "Ändra Review" : "Lägg till ny REVIEW" }}</h2>
+      <h2>{{ isEditing ? "Ändra Review" : "Lägg till ny Recension" }}</h2>
       <form
         @submit.prevent="isEditing ? updateReview() : addReview()"
         enctype="multipart/form-data"
@@ -475,6 +475,9 @@ tr:nth-child(2n) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  input {
+    font-size: 16px;
+  }
   h1 {
     margin-top: 31px;
     font-size: 1.5em;

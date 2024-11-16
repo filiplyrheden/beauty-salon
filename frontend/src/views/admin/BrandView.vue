@@ -20,7 +20,13 @@
         <!-- Name -->
         <div class="form-group">
           <label for="name">Namn:</label>
-          <input v-model="form.name" type="text" id="name" required />
+          <input
+            v-model="form.name"
+            type="text"
+            id="name"
+            required
+            placeholder="Circadia, Herbs2Peel, etc"
+          />
         </div>
 
         <!-- Buttons -->
@@ -125,7 +131,9 @@ export default {
           error.response || error.message
         );
         // Get all error messages from the response
-        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
 
         // Display all error messages in the alert
         Swal.fire(
@@ -442,6 +450,9 @@ tr:nth-child(2n) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  input {
+    font-size: 16px;
+  }
   h1 {
     margin-top: 31px;
     font-size: 1.5em;
