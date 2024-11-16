@@ -1,40 +1,41 @@
 <template>
-  <div class="header">
-    <button>
-      <router-link to="/admin" class="back">Tillbaka</router-link>
-    </button>
-    <h2>Add New Product</h2>
-  </div>
-  <div class="create-product">
-    <form
-      id="uploadForm"
-      @submit.prevent="saveProduct"
-      enctype="multipart/form-data"
-    >
-      <!-- Existing Fields -->
-      <div class="form-group">
-        <label for="productName">Produktnamn</label>
-        <input
-          type="text"
-          id="productName"
-          v-model="productName"
-          required
-          placeholder="Skriv Produktnamn"
-        />
-      </div>
+  <div>
+    <div class="header">
+      <button>
+        <router-link to="/admin" class="back">Tillbaka</router-link>
+      </button>
+      <h2>Add New Product</h2>
+    </div>
+    <div class="create-product">
+      <form
+        id="uploadForm"
+        @submit.prevent="saveProduct"
+        enctype="multipart/form-data"
+      >
+        <!-- Existing Fields -->
+        <div class="form-group">
+          <label for="productName">Produktnamn</label>
+          <input
+            type="text"
+            id="productName"
+            v-model="productName"
+            required
+            placeholder="Skriv Produktnamn"
+          />
+        </div>
 
-      <div class="form-group">
-        <label for="description">Beskrivning</label>
-        <textarea
-          id="description"
-          v-model="description"
-          required
-          placeholder="Skriv Produktbeskrivning"
-        ></textarea>
-      </div>
-      <div class="form-group">
-        <label for="categoryId">Kategori</label>
-        <select v-model="categoryId">
+        <div class="form-group">
+          <label for="description">Beskrivning</label>
+          <textarea
+            id="description"
+            v-model="description"
+            required
+            placeholder="Skriv Produktbeskrivning"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="categoryId">Kategori</label>
+          <select v-model="categoryId">
             <option value="" disabled selected>Välj en kategori</option>
             <option
               v-for="(category, index) in categoriesOnLoad"
@@ -44,10 +45,10 @@
               {{ category.category_name }}
             </option>
           </select>
-      </div>
-      <div class="form-group">
-        <label for="brand">Märke</label>
-        <select v-model="brand">
+        </div>
+        <div class="form-group">
+          <label for="brand">Märke</label>
+          <select v-model="brand">
             <option value="" disabled selected>Välj ett märke</option>
             <option
               v-for="(brand, index) in brandsOnLoad"
@@ -57,131 +58,148 @@
               {{ brand.brand_name }}
             </option>
           </select>
-      </div>
-      <!-- Sizes Section -->
-      <div class="form-group-sizes">
-        <label for="sizes">Storlekar och Priser</label>
-        <div v-for="(size, index) in sizes" :key="index" class="size-entry">
-          <input
-            v-model="size.size"
-            type="text"
-            placeholder="Storlek (Tex, 50 ml)"
-            required
-          />
-          <input
-            v-model.number="size.price"
-            type="number"
-            step="0.01"
-            placeholder="Pris (SEK)"
-            required
-          />
-          <input
-            v-model.number="size.stock_quantity"
-            type="number"
-            placeholder="Kvantitet (10, 20, 30)"
-            required
-          />
-          <div class="sizesButtonWrapper">
-            <button @click.prevent="removeSize(index)">Ta Bort Denna Storleken</button>
-            <button class="addSizes" @click.prevent="addSize">Lägg Till Storlek</button>
+        </div>
+        <!-- Sizes Section -->
+        <div class="form-group-sizes">
+          <label for="sizes">Storlekar och Priser</label>
+          <div v-for="(size, index) in sizes" :key="index" class="size-entry">
+            <input
+              v-model="size.size"
+              type="text"
+              placeholder="Storlek (Tex, 50 ml)"
+              required
+            />
+            <input
+              v-model.number="size.price"
+              type="number"
+              step="0.01"
+              placeholder="Pris (SEK)"
+              required
+            />
+            <input
+              v-model.number="size.stock_quantity"
+              type="number"
+              placeholder="Kvantitet (10, 20, 30)"
+              required
+            />
+            <div class="sizesButtonWrapper">
+              <button @click.prevent="removeSize(index)">
+                Ta Bort Denna Storleken
+              </button>
+              <button class="addSizes" @click.prevent="addSize">
+                Lägg Till Storlek
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Usage Products Section -->
-      <div class="form-group">
-        <label for="usageProducts">Användarinstruktioner</label>
-        <textarea
-          id="usageProducts"
-          v-model="usageProducts"
-          placeholder="Användarinstruktioner"
-        ></textarea>
-      </div>
+        <!-- Usage Products Section -->
+        <div class="form-group">
+          <label for="usageProducts">Användarinstruktioner</label>
+          <textarea
+            id="usageProducts"
+            v-model="usageProducts"
+            placeholder="Användarinstruktioner"
+          ></textarea>
+        </div>
 
-      <!-- Ingredients Section -->
-      <div class="form-group">
-        <label for="ingredients">Ingredienser</label>
-        <textarea
-          id="ingredients"
-          v-model="ingredients"
-          required
-          placeholder="Skriv in alla ingredienser separerade med kommatecken (t.ex. Vatten, Glycerin, Doft)."
-        ></textarea>
-      </div>
+        <!-- Ingredients Section -->
+        <div class="form-group">
+          <label for="ingredients">Ingredienser</label>
+          <textarea
+            id="ingredients"
+            v-model="ingredients"
+            required
+            placeholder="Skriv in alla ingredienser separerade med kommatecken (t.ex. Vatten, Glycerin, Doft)."
+          ></textarea>
+        </div>
 
-      <!-- Image Fields and Submit Button -->
-      <div class="form-group">
-        <label for="primaryImage">Första Bilden:</label>
-        <input
-          type="file"
-          id="primaryImage"
-          @change="onImageChange($event, 'primary')"
-          accept="image/*"
-        />
-      </div>
+        <!-- Image Fields and Submit Button -->
+        <div class="form-group">
+          <label for="primaryImage">Första Bilden:</label>
+          <input
+            type="file"
+            id="primaryImage"
+            @change="onImageChange($event, 'primary')"
+            accept="image/*"
+          />
+        </div>
 
-      <div class="form-group">
-        <label for="secondaryImage">Andra Bilden:</label>
-        <input
-          type="file"
-          id="secondaryImage"
-          @change="onImageChange($event, 'secondary')"
-          accept="image/*"
-        />
-      </div>
+        <div class="form-group">
+          <label for="secondaryImage">Andra Bilden:</label>
+          <input
+            type="file"
+            id="secondaryImage"
+            @change="onImageChange($event, 'secondary')"
+            accept="image/*"
+          />
+        </div>
 
-      <div class="form-group">
-        <label for="thirdImage">Tredje Bilden:</label>
-        <input
-          type="file"
-          id="thirdImage"
-          @change="onImageChange($event, 'third')"
-          accept="image/*"
-        />
-      </div>
+        <div class="form-group">
+          <label for="thirdImage">Tredje Bilden:</label>
+          <input
+            type="file"
+            id="thirdImage"
+            @change="onImageChange($event, 'third')"
+            accept="image/*"
+          />
+        </div>
 
-      <!-- Properties Section -->
-      <div class="form-group-properties">
-        <label for="property">Egenskaper</label>
-        <div class="selectPropertyWrapper">
-          <select v-model="selectedProperty">
-            <option value="" disabled selected>Välj en egenskap</option>
-            <option
-              v-for="(property, index) in propertiesOnLoad"
+        <!-- Properties Section -->
+        <div class="form-group-properties">
+          <label for="property">Egenskaper</label>
+          <div class="selectPropertyWrapper">
+            <select v-model="selectedProperty">
+              <option value="" disabled selected>Välj en egenskap</option>
+              <option
+                v-for="(property, index) in propertiesOnLoad"
+                :key="index"
+                :value="property.property_id"
+              >
+                {{ property.name }}
+              </option>
+            </select>
+            <button @click.prevent="addProperty">Lägg till Egenskap</button>
+          </div>
+          <ul>
+            <li
+              class="liPropertyStyles"
+              v-for="(property, index) in properties"
               :key="index"
-              :value="property.property_id"
             >
               {{ property.name }}
-            </option>
-          </select>
-          <button @click.prevent="addProperty">Lägg till Egenskap</button>
+              <button @click.prevent="removeProperty(index)">
+                Ta Bort Denna Egenskapen
+              </button>
+            </li>
+          </ul>
         </div>
-        <ul>
-          <li class="liPropertyStyles" v-for="(property, index) in properties" :key="index">
-              {{ property.name }}
-            <button @click.prevent="removeProperty(index)">Ta Bort Denna Egenskapen</button>
-          </li>
-        </ul>
-      </div>
-      <div class="form-group-submit">
-        <label for="featured"
-          >Ska denna produkten vara på landningssidan?</label
-        >
-        <input :value="true" type="radio" id="featured" v-model="featured" class="custom-radio" />
-      </div>
-      <div class="form-group-submit">
-        <button type="submit" class="submit-btn">Add Product</button>
-      </div>
-    </form>
+        <div class="form-group-submit">
+          <label for="featured"
+            >Ska denna produkten vara på landningssidan?</label
+          >
+          <input
+            :value="true"
+            type="radio"
+            id="featured"
+            v-model="featured"
+            class="custom-radio"
+          />
+        </div>
+        <div class="form-group-submit">
+          <button type="submit" class="submit-btn">Add Product</button>
+        </div>
+      </form>
 
-    <div
-      v-if="message"
-      :class="[
-        'message',
-        message.includes('Error') ? 'error-message' : 'success-message',
-      ]"
-    >
-      {{ message }}
+      <div
+        v-if="message"
+        :class="[
+          'message',
+          message.includes('Error') ? 'error-message' : 'success-message',
+        ]"
+      >
+        {{ message }}
+      </div>
     </div>
   </div>
 </template>
@@ -195,7 +213,7 @@ export default {
     return {
       productName: "",
       description: "",
-      sizes: [{ size: "", price: "", stock_quantity: ""}],
+      sizes: [{ size: "", price: "", stock_quantity: "" }],
       usageProducts: "",
       ingredients: "",
       properties: [],
@@ -363,7 +381,7 @@ export default {
           `Produkten "${this.productName}" har skapats.`,
           "success"
         );
-        this.$emit('product-created', response.data.product);
+        this.$emit("product-created", response.data.product);
         console.log("res.data");
         console.log(response.data);
         this.resetForm();
@@ -374,11 +392,13 @@ export default {
           error.message ||
           "Internal Server Error";
 
-          // Get all error messages from the response
-          const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
-  
-          // Display all error messages in the alert
-          Swal.fire(
+        // Get all error messages from the response
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
+
+        // Display all error messages in the alert
+        Swal.fire(
           "Error",
           `Märke kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
           "error"
@@ -405,8 +425,7 @@ export default {
 </script>
 
 <style scoped>
-
-.header{
+.header {
   padding-top: 20px;
   padding: 20px;
   padding-bottom: 20px;
@@ -419,22 +438,24 @@ export default {
   margin: 0 auto;
 }
 
-.header h2{
+.header h2 {
   font-size: 32px;
 }
 
-button a{
+button a {
   text-decoration: none;
   color: black;
   font-family: "Playfair Display", serif;
 }
 
-h1, h2 ,h3 h4{
+h1,
+h2,
+h3 h4 {
   font-family: "Playfair Display", serif;
   color: black;
 }
 
-button{
+button {
   padding-block: 0px;
   padding-inline: 0px;
   border-width: 0px;
@@ -446,7 +467,7 @@ button{
   cursor: pointer;
 }
 
-button:hover{
+button:hover {
   background-color: black;
 }
 
@@ -455,7 +476,6 @@ button:hover p,
 button:hover {
   color: white;
 }
-
 
 .create-product {
   margin: 0 auto;
@@ -467,7 +487,7 @@ button:hover {
 }
 
 .form-group {
-margin-bottom: 20px
+  margin-bottom: 20px;
 }
 
 .form-group-sizes {
@@ -476,37 +496,36 @@ margin-bottom: 20px
   margin-bottom: 20px;
 }
 
-.sizesButtonWrapper{
+.sizesButtonWrapper {
   display: flex;
   justify-content: space-between;
   padding-top: 7px;
 }
 
-.form-group-properties{
+.form-group-properties {
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-
-.form-group-properties ul li{
+.form-group-properties ul li {
   list-style: none;
 }
-.form-group-submit{
+.form-group-submit {
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
-.selectPropertyWrapper{
+.selectPropertyWrapper {
   display: flex;
   justify-content: space-between;
   gap: 10px;
 }
 
-.liPropertyStyles{
+.liPropertyStyles {
   margin-top: 5px;
   display: flex;
   align-items: center;
@@ -623,36 +642,43 @@ input[type="number"]::-webkit-inner-spin-button {
   border-color: #ffffff;
 }
 
-select{
+select {
   color: #000000;
 }
 
-button{
+button {
   color: black;
 }
 
-button:hover{
+button:hover {
   color: white;
 }
 
-input{
+input {
   color: black;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
+  input,
+  select {
+    font-size: 16px;
+  }
   .create-product {
     padding: 15px;
     margin: 10px;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-size: 24px;
   }
-  .header h2{
+  .header h2 {
     font-size: 24px;
   }
-  button{
+  button {
     padding: 4px 8px;
     font-size: 10px;
   }
