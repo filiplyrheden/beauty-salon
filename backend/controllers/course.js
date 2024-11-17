@@ -83,7 +83,6 @@ export const createNewCourse = [
   handleValidationErrors,
   async (req, res) => {
     try {
-      console.log("there was an error but i continued:(");
       const courseData = req.body;
 
       // Check if image was uploaded

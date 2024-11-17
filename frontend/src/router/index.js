@@ -205,6 +205,10 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.beforeEach(async (to, from, next) => {
+  // Check if the mobile menu is open before proceeding
+  if (store.state.isMobileMenuVisible) {
+    store.commit("toggleMobileMenuVisibility", false);
+  }
   await store.dispatch("checkAuth");
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);

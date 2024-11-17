@@ -472,7 +472,6 @@ export default {
       this.editingProduct.variants.splice(index, 1);
     },
     saveProduct() {
-      console.log("Saving product:", this.editingProduct);
       const formData = new FormData();
       formData.append("product_name", this.editingProduct.product_name);
       formData.append("description", this.editingProduct.description);
@@ -514,10 +513,6 @@ export default {
           "Properties is not an array:",
           this.editingProduct.properties
         );
-      }
-
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ": " + pair[1]);
       }
 
       axiosInstance

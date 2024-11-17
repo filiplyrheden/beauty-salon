@@ -412,7 +412,6 @@ export const showOrdersById = async (req, res) => {
   try {
     // Get the user ID from query parameters
     const userId = req.query.userid;
-    console.log(userId);
 
     // Get the orders by user ID
     const orders = await getOrdersById(userId);

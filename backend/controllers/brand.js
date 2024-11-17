@@ -64,7 +64,6 @@ export const updateBrandById = [
   handleValidationErrors, // Middleware to handle validation errors
 
   async (req, res) => {
-    console.log("im inside async now");
     try {
       const id = req.params.id;
 

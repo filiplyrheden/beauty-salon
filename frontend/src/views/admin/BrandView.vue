@@ -191,7 +191,6 @@ export default {
           `Märke kunde inte uppdateras. Kolla vad du har skrivit in och prova igen! <br> ${error.response.data.errors[0].msg}`,
           "error"
         );
-        console.log(error.response.data);
       } finally {
         this.isLoading = false;
       }

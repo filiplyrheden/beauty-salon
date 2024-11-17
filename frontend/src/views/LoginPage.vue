@@ -101,7 +101,6 @@ export default {
   created() {
     // Check authentication status on component creation
     this.$store.dispatch("checkAuth");
-    console.log("checkauth");
   },
 };
 </script>
@@ -190,7 +189,8 @@ h1 {
   color: black;
 }
 
-.no-account, .forgotPassword {
+.no-account,
+.forgotPassword {
   margin-top: 16px;
   text-align: center;
   font-size: 14px; /* Smaller font for mobile */
@@ -222,5 +222,4 @@ h1 {
     padding: 10px; /* Smaller padding for button */
   }
 }
-
 </style>
