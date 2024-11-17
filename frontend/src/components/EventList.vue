@@ -28,7 +28,7 @@
             </div>
             <div class="detail-group">
               <label>Pris:</label>
-              <p>${{ event.price }}</p>
+              <p>{{ event.price }}kr</p>
             </div>
             <div class="detail-group">
               <label>Tid för event:</label>
