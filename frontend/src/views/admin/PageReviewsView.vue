@@ -297,6 +297,7 @@ h1 {
 
 h1,
 h2 {
+  font-family: "Playfair Display", serif;
   text-align: center;
   margin-bottom: 20px;
 }
