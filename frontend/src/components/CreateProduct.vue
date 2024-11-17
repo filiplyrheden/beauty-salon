@@ -71,34 +71,40 @@
 
         <!-- Sizes Section -->
         <div class="form-group-sizes">
-          <label for="sizes">Storlekar och Priser</label>
-          <div v-for="(size, index) in sizes" :key="index" class="size-entry">
-            <input
-              v-model="size.size"
-              type="text"
-              placeholder="Storlek (Tex, 50 ml)"
-              required
-            />
-            <input
-              v-model.number="size.price"
-              type="number"
-              step="0.01"
-              placeholder="Pris (SEK)"
-              required
-            />
-            <input
-              v-model.number="size.stock_quantity"
-              type="number"
-              placeholder="Kvantitet (10, 20, 30)"
-              required
-            />
-            <div class="sizesButtonWrapper">
-              <button @click.prevent="removeSize(index)">
-                Ta Bort Denna Storleken
-              </button>
-              <button class="addSizes" @click.prevent="addSize">
-                Lägg Till Storlek
-              </button>
+          <div class="size-header">
+            <label for="sizes">Storlekar och Priser</label>
+
+            <button class="addSizes" @click.prevent="addSize">
+              Lägg Till Storlek
+            </button>
+          </div>
+
+          <div class="size-entries">
+            <div v-for="(size, index) in sizes" :key="index" class="size-entry">
+              <input
+                v-model="size.size"
+                type="text"
+                placeholder="Storlek (Tex, 50 ml)"
+                required
+              />
+              <input
+                v-model.number="size.price"
+                type="number"
+                step="0.01"
+                placeholder="Pris (SEK)"
+                required
+              />
+              <input
+                v-model.number="size.stock_quantity"
+                type="number"
+                placeholder="Kvantitet (10, 20, 30)"
+                required
+              />
+              <div class="sizesButtonWrapper">
+                <button v-if="index !== 0" @click.prevent="removeSize(index)">
+                  Ta Bort Denna Storleken
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -542,11 +548,12 @@ button:hover {
 .custom-select-wrapper {
   position: relative;
   display: inline-block;
-  width: 100%; /* Adjust based on your design */
+  width: 100%;
 }
 
 .custom-select-wrapper select {
   width: 100%;
+  height: 100%;
   appearance: none; /* Removes the default dropdown arrow */
   -webkit-appearance: none; /* For Safari */
   -moz-appearance: none; /* For Firefox */
@@ -562,60 +569,10 @@ button:hover {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none; /* Allows clicks to pass through */
-  color: #999; /* Customize based on your theme */
+  color: #999;
 }
 .property-button {
   width: 300px;
-}
-.custom-select-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%; /* Set appropriate width for your dropdown */
-}
-
-.custom-select-wrapper select {
-  width: 100%;
-  appearance: none; /* Hides the default browser arrow */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding-right: 2rem; /* Creates space for the chevron */
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.custom-select-wrapper .select-chevron {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none; /* Allows the user to click the dropdown */
-  color: #999; /* Adjust to match your design */
-}
-.custom-select-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%; /* Adjust based on your design requirements */
-}
-
-.custom-select-wrapper select {
-  width: 100%;
-  appearance: none; /* Remove default arrow */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding-right: 2rem; /* Space for the chevron */
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.custom-select-wrapper .select-chevron {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none; /* Ensure the chevron doesn’t block interaction */
-  color: #999; /* Customize chevron color to match your design */
 }
 
 .liPropertyStyles {
@@ -680,7 +637,20 @@ input[type="number"] {
 .submit-btn:active {
   transform: translateY(1px);
 }
-
+.size-entries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.size-entry {
+  width: calc(33% - 8px);
+}
+.size-header {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 8px;
+}
 .message {
   margin-top: 20px;
   padding: 12px;
@@ -769,10 +739,24 @@ input {
   }
   button {
     padding: 4px 8px;
-    font-size: 10px;
+    font-size: 16px;
   }
   .property-button {
-    width: unset;
+    width: 50%;
+  }
+  .size-header {
+    justify-content: space-between;
+  }
+  .size-entries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .size-entry {
+    width: calc(100%);
+  }
+  .submit-btn {
+    width: 100%;
   }
 }
 </style>
