@@ -773,7 +773,7 @@ button:hover {
 }
 @media (max-width: 580px) {
   .sub-title {
-    font-size: 2em;
+    font-size: 2.2em;
     font-weight: 600;
     line-height: 65.57px;
     letter-spacing: 0.04em;
