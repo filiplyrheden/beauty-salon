@@ -59,7 +59,6 @@ export const createNewProperty = [
   async (req, res) => {
     try {
       const PropertyData = req.body;
-      console.log(PropertyData);
       const newProperty = await createProperty(PropertyData);
       res.status(201).json(newProperty);
     } catch (err) {
@@ -105,8 +104,6 @@ export const updatePropertyById = [
 export const deletePropertyById = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-
     // Get existing Property
     const existingProperty = await getPropertyById(id);
     if (!existingProperty) {

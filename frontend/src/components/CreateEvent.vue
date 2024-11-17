@@ -139,8 +139,6 @@ export default {
           "success"
         );
         this.$emit("event-created", response.data.event);
-        console.log("res.data");
-        console.log(response.data);
         this.resetForm();
       } catch (error) {
         console.error(

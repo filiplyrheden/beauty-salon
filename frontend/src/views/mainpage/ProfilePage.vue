@@ -171,7 +171,6 @@ export default {
      */
     async fetchOrders(userId) {
       this.isLoading = true;
-      console.log(userId);
       try {
         // Use userId as a query parameter
         const response = await axiosInstance.get(
@@ -181,7 +180,6 @@ export default {
         this.orders = response.data.map((order) => ({
           ...order,
         }));
-        console.log(this.orders);
       } catch (error) {
         console.error(
           "Error fetching orders:",

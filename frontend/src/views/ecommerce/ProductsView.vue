@@ -524,7 +524,6 @@ export default {
           ...product,
           selectedSize: product.variants?.[0]?.size_id || null,
         }));
-        console.log(this.productItems);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -540,7 +539,6 @@ export default {
     },
     toggleBuyMobile(product) {
       this.selectedProduct = product;
-      console.log("selected product" + this.selectedProduct);
       this.showSizesMobile = true;
     },
     addItemToMobileCart({ product, size }) {
@@ -1075,7 +1073,7 @@ a:hover {
     font-size: 30px;
   }
 
-  .search-input{
+  .search-input {
     font-size: 16px;
   }
   .products-header {

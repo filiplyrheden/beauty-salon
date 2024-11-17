@@ -163,7 +163,6 @@ export default {
           const response = await axiosInstance.delete(
             `/admin/events/${eventId}`
           );
-          console.log("Event deleted successfully:", response.data);
           this.$emit("event-deleted", eventId);
           Swal.fire(
             "Event borttaget!",

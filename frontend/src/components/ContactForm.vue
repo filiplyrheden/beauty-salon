@@ -66,7 +66,6 @@ export default {
           name: this.name,
           message: this.message,
         });
-        console.log(response);
         this.resetEmailForm();
         Swal.fire({
           icon: "success",

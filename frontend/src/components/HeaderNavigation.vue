@@ -117,6 +117,7 @@
       </div>
     </nav>
     <transition name="slide">
+      <!-- Bind the visibility of the mobile menu to Vuex state -->
       <div v-if="isMobileMenuVisible" class="mobile-menu">
         <ul class="mobile-links">
           <li v-for="(link, index) in navLinksLeft" :key="index">
@@ -130,9 +131,9 @@
             </router-link>
           </li>
         </ul>
-        <a href="https://www.bokadirekt.se/places/sn-beauty-56396"
-          ><button class="bokadirekt">BOKADIREKT</button></a
-        >
+        <a href="https://www.bokadirekt.se/places/sn-beauty-56396">
+          <button class="bokadirekt">BOKADIREKT</button>
+        </a>
       </div>
     </transition>
   </header>
@@ -162,7 +163,6 @@ export default {
       ],
       currentTopBarLinkIndex: 0,
       lastScrollPosition: 0,
-      isMobileMenuVisible: false,
       isTopBarHidden: false,
       throttledScrollHandler: null, // Store throttled function reference
     };
@@ -173,7 +173,13 @@ export default {
     },
   },
   computed: {
-    ...mapState(["isLoggedIn", "isAdmin", "isCartVisible"]),
+    ...mapState([
+      "isLoggedIn",
+      "isAdmin",
+      "isCartVisible",
+      "isMobileMenuVisible",
+    ]),
+
     lastAddedItem() {
       return this.$store.getters.lastAddedItem;
     },
@@ -213,6 +219,7 @@ export default {
       hideCartPopup: "hideCartPopup",
       showCartPopup: "showCartPopup",
       showCart: "showCart",
+      toggleMobileMenuVisibility: "toggleMobileMenuVisibility",
     }),
     handleScroll() {
       this.isTopBarHidden = window.scrollY > 50;
@@ -221,7 +228,7 @@ export default {
       this.showCart();
     },
     toggleMobileMenu() {
-      this.isMobileMenuVisible = !this.isMobileMenuVisible;
+      this.toggleMobileMenuVisibility(); // Dispatch the Vuex mutation
     },
     checkAuthentication() {
       this.$store.dispatch("checkAuth");

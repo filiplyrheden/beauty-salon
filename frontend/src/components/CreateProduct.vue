@@ -335,14 +335,10 @@ export default {
           Swal.fire("Fel", "Egenskapen har redan lagts till.", "error");
           return; // Exit the function if the property already exists
         }
-
-        console.log(this.selectedProperty);
-
         // Find the selected property object from propertiesOnLoad
         const selectedPropertyObject = this.propertiesOnLoad.find(
           (property) => property.property_id === this.selectedProperty
         );
-        console.log(selectedPropertyObject);
 
         if (selectedPropertyObject) {
           this.properties.push({
@@ -350,7 +346,6 @@ export default {
             property_id: selectedPropertyObject.property_id,
           });
           this.selectedProperty = ""; // Reset selected property after adding
-          console.log(this.properties);
         }
       }
     },
@@ -396,15 +391,12 @@ export default {
         const response = await axiosInstance.post(`admin/products`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        console.log("Response:", response);
         Swal.fire(
           "Produkt skapad!",
           `Produkten "${this.productName}" har skapats.`,
           "success"
         );
         this.$emit("product-created", response.data.product);
-        console.log("res.data");
-        console.log(response.data);
         this.resetForm();
       } catch (error) {
         console.error("Error adding product:", error);

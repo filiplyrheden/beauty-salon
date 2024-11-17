@@ -79,7 +79,6 @@ export default {
   },
   setup() {
     const apiKey = process.env.VUE_APP_MAPBOX_API_KEY;
-    console.log("key" + apiKey);
     return { apiKey };
   },
 };

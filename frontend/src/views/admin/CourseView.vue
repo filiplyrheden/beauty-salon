@@ -571,7 +571,6 @@ h2 {
 }
 #schedule {
   background: white !important;
-  /* border: red; */
   color: black !important;
   width: 100%;
 }
