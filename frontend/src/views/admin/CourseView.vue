@@ -20,7 +20,13 @@
         <!-- Name -->
         <div class="form-group">
           <label for="name">Namn:</label>
-          <input v-model="form.name" type="text" id="name" required />
+          <input
+            v-model="form.name"
+            type="text"
+            id="name"
+            required
+            placeholder="Hårstylings kurs, Massage kurs"
+          />
         </div>
 
         <!-- Description -->
@@ -29,6 +35,7 @@
           <textarea
             v-model="form.description"
             id="description"
+            placeholder="Skriv en beskrivning om kursen"
             required
           ></textarea>
         </div>
@@ -566,6 +573,7 @@ h2 {
   background: white !important;
   /* border: red; */
   color: black !important;
+  width: 100%;
 }
 .button-group button {
   margin-right: 10px;
