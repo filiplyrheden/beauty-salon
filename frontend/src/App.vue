@@ -83,13 +83,14 @@ input[type="text"],
 input[type="file"],
 input[type="button"],
 input[type="submit"],
-input[type="”search”"],
-input[type="datetime-local"],
+input[type="search"],
+input[type="number"] input[type="datetime-local"],
 select,
 .input-checkbox {
   -webkit-appearance: none;
   -moz-appearance: none; /* firefox browser */
-
+  color: black;
+  background: red;
   border-radius: 0;
 }
 body,
