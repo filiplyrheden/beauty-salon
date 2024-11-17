@@ -1,6 +1,8 @@
 <template>
   <div class="service-category-container">
-    <router-link to="/admin" class="back">Tillbaka</router-link>
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
     <h1>Behandlings Kategorier</h1>
 
     <!-- Loading Indicator -->
@@ -18,7 +20,13 @@
         <!-- Name -->
         <div class="form-group">
           <label for="name">Namn:</label>
-          <input v-model="form.name" type="text" id="name" required />
+          <input
+            v-model="form.name"
+            type="text"
+            id="name"
+            required
+            placeholder="Nagelbehandlingar, Hårvård, etc."
+          />
         </div>
 
         <!-- Buttons -->
@@ -151,13 +159,15 @@ export default {
           error.response || error.message
         );
         // Get all error messages from the response
-        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
 
         // Display all error messages in the alert
         Swal.fire(
-        "Error",
-        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-        "error"
+          "Error",
+          `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          "error"
         );
       } finally {
         this.isLoading = false;
@@ -210,13 +220,15 @@ export default {
           error.response || error.message
         );
         // Get all error messages from the response
-        const errorMessages = error.response.data.errors.map((error) => error.msg).join("<br>");
+        const errorMessages = error.response.data.errors
+          .map((error) => error.msg)
+          .join("<br>");
 
         // Display all error messages in the alert
         Swal.fire(
-        "Error",
-        `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-        "error"
+          "Error",
+          `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          "error"
         );
       } finally {
         this.isLoading = false;
@@ -307,6 +319,7 @@ h1 {
 
 h1,
 h2 {
+  font-family: "Playfair Display", serif;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -485,6 +498,10 @@ tr:nth-child(2n) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  input {
+    font-size: 16px;
+  }
+
   h1 {
     margin-top: 31px;
     font-size: 1.5em;
@@ -545,7 +562,7 @@ tr:nth-child(2n) {
   }
 
   td:nth-of-type(1)::before {
-    content: "Kategori Namn";
+    content: "Namn";
   }
   td:nth-of-type(2)::before {
     content: "Åtgärder";

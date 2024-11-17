@@ -111,7 +111,6 @@ export default {
       try {
         const response = await axiosInstance.get(`/featuredproducts`);
         // Initialize selectedSize for each product
-        console.log(response);
         this.products = response.data.map((product) => {
           const defaultSizeId = product.variants
             ? product.variants[0].size_id
@@ -122,7 +121,6 @@ export default {
             selectedSize: defaultSizeId, // Initialize selectedSize with the default size_id
           };
         });
-        console.log(this.products);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -138,7 +136,6 @@ export default {
       const product = this.products.find((p) => p.product_id === productId);
       product.selectedSize = sizeId; // Set selectedSize for the specific product
       this.showSizeOptions[productId] = false; // Hide size options after selection
-      console.log("Selected size for product", productId, ":", sizeId); // Debugging purpose
     },
     addItemToCart(product) {
       // Add product to the cart with the selected size_id
@@ -162,6 +159,7 @@ export default {
         console.log("Available stock for selected variant:", availableStock);
 
         // Proceed to commit the mutation with available stock
+
         this.$store.commit("addToCart", {
           product,
           size_id: product.selectedSize,

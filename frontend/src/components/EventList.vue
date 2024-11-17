@@ -39,15 +39,7 @@
                 }}
               </p>
             </div>
-            <div class="detail-group">
-              <label>Skapades den:</label>
-              <p>
-                {{
-                  convertToCET(event.created_at) ||
-                  "Kunde inte hämta när eventet skapades"
-                }}
-              </p>
-            </div>
+
             <div class="detail-group">
               <label>Bokning:</label>
               <a
@@ -490,6 +482,11 @@ export default {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
   .event-content {
     grid-template-columns: 1fr;
   }
@@ -500,6 +497,9 @@ export default {
 
   .form-actions {
     flex-direction: column;
+  }
+  .event-name {
+    word-break: break-word;
   }
 }
 </style>

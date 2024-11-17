@@ -178,4 +178,17 @@ export default {
     padding: 32px;
   }
 }
+@media (max-width: 450px) {
+  .reviews {
+    padding: 16px;
+  }
+
+  .review-item {
+    gap: 0px;
+    align-items: center;
+    padding: 16px 56px;
+    height: 240px;
+    justify-content: space-evenly;
+  }
+}
 </style>

@@ -20,7 +20,13 @@
         <!-- Name -->
         <div class="form-group">
           <label for="name">Namn:</label>
-          <input v-model="form.name" type="text" id="name" required />
+          <input
+            v-model="form.name"
+            type="text"
+            id="name"
+            required
+            placeholder="Ansiktsbehandling med Laser, Sminkning, etc."
+          />
         </div>
 
         <!-- Description -->
@@ -30,6 +36,7 @@
             v-model="form.description"
             id="description"
             required
+            placeholder="En kort beskrivning"
           ></textarea>
         </div>
 
@@ -107,22 +114,25 @@
 
         <!-- Category Selection -->
         <div class="form-group">
-          <label for="categoryId">Kategori:</label>
-          <select
-            v-model.number="form.category"
-            name="categoryId"
-            id="categoryId"
-            required
-          >
-            <option value="" disabled>Välj kategori</option>
-            <option
-              v-for="category in categories"
-              :key="category.category_id"
-              :value="category.category_id"
+          <label class="label-id" for="categoryId">Kategori:</label>
+          <div class="custom-select-wrapper">
+            <select
+              v-model.number="form.category"
+              name="categoryId"
+              id="categoryId"
+              required
             >
-              {{ category.category_name }}
-            </option>
-          </select>
+              <option value="" disabled>Välj kategori</option>
+              <option
+                v-for="category in categories"
+                :key="category.category_id"
+                :value="category.category_id"
+              >
+                {{ category.category_name }}
+              </option>
+            </select>
+            <font-awesome-icon class="select-chevron" icon="chevron-down" />
+          </div>
         </div>
 
         <!-- Buttons -->
@@ -212,7 +222,7 @@ export default {
         price: 0,
         time: 0,
         booking_link: "",
-        category: null, // Initialize as null
+        category: "", // Initialize as null
       },
       selectedBeforeImage: null, // Store the selected "before" image file
       selectedAfterImage: null, // Store the selected "after" image file
@@ -692,14 +702,38 @@ td {
 th {
   font-weight: bold;
 }
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%; /* Adjust width as necessary */
+}
 
-#schedule {
-  flex: 0;
+.custom-select-wrapper select {
+  width: 100%;
+  appearance: none; /* Hides the default browser dropdown arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2rem; /* Space for the chevron */
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.custom-select-wrapper .select-chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Ensures the icon does not block interaction */
+  color: #999; /* Customize the icon color */
+}
+.label-id {
+  margin-right: 31px;
 }
 
 .service-after-image,
 .service-before-image {
-  width: 100px;
+  width: 100%;
   height: auto;
   object-fit: cover;
   border-radius: 4px;
@@ -783,6 +817,10 @@ tr:nth-child(2n) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  input,
+  select {
+    font-size: 16px;
+  }
   h1 {
     margin-top: 31px;
     font-size: 1.5em;

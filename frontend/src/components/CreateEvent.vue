@@ -1,18 +1,31 @@
 <template>
   <div>
     <div class="header">
-      <router-link to="/admin" class="back">Tillbaka</router-link>
+      <router-link to="/admin" class="back"
+        ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+      >
       <h2>Lägg Till Event</h2>
     </div>
     <form @submit.prevent="saveEvent" enctype="multipart/form-data">
       <div>
         <label for="eventName">Event Namn:</label>
-        <input type="text" id="eventName" v-model="eventName" required />
+        <input
+          type="text"
+          id="eventName"
+          v-model="eventName"
+          required
+          placeholder="Smink event, Hårstyling event, etc."
+        />
       </div>
 
       <div>
         <label for="description">Beskrivning:</label>
-        <textarea id="description" v-model="description" required></textarea>
+        <textarea
+          id="description"
+          v-model="description"
+          required
+          placeholder="Skriv en kort beskrivning av eventet"
+        ></textarea>
       </div>
 
       <div>
@@ -21,7 +34,8 @@
           type="number"
           id="eventPrice"
           v-model="eventPrice"
-          step="0.01"
+          step="1.00"
+          placeholder="0"
           required
         />
       </div>
@@ -50,7 +64,12 @@
 
       <div>
         <label for="bookingLink">Bokningslänk:</label>
-        <input type="text" id="bookingLink" v-model="bookingLink" />
+        <input
+          type="text"
+          id="bookingLink"
+          v-model="bookingLink"
+          placeholder="http://www.bokadirekt.se"
+        />
       </div>
 
       <button type="submit">Lägg till</button>
@@ -75,6 +94,25 @@ export default {
       message: "",
       schedule: "",
     };
+  },
+  mounted() {
+    // Initialize the date picker
+    if (!this.schedule) {
+      const now = new Date();
+      // Format the date to 'YYYY-MM-DDTHH:mm' using local time
+      const localISOTime =
+        now.getFullYear() +
+        "-" +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(now.getDate()).padStart(2, "0") +
+        "T" +
+        String(now.getHours()).padStart(2, "0") +
+        ":" +
+        String(now.getMinutes()).padStart(2, "0");
+
+      this.schedule = localISOTime;
+    }
   },
   methods: {
     onImageChange(event) {
@@ -101,8 +139,6 @@ export default {
           "success"
         );
         this.$emit("event-created", response.data.event);
-        console.log("res.data");
-        console.log(response.data);
         this.resetForm();
       } catch (error) {
         console.error(
@@ -176,7 +212,16 @@ textarea {
   box-sizing: border-box;
   font-size: 1rem;
 }
-
+#schedule,
+#image {
+  background: white !important;
+  /* border: red; */
+  color: black !important;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
 /* Textarea styling */
 textarea {
   height: 100px;
@@ -241,13 +286,20 @@ p.error {
   top: 10px;
   left: 5%;
 }
-
+#schedule {
+  width: 100%;
+}
 .back:hover {
   color: white;
   background-color: #202020;
 }
 
 @media (max-width: 600px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
   form {
     padding: 15px;
   }
@@ -255,15 +307,10 @@ p.error {
   h2 {
     font-size: 1.3em;
     margin-bottom: 16px;
+    margin-top: 24px;
   }
 
   label {
-    font-size: 0.9rem;
-  }
-
-  input[type="text"],
-  input[type="number"],
-  textarea {
     font-size: 0.9rem;
   }
 

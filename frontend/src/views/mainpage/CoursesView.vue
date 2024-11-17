@@ -25,7 +25,9 @@
             i en värld av färg, teknik och kreativitet!
           </div>
           <router-link to="/om-mig">
-            <button>KONTAKTA SHAHAD FÖR EN SKRÄDDARSYDD KURS</button>
+            <button class="contact">
+              KONTAKTA SHAHAD FÖR EN SKRÄDDARSYDD KURS
+            </button>
           </router-link>
         </div>
         <div class="courses">
@@ -135,6 +137,10 @@ export default {
   max-width: 1280px;
   margin: 0 auto;
   display: flex;
+}
+.booking-link,
+.contact {
+  color: black;
 }
 .courses {
   width: 50%;

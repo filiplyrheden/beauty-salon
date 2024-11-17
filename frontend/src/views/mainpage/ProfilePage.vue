@@ -130,7 +130,7 @@
                 <div class="delivery">Fraktkostnad 45kr</div>
               </div>
             </td>
-            <td>{{ (order.total_amount + 45).toFixed(2) }}kr</td>
+            <td>{{ order.total_amount.toFixed(2) }}kr</td>
             <td>{{ formatDate(order.order_date) }}</td>
           </tr>
         </tbody>
@@ -171,7 +171,6 @@ export default {
      */
     async fetchOrders(userId) {
       this.isLoading = true;
-      console.log(userId);
       try {
         // Use userId as a query parameter
         const response = await axiosInstance.get(
@@ -181,7 +180,6 @@ export default {
         this.orders = response.data.map((order) => ({
           ...order,
         }));
-        console.log(this.orders);
       } catch (error) {
         console.error(
           "Error fetching orders:",

@@ -20,7 +20,13 @@
         <!-- Name -->
         <div class="form-group">
           <label for="name">Namn:</label>
-          <input v-model="form.name" type="text" id="name" required />
+          <input
+            v-model="form.name"
+            type="text"
+            id="name"
+            required
+            placeholder="Skriv in kategorinamn"
+          />
         </div>
         <div class="form-group">
           <label for="name">Huvudkategori:</label>
@@ -521,6 +527,12 @@ tr:nth-child(2n) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  input {
+    font-size: 16px;
+  }
+  select {
+    font-size: 16px;
+  }
   h1 {
     margin-top: 31px;
     font-size: 1.5em;

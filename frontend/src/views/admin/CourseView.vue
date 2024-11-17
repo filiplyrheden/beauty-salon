@@ -20,7 +20,13 @@
         <!-- Name -->
         <div class="form-group">
           <label for="name">Namn:</label>
-          <input v-model="form.name" type="text" id="name" required />
+          <input
+            v-model="form.name"
+            type="text"
+            id="name"
+            required
+            placeholder="Hårstylings kurs, Massage kurs"
+          />
         </div>
 
         <!-- Description -->
@@ -29,6 +35,7 @@
           <textarea
             v-model="form.description"
             id="description"
+            placeholder="Skriv en beskrivning om kursen"
             required
           ></textarea>
         </div>
@@ -170,6 +177,26 @@ export default {
   created() {
     this.fetchCourses();
   },
+  mounted() {
+    // Initialize the date picker
+    if (!this.form.schedule) {
+      const now = new Date();
+      // Format the date to 'YYYY-MM-DDTHH:mm' using local time
+      const localISOTime =
+        now.getFullYear() +
+        "-" +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(now.getDate()).padStart(2, "0") +
+        "T" +
+        String(now.getHours()).padStart(2, "0") +
+        ":" +
+        String(now.getMinutes()).padStart(2, "0");
+
+      this.form.schedule = localISOTime;
+    }
+  },
+
   methods: {
     /**
      * Fetch all courses from the backend.
@@ -542,7 +569,11 @@ h2 {
   display: flex;
   justify-content: flex-start;
 }
-
+#schedule {
+  background: white !important;
+  color: black !important;
+  width: 100%;
+}
 .button-group button {
   margin-right: 10px;
   padding: 8px 16px;
@@ -601,10 +632,6 @@ td {
 
 th {
   font-weight: bold;
-}
-
-#schedule {
-  flex: 0;
 }
 
 .course-image {
@@ -691,6 +718,10 @@ tr:nth-child(2n) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  input,
+  select {
+    font-size: 16px;
+  }
   h1 {
     margin-top: 31px;
     font-size: 1.5em;
@@ -705,9 +736,6 @@ tr:nth-child(2n) {
   .form-group input,
   .form-group textarea {
     width: 100%;
-  }
-  #schedule {
-    width: fit-content;
   }
   .form-group label {
     width: 100%;
@@ -758,28 +786,25 @@ tr:nth-child(2n) {
   }
 
   td:nth-of-type(1)::before {
-    content: "ID";
+    content: "Namn";
   }
   td:nth-of-type(2)::before {
-    content: "Name";
+    content: "Beskrivning";
   }
   td:nth-of-type(3)::before {
-    content: "Description";
+    content: "Pris";
   }
   td:nth-of-type(4)::before {
-    content: "Price ($)";
+    content: "Tid";
   }
   td:nth-of-type(5)::before {
-    content: "Schedule";
+    content: "Bild";
   }
   td:nth-of-type(6)::before {
-    content: "Image";
+    content: "Booknings länk";
   }
   td:nth-of-type(7)::before {
-    content: "Booking Link";
-  }
-  td:nth-of-type(8)::before {
-    content: "Actions";
+    content: "Åtgärder";
   }
 }
 </style>

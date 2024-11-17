@@ -102,10 +102,8 @@ export default {
       this.hideCart();
     },
     handleOutsideClick(event) {
-      console.log("handleOutsideClick triggered", this.$refs.cart);
       const cartElement = this.$refs.cart;
       if (cartElement && !cartElement.contains(event.target)) {
-        console.log("Click detected outside cart, closing cart.");
         this.hideCart();
       }
     },
@@ -145,7 +143,6 @@ export default {
       this.disableOutsideClick();
 
       try {
-        console.log("User ID:", this.$store.state.userId);
 
         // Fetch stock quantities
         const { data: stockResponse } = await axiosInstance.get("/update-stock");
@@ -354,8 +351,8 @@ div::-webkit-scrollbar-track {
   font-weight: 600;
   flex-direction: column;
 }
-.item-header p{
-  word-break:break-word;
+.item-header p {
+  word-break: break-word;
 }
 .item-info {
   flex-grow: 1;
@@ -439,15 +436,16 @@ ul {
     width: 100%;
   }
   div::-webkit-scrollbar {
-  width: 4px; /* Width for the vertical scrollbar */
-  height: 4px; /* Hide the horizontal scrollbar */
+    width: 4px; /* Width for the vertical scrollbar */
+    height: 4px; /* Hide the horizontal scrollbar */
   }
 }
-@media (max-width: 350px) {}
-.items{
-    padding-right: 5px;
-  }
-  .item img{
-    width: 50px;
-  }
+@media (max-width: 350px) {
+}
+.items {
+  padding-right: 5px;
+}
+.item img {
+  width: 50px;
+}
 </style>

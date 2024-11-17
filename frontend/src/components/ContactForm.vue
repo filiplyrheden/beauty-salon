@@ -146,4 +146,11 @@ form {
   flex-direction: column;
   gap: 8px;
 }
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
 </style>

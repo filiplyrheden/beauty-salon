@@ -13,8 +13,12 @@ export const store = new Vuex.Store({
     cartPopupVisible: false,
     isCartVisible: false,
     lastAddedItem: null,
+    isMobileMenuVisible: false,
   },
   mutations: {
+    toggleMobileMenuVisibility(state) {
+      state.isMobileMenuVisible = !state.isMobileMenuVisible;
+    },
     clearLastAddedItem(state) {
       state.lastAddedItem = null;
     },
@@ -38,7 +42,6 @@ export const store = new Vuex.Store({
     },
     login(state) {
       state.isLoggedIn = true;
-      console.log("Inloggad");
     },
     logout(state) {
       state.isLoggedIn = false;
@@ -116,7 +119,6 @@ export const store = new Vuex.Store({
     },
 
     incrementItemInCart(state, { productId, sizeId }) {
-      console.log("incrementItemInCart" + productId + sizeId);
       const item = state.cart.find(
         (i) => i.product_id === productId && i.size_id === sizeId
       );
@@ -125,7 +127,6 @@ export const store = new Vuex.Store({
       }
     },
     decrementItemInCart(state, { productId, sizeId }) {
-      console.log("decrement" + productId);
       const item = state.cart.find(
         (i) => i.product_id === productId && i.size_id === sizeId
       );
@@ -135,7 +136,6 @@ export const store = new Vuex.Store({
     },
 
     removeFromCart(state, { productId, sizeId }) {
-      console.log("removeFromCart" + productId + sizeId);
       state.cart = state.cart.filter(
         (item) => !(item.product_id === productId && item.size_id === sizeId)
       );
@@ -169,11 +169,9 @@ export const store = new Vuex.Store({
           if (decodedToken.exp && decodedToken.exp < currentTime) {
             commit("logout");
             commit("clearExpirationInterval");
-            console.log("Token has expired.");
             commit("showPopup");
             return false;
           }
-          console.log("Token is valid");
           return true;
         } catch (error) {
           console.error("Error decoding token:", error);
@@ -189,7 +187,6 @@ export const store = new Vuex.Store({
     },
 
     startTokenExpirationCheck({ dispatch, commit }) {
-      console.log("Starta räkning");
       dispatch("checkTokenExpiration");
       const intervalId = setInterval(() => {
         dispatch("checkTokenExpiration");

@@ -77,7 +77,36 @@ export default {
   padding: 0;
   font-family: "Outfit", sans-serif;
 }
+textarea,
+input.text,
+input[type="text"],
+input[type="file"],
+input[type="button"],
+input[type="submit"],
+input[type="search"],
+input[type="number"] input[type="datetime-local"],
+select,
+.input-checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none; /* firefox browser */
+  color: black;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  padding: 8px 16px;
+}
+input[type="file"]::file-selector-button {
+  border: 1px solid black;
+  border-radius: 0;
+  background-color: white;
+  transition: 1s;
+  color: black;
+}
 
+input[type="file"]::file-selector-button:hover {
+  background-color: black;
+  color: white;
+}
 body,
 html {
   height: 100%;
@@ -139,6 +168,19 @@ html {
 }
 
 @media (max-width: 768px) {
+  textarea,
+  input.text,
+  input[type="text"],
+  input[type="file"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="search"],
+  input[type="number"] input[type="datetime-local"],
+  select,
+  .input-checkbox,
+  textarea {
+    font-size: 16px;
+  }
   .carousel__prev,
   .carousel__next {
     top: unset !important;

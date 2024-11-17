@@ -135,11 +135,6 @@ app.post(
     let event;
     try {
       const sig = req.headers["stripe-signature"];
-
-      console.log("Received Webhook Request");
-      console.log("Payload:", req.body);
-      console.log("Signature:", sig);
-      console.log("Webhook Secret:", STRIPE_WEBHOOK_SECRET);
       event = stripe.webhooks.constructEvent(
         req.body,
         sig,
@@ -159,6 +154,7 @@ app.post(
       (async () => {
         try {
           const shippingAddress = session.customer_details.address;
+          const totalCost = session.amount_total / 100;
           const items = await getCheckoutSession(session.id);
           const lineItems = await stripe.checkout.sessions.listLineItems(
             session.id,
@@ -178,8 +174,9 @@ app.post(
       
           console.log("Line items:", lineItems.data); // Ensure correct structure
       
-          await createOrderByHook(user_id, lineItems, shippingAddress);
+          await createOrderByHook(user_id, lineItems, shippingAddress, totalCost);
           await updateStock(lineItems); // Pass the correctly populated lineItems
+
         } catch (error) {
           console.error("Error creating order: ", error);
         }
@@ -238,7 +235,6 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
     });
     // Set CORS header and respond with the session URL
     res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
-    console.log("Session created:", session.id);
     res.status(303).json({ url: session.url });
   } catch (error) {
     console.error("Error creating Stripe checkout session:", error); // More detailed error log
@@ -252,7 +248,6 @@ app.get("/api/get-session-details", async (req, res) => {
   try {
     // Fetch the session details from Stripe
     const session = await stripe.checkout.sessions.retrieve(session_id);
-
     // Get the user ID from the session metadata
     const user_id = session.metadata.user_id;
 

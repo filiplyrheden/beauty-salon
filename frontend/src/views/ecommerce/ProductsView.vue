@@ -19,8 +19,8 @@
         <!-- Popup Header -->
         <div class="filter-popup-header">
           <h2>Filter</h2>
-          <button class="" @click="toggleFilterPopup">
-            <img src="@/assets/x.svg" alt="" />
+          <button class="filter-exit-button" @click="toggleFilterPopup">
+            <img src="@/assets/exit.svg" alt="" />
           </button>
         </div>
 
@@ -524,7 +524,6 @@ export default {
           ...product,
           selectedSize: product.variants?.[0]?.size_id || null,
         }));
-        console.log(this.productItems);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -540,7 +539,6 @@ export default {
     },
     toggleBuyMobile(product) {
       this.selectedProduct = product;
-      console.log("selected product" + this.selectedProduct);
       this.showSizesMobile = true;
     },
     addItemToMobileCart({ product, size }) {
@@ -1042,7 +1040,11 @@ a:hover {
   z-index: 1000;
   transition: opacity 0.3s ease;
 }
-
+.filter-exit-button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
 .sizesMobileOverlay {
   position: absolute;
   top: 0;
@@ -1096,7 +1098,7 @@ a:hover {
     font-size: 30px;
   }
 
-  .search-input{
+  .search-input {
     font-size: 16px;
   }
   .products-header {

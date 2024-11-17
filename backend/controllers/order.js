@@ -141,9 +141,9 @@ export const updateOrderById = [
 export const createOrderByHook = async (
   user_id,
   lineItems,
-  shippingAddress
+  shippingAddress,
+  totalCost
 ) => {
-  console.log("createOrderByHook", user_id, lineItems, shippingAddress);
   let connection;
   try {
     // Acquire a connection from the pool
@@ -191,7 +191,6 @@ export const createOrderByHook = async (
       }
 
       const productTotal = productData.price * product.quantity;
-      totalAmount += productTotal;
 
       return {
         product_id: product.product_id,
@@ -216,7 +215,7 @@ export const createOrderByHook = async (
       [
         user_id,
         order_status,
-        totalAmount,
+        totalCost,
         order_date,
         address_line1,
         address_line2,
@@ -413,7 +412,6 @@ export const showOrdersById = async (req, res) => {
   try {
     // Get the user ID from query parameters
     const userId = req.query.userid;
-    console.log(userId);
 
     // Get the orders by user ID
     const orders = await getOrdersById(userId);

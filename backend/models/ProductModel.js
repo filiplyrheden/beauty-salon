@@ -97,7 +97,6 @@ export const insertProduct = async (product) => {
   } = product;
 
   try {
-    console.log(product);
     // Check if sizes or properties are missing and throw an error
     if (!variants || variants.length === 0) {
       throw new Error("Product sizes are missing");
@@ -109,7 +108,6 @@ export const insertProduct = async (product) => {
 
     const featuredValue = featured ? 1 : 0;
 
-    // Step 1: Insert into the Products table
     const productQuery = `
       INSERT INTO Products (product_name, description, usage_products, ingredients, category_id, brand_id, featured, image_url_primary, image_url_secondary, image_url_third)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -129,8 +127,6 @@ export const insertProduct = async (product) => {
 
     const productId = productResult.insertId;
 
-    // Step 2: Insert sizes into the ProductSizes table
-    console.log(variants);
     const sizeValues = variants.map(({ size, price, stock_quantity }) => [
       productId,
       size,
@@ -144,7 +140,6 @@ export const insertProduct = async (product) => {
     `;
     await db.query(sizeQuery, sizeValues.flat());
 
-    // Step 3: Insert properties into the ProductPropertiesJoinTable
     const propertiesValues = properties.map(({ property_id }) => [
       productId,
       property_id,
@@ -182,7 +177,6 @@ export const editProduct = async (product) => {
     properties,
   } = product;
 
-  console.log(featured);
   try {
     const productQuery = `
       UPDATE Products

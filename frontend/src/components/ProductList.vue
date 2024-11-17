@@ -140,39 +140,51 @@
                     @change="onImageChangeEditing($event, 'primary')"
                     accept="image/*"
                   />
-                  <img class="editingImage" :src=editingProduct.image_url_primary alt="">
+                  <img
+                    class="editingImage"
+                    :src="editingProduct.image_url_primary"
+                    alt=""
+                  />
                 </div>
-                
+
                 <div class="form-group">
                   <label for="secondaryImage">Andra Bilden:</label>
                   <input
-                  type="file"
-                  id="secondaryImage"
-                  @change="onImageChangeEditing($event, 'secondary')"
-                  accept="image/*"
+                    type="file"
+                    id="secondaryImage"
+                    @change="onImageChangeEditing($event, 'secondary')"
+                    accept="image/*"
                   />
-                  <img class="editingImage" :src=editingProduct.image_url_secondary alt="">
+                  <img
+                    class="editingImage"
+                    :src="editingProduct.image_url_secondary"
+                    alt=""
+                  />
                 </div>
-                
+
                 <div class="form-group">
                   <label for="thirdImage">Tredje Bilden:</label>
                   <input
-                  type="file"
-                  id="thirdImage"
-                  @change="onImageChangeEditing($event, 'third')"
-                  accept="image/*"
+                    type="file"
+                    id="thirdImage"
+                    @change="onImageChangeEditing($event, 'third')"
+                    accept="image/*"
                   />
-                  <img class="editingImage" :src=editingProduct.image_url_third alt="">
+                  <img
+                    class="editingImage"
+                    :src="editingProduct.image_url_third"
+                    alt=""
+                  />
                 </div>
               </div>
             </fieldset>
-            
+
             <div class="form-group">
               <label for="usageProducts">Användningsinstruktioner</label>
               <textarea
-              id="usageProducts"
-              v-model="editingProduct.usage_products"
-              placeholder="Enter usage instructions"
+                id="usageProducts"
+                v-model="editingProduct.usage_products"
+                placeholder="Enter usage instructions"
               ></textarea>
             </div>
             <div class="form-group">
@@ -460,7 +472,6 @@ export default {
       this.editingProduct.variants.splice(index, 1);
     },
     saveProduct() {
-      console.log("Saving product:", this.editingProduct);
       const formData = new FormData();
       formData.append("product_name", this.editingProduct.product_name);
       formData.append("description", this.editingProduct.description);
@@ -502,10 +513,6 @@ export default {
           "Properties is not an array:",
           this.editingProduct.properties
         );
-      }
-
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ": " + pair[1]);
       }
 
       axiosInstance
@@ -652,7 +659,7 @@ fieldset {
   padding: 0; /* Optional: remove padding */
 }
 
-.editingImage{
+.editingImage {
   width: 75px;
   height: 75px;
   padding: 5px;
@@ -689,15 +696,15 @@ select {
   width: 100%;
 }
 
-button{
+button {
   color: black;
 }
 
-button:hover{
+button:hover {
   color: white;
 }
 
-input{
+input {
   color: black;
 }
 
@@ -738,6 +745,11 @@ button:hover {
 }
 
 @media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
   .product-list {
     padding: 10px;
   }

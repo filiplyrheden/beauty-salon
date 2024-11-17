@@ -152,8 +152,6 @@ export default {
       try {
         const response = await axiosInstance.get(`/product/${product_id}`);
         this.product = response.data.result;
-        console.log("produkt: ");
-        console.log(response.data.result);
       } catch (error) {
         console.error("Error fetching product:", error);
       }
@@ -165,7 +163,6 @@ export default {
         size_id: size.size_id,
         avaliableStock: size.quantity,
       };
-      console.log(this.chosenSize);
     },
     incrementProduct() {
       if (this.quantity < 99) this.quantity++;
@@ -185,15 +182,12 @@ export default {
     },
     toggleSizesPopup() {
       this.isSizesPopupVisible = !this.isSizesPopupVisible;
-      console.log(this.isSizesPopupVisible);
     },
     toggleAnvandningPopup() {
       this.isAnvandningPopupVisible = !this.isAnvandningPopupVisible;
-      console.log(this.isAnvandningPopupVisible);
     },
     toggleIngredienserPopup() {
       this.isIngredienserPopupVisible = !this.isIngredienserPopupVisible;
-      console.log(this.isIngredienserPopupVisible);
     },
     swapImage(type) {
       // Temporary store the primary image

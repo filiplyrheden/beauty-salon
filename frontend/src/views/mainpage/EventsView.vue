@@ -24,7 +24,9 @@
             glädje!
           </div>
           <router-link to="/om-mig">
-            <button>KONTAKTA SHAHAD FÖR ETT SKRÄDDARSYTT EVENT</button>
+            <button class="contact">
+              KONTAKTA SHAHAD FÖR ETT SKRÄDDARSYTT EVENT
+            </button>
           </router-link>
         </div>
         <div class="events">
@@ -130,6 +132,12 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.booking-link {
+  color: black;
+}
+.contact {
+  color: black;
 }
 .price {
   font-weight: 500;
