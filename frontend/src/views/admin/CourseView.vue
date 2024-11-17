@@ -496,6 +496,7 @@ export default {
 textarea,
 input.text,
 input[type="text"],
+input[type="file"],
 input[type="button"],
 input[type="submit"],
 input[type="”search”"],
