@@ -1,6 +1,8 @@
 <template>
   <div class="service-category-container">
-    <router-link to="/admin" class="back">Tillbaka</router-link>
+    <router-link to="/admin" class="back"
+      ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+    >
     <h1>Behandlings Kategorier</h1>
 
     <!-- Loading Indicator -->

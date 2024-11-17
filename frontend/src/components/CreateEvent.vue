@@ -9,12 +9,23 @@
     <form @submit.prevent="saveEvent" enctype="multipart/form-data">
       <div>
         <label for="eventName">Event Namn:</label>
-        <input type="text" id="eventName" v-model="eventName" required />
+        <input
+          type="text"
+          id="eventName"
+          v-model="eventName"
+          required
+          placeholder="Smink event, Hårstyling event, etc."
+        />
       </div>
 
       <div>
         <label for="description">Beskrivning:</label>
-        <textarea id="description" v-model="description" required></textarea>
+        <textarea
+          id="description"
+          v-model="description"
+          required
+          placeholder="Skriv en kort beskrivning av eventet"
+        ></textarea>
       </div>
 
       <div>
@@ -23,7 +34,8 @@
           type="number"
           id="eventPrice"
           v-model="eventPrice"
-          step="0.01"
+          step="1.00"
+          placeholder="0"
           required
         />
       </div>
@@ -178,7 +190,16 @@ textarea {
   box-sizing: border-box;
   font-size: 1rem;
 }
-
+#schedule,
+#image {
+  background: white !important;
+  /* border: red; */
+  color: black !important;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
 /* Textarea styling */
 textarea {
   height: 100px;

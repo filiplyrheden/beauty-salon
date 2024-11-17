@@ -2,7 +2,9 @@
   <div>
     <div class="header">
       <button>
-        <router-link to="/admin" class="back">Tillbaka</router-link>
+        <router-link to="/admin" class="back"
+          ><font-awesome-icon icon="chevron-left" /> Tillbaka</router-link
+        >
       </button>
       <h2>Add New Product</h2>
     </div>
@@ -35,30 +37,38 @@
         </div>
         <div class="form-group">
           <label for="categoryId">Kategori</label>
-          <select v-model="categoryId">
-            <option value="" disabled selected>Välj en kategori</option>
-            <option
-              v-for="(category, index) in categoriesOnLoad"
-              :key="index"
-              :value="category.category_id"
-            >
-              {{ category.category_name }}
-            </option>
-          </select>
+          <div class="custom-select-wrapper">
+            <select v-model="categoryId">
+              <option value="" disabled selected>Välj en kategori</option>
+              <option
+                v-for="(category, index) in categoriesOnLoad"
+                :key="index"
+                :value="category.category_id"
+              >
+                {{ category.category_name }}
+              </option>
+            </select>
+            <font-awesome-icon class="select-chevron" icon="chevron-down" />
+          </div>
         </div>
+
         <div class="form-group">
           <label for="brand">Märke</label>
-          <select v-model="brand">
-            <option value="" disabled selected>Välj ett märke</option>
-            <option
-              v-for="(brand, index) in brandsOnLoad"
-              :key="index"
-              :value="brand.brand_id"
-            >
-              {{ brand.brand_name }}
-            </option>
-          </select>
+          <div class="custom-select-wrapper">
+            <select v-model="brand">
+              <option value="" disabled selected>Välj ett märke</option>
+              <option
+                v-for="(brand, index) in brandsOnLoad"
+                :key="index"
+                :value="brand.brand_id"
+              >
+                {{ brand.brand_name }}
+              </option>
+            </select>
+            <font-awesome-icon class="select-chevron" icon="chevron-down" />
+          </div>
         </div>
+
         <!-- Sizes Section -->
         <div class="form-group-sizes">
           <label for="sizes">Storlekar och Priser</label>
@@ -149,17 +159,22 @@
         <div class="form-group-properties">
           <label for="property">Egenskaper</label>
           <div class="selectPropertyWrapper">
-            <select v-model="selectedProperty">
-              <option value="" disabled selected>Välj en egenskap</option>
-              <option
-                v-for="(property, index) in propertiesOnLoad"
-                :key="index"
-                :value="property.property_id"
-              >
-                {{ property.name }}
-              </option>
-            </select>
-            <button @click.prevent="addProperty">Lägg till Egenskap</button>
+            <div class="custom-select-wrapper">
+              <select v-model="selectedProperty">
+                <option value="" disabled selected>Välj en egenskap</option>
+                <option
+                  v-for="(property, index) in propertiesOnLoad"
+                  :key="index"
+                  :value="property.property_id"
+                >
+                  {{ property.name }}
+                </option>
+              </select>
+              <font-awesome-icon class="select-chevron" icon="chevron-down" />
+            </div>
+            <button @click.prevent="addProperty" class="property-button">
+              Lägg till Egenskap
+            </button>
           </div>
           <ul>
             <li
@@ -524,6 +539,84 @@ button:hover {
   justify-content: space-between;
   gap: 10px;
 }
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%; /* Adjust based on your design */
+}
+
+.custom-select-wrapper select {
+  width: 100%;
+  appearance: none; /* Removes the default dropdown arrow */
+  -webkit-appearance: none; /* For Safari */
+  -moz-appearance: none; /* For Firefox */
+  padding-right: 2rem; /* Space for the chevron */
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.custom-select-wrapper .select-chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Allows clicks to pass through */
+  color: #999; /* Customize based on your theme */
+}
+.property-button {
+  width: 300px;
+}
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%; /* Set appropriate width for your dropdown */
+}
+
+.custom-select-wrapper select {
+  width: 100%;
+  appearance: none; /* Hides the default browser arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2rem; /* Creates space for the chevron */
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.custom-select-wrapper .select-chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Allows the user to click the dropdown */
+  color: #999; /* Adjust to match your design */
+}
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%; /* Adjust based on your design requirements */
+}
+
+.custom-select-wrapper select {
+  width: 100%;
+  appearance: none; /* Remove default arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2rem; /* Space for the chevron */
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.custom-select-wrapper .select-chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Ensure the chevron doesn’t block interaction */
+  color: #999; /* Customize chevron color to match your design */
+}
 
 .liPropertyStyles {
   margin-top: 5px;
@@ -564,12 +657,6 @@ textarea {
 
 input[type="number"] {
   -moz-appearance: textfield;
-}
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
 }
 
 .submit-btn {
@@ -621,6 +708,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 /* Hide default radio button */
 .custom-radio {
+  padding: 0px;
   margin-left: 15px;
   margin-bottom: 10px;
   appearance: none;
@@ -682,6 +770,9 @@ input {
   button {
     padding: 4px 8px;
     font-size: 10px;
+  }
+  .property-button {
+    width: unset;
   }
 }
 </style>

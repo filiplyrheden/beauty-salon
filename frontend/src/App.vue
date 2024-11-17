@@ -90,10 +90,10 @@ select,
   -webkit-appearance: none;
   -moz-appearance: none; /* firefox browser */
   color: black;
-  border: 1px solid black;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   background: white;
   padding: 8px 16px;
-  border-radius: 0;
 }
 input[type="file"]::file-selector-button {
   border: 1px solid black;
@@ -168,8 +168,16 @@ html {
 }
 
 @media (max-width: 768px) {
-  input,
+  textarea,
+  input.text,
+  input[type="text"],
+  input[type="file"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="search"],
+  input[type="number"] input[type="datetime-local"],
   select,
+  .input-checkbox,
   textarea {
     font-size: 16px;
   }
