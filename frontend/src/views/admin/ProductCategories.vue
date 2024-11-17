@@ -337,21 +337,6 @@ export default {
 </script>
 
 <style scoped>
-textarea,
-input.text,
-input[type="text"],
-input[type="file"],
-input[type="button"],
-input[type="submit"],
-input[type="”search”"],
-input[type="datetime-local"],
-select,
-.input-checkbox {
-  -webkit-appearance: none;
-  -moz-appearance: none; /* firefox browser */
-
-  border-radius: 0;
-}
 .back {
   text-decoration: none;
   color: black;

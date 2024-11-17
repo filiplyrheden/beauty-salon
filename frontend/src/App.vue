@@ -90,23 +90,22 @@ select,
   -webkit-appearance: none;
   -moz-appearance: none; /* firefox browser */
   color: black;
-  background: red;
   border: 1px solid black;
-  padding: 8px 16ox;
-  min-width: 100%;
+  background: white;
+  padding: 8px 16px;
   border-radius: 0;
 }
 input[type="file"]::file-selector-button {
-  border: 2px solid #6c5ce7;
-  padding: 0.2em 0.4em;
-  border-radius: 0.2em;
-  background-color: #a29bfe;
+  border: 1px solid black;
+  border-radius: 0;
+  background-color: white;
   transition: 1s;
+  color: black;
 }
 
 input[type="file"]::file-selector-button:hover {
-  background-color: #81ecec;
-  border: 2px solid #00cec9;
+  background-color: black;
+  color: white;
 }
 body,
 html {
