@@ -146,11 +146,26 @@ export default {
         // Show the size options for the current product if no size is selected
         this.showSizeOptions[product.product_id] = true;
       } else {
-        // Proceed to add the product to the cart
+        // Find the selected variant based on the size_id
+        const selectedVariant = product.variants.find(
+          (variant) => variant.size_id === product.selectedSize
+        );
+
+        if (!selectedVariant) {
+          console.error("Selected variant not found!");
+          return;
+        }
+
+        const availableStock = selectedVariant.stock_quantity;
+
         console.log("Adding to cart:", product.selectedSize);
+        console.log("Available stock for selected variant:", availableStock);
+
+        // Proceed to commit the mutation with available stock
         this.$store.commit("addToCart", {
           product,
           size_id: product.selectedSize,
+          availableStock,
         });
       }
     },

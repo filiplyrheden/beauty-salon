@@ -544,7 +544,19 @@ export default {
       this.showSizesMobile = true;
     },
     addItemToMobileCart({ product, size }) {
-      this.$store.commit("addToCart", { product, size_id: size.size_id });
+
+      const selectedVariant = product.variants.find(
+        (variant) => variant.size_id === product.selectedSize
+      );
+
+      if (!selectedVariant) {
+        console.error("Selected variant not found!");
+      return;
+      }
+
+      const availableStock = selectedVariant.stock_quantity;
+
+      this.$store.commit("addToCart", { product, size_id: size.size_id, availableStock, });
       this.showSizesMobile = false;
     },
     toggleDropdown(type) {
@@ -607,9 +619,22 @@ export default {
       if (product.selectedSize === null) {
         this.showSizeOptions[product.product_id] = true;
       } else {
+
+        const selectedVariant = product.variants.find(
+          (variant) => variant.size_id === product.selectedSize
+        );
+
+        if (!selectedVariant) {
+          console.error("Selected variant not found!");
+          return;
+        }
+
+        const availableStock = selectedVariant.stock_quantity;
+
         this.$store.commit("addToCart", {
           product,
           size_id: product.selectedSize,
+          availableStock,
         });
       }
     },

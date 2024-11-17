@@ -107,7 +107,14 @@ export default {
       this.showSizesMobile = true;
     },
     addItemToCart({ product, size }) {
-      this.$store.commit("addToCart", { product, size_id: size.size_id });
+
+      const selectedVariant = product.variants.find(
+        (variant) => variant.size_id === product.selectedSize
+      );
+
+      const availableStock = selectedVariant.stock_quantity;
+
+      this.$store.commit("addToCart", { product, size_id: size.size_id, availableStock, });
       this.showSizesMobile = false;
     },
   },

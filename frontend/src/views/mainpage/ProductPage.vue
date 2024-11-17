@@ -163,6 +163,7 @@ export default {
         name: size.sizeName,
         price: size.price,
         size_id: size.size_id,
+        avaliableStock: size.quantity,
       };
       console.log(this.chosenSize);
     },
@@ -170,12 +171,11 @@ export default {
       if (this.quantity < 99) this.quantity++;
     },
     addItemToCart(product) {
-      console.log(" product that is going to store.js: ");
-      console.log(product);
       this.$store.commit("addToCart", {
         product,
         size_id: this.chosenSize.size_id,
         quantityFromProductPage: this.quantity,
+        availableStock: this.chosenSize.avaliableStock,
       });
     },
     decrementProduct() {

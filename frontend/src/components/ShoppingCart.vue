@@ -74,6 +74,7 @@ import axiosInstance from "@/services/axiosConfig";
 import visa from "../assets/payment/visa.svg";
 import mastercard from "../assets/payment/mastercard.svg";
 import { mapState, mapMutations } from "vuex";
+import Swal from "sweetalert2";
 
 export default {
   name: "ShoppingCart",
@@ -135,18 +136,48 @@ export default {
       }
     },
     async handleCheckout() {
-      // Check if the user is logged in
       if (!this.$store.state.isLoggedIn) {
-        // Redirect to login page or show a message
         this.hideCart();
-        this.$router.push({ path: "/login" }); // Redirect to login page
+        this.$router.push({ path: "/login" });
         return;
       }
 
-      // Disable outside click while processing
       this.disableOutsideClick();
+
       try {
-        console.log(this.$store.state.userId);
+        console.log("User ID:", this.$store.state.userId);
+
+        // Fetch stock quantities
+        const { data: stockResponse } = await axiosInstance.get("/update-stock");
+        const stockQuantities = stockResponse.items;
+
+        console.log("Fetched stock quantities:", stockQuantities);
+
+        // Validate cart items against stock
+        const cart = this.$store.state.cart;
+        const insufficientStock = cart.filter((cartItem) => {
+          const stockItem = stockQuantities.find(
+            (item) =>
+              item.product_id === cartItem.product_id &&
+              item.size_id === cartItem.size_id
+          );
+          return stockItem && cartItem.quantity > stockItem.available_quantity;
+        });
+        if (insufficientStock.length > 0) {
+          insufficientStock.forEach((item) => {
+            console.error(
+              `Otillräcklig lagerstatus för ${item.product_name}, storlek ID: ${item.size}.`
+            );
+            Swal.fire(
+              "OBS",
+              `Otillräcklig lagerstatus för produkt: ${item.product_name}, storlek: ${item.size}.`,
+              "error",
+            );
+          });
+          return;
+        }
+
+        // Proceed to create checkout session
         const response = await axiosInstance.post("/create-checkout-session", {
           dummyItems: this.$store.state.cart.map((item) => ({
             product_id: item.product_id,
@@ -156,17 +187,26 @@ export default {
           user_id: this.$store.state.userId,
         });
 
-        // Manually handle the redirect from the 303 status
+        // Redirect to the checkout URL
         const { url } = response.data;
-        window.location.href = url;
+        if (url) {
+          window.location.href = url;
+        } else {
+          throw new Error("Checkout session URL not provided");
+        }
       } catch (error) {
         if (error.response && error.response.status === 303) {
-          // If 303, redirect manually to the URL in the response
           const redirectUrl = error.response.data.url;
           window.location.href = redirectUrl;
         } else {
-          console.error("Error creating checkout session:", error);
+          console.error("Error during checkout:", error);
+          Swal.fire(
+            "Error",
+            "Vi kunde inte hantera din order, snälla försök senare igen"
+          );
         }
+      } finally {
+        this.enableOutsideClick();
       }
     },
   },
