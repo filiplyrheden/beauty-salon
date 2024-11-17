@@ -64,7 +64,12 @@
 
       <div>
         <label for="bookingLink">Bokningslänk:</label>
-        <input type="text" id="bookingLink" v-model="bookingLink" />
+        <input
+          type="text"
+          id="bookingLink"
+          v-model="bookingLink"
+          placeholder="http://www.bokadirekt.se"
+        />
       </div>
 
       <button type="submit">Lägg till</button>
@@ -89,6 +94,25 @@ export default {
       message: "",
       schedule: "",
     };
+  },
+  mounted() {
+    // Initialize the date picker
+    if (!this.schedule) {
+      const now = new Date();
+      // Format the date to 'YYYY-MM-DDTHH:mm' using local time
+      const localISOTime =
+        now.getFullYear() +
+        "-" +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(now.getDate()).padStart(2, "0") +
+        "T" +
+        String(now.getHours()).padStart(2, "0") +
+        ":" +
+        String(now.getMinutes()).padStart(2, "0");
+
+      this.schedule = localISOTime;
+    }
   },
   methods: {
     onImageChange(event) {
