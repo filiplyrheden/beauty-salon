@@ -161,6 +161,7 @@ export default {
         name: size.sizeName,
         price: size.price,
         size_id: size.size_id,
+        avaliableStock: size.quantity,
       };
     },
     incrementProduct() {
@@ -171,6 +172,7 @@ export default {
         product,
         size_id: this.chosenSize.size_id,
         quantityFromProductPage: this.quantity,
+        availableStock: this.chosenSize.avaliableStock,
       });
     },
     decrementProduct() {

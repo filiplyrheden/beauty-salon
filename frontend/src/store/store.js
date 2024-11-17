@@ -1,4 +1,5 @@
 import Vuex from "vuex";
+import Swal from "sweetalert2";
 
 export const store = new Vuex.Store({
   state: {
@@ -72,17 +73,27 @@ export const store = new Vuex.Store({
     setCart(state, cartItems) {
       state.cart = cartItems; // Assume the cart is already in simplified form
     },
-    addToCart(state, { product, size_id, quantityFromProductPage }) {
+    addToCart(state, { product, size_id, quantityFromProductPage, availableStock }) {
+      console.log(availableStock);
       const item = state.cart.find(
         (i) => i.product_id === product.product_id && i.size_id === size_id
       );
-
+    
+      const requestedQuantity = quantityFromProductPage || 1;
+      const currentQuantity = item ? item.quantity : 0;
+      const newQuantity = currentQuantity + requestedQuantity;
+    
+      // Check stock availability
+      if (newQuantity > availableStock) {
+        Swal.fire(
+          "OBS",
+          `Förlåt, endast ${availableStock} enheter finns tillgängliga för ${product.product_name} (Storlek: ${size_id}).`,
+        )
+        return; // Exit if requested quantity exceeds stock
+      }
+    
       if (item) {
-        if (quantityFromProductPage) {
-          item.quantity += quantityFromProductPage;
-        } else {
-          item.quantity++;
-        }
+        item.quantity = newQuantity; // Update quantity
         state.lastAddedItem = item;
         state.cartPopupVisible = true;
       } else {
@@ -92,15 +103,15 @@ export const store = new Vuex.Store({
           price: product.variants.find((v) => v.size_id === size_id).price,
           size: product.variants.find((v) => v.size_id === size_id).size,
           size_id: size_id,
-          quantity: quantityFromProductPage || 1,
+          quantity: requestedQuantity,
           image_url: product.image_url_primary,
         };
-
+    
         state.cart.push(newItem);
         state.lastAddedItem = newItem;
         state.cartPopupVisible = true;
       }
-
+    
       // Start a 5-second timer to close the popup
       setTimeout(() => {
         state.cartPopupVisible = false;

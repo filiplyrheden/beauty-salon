@@ -93,6 +93,12 @@ import {
   showProperties,
   updatePropertyById,
 } from "./controllers/productproperties.js";
+import {
+  showStockQuantity,
+  updateStock,
+} from "./controllers/stock-quantity.js";
+
+
 import { sendContactForm } from "./controllers/sendContactForm.js";
 
 dotenv.config();
@@ -155,19 +161,26 @@ app.post(
             {
               expand: ["data.price.product"],
             }
-          );
+          ).catch(error => {
+            console.error("Error fetching line items: ", error);
+            return []; // Return empty array if there's an error
+          });
           const user_id = session.metadata.user_id;
-          /* const adress = get the adress from the stripe input */
-          await createOrderByHook(
-            user_id,
-            lineItems,
-            shippingAddress,
-            totalCost
-          );
+      
+          if (!lineItems || lineItems.data.length === 0) {
+            console.error("No line items found.");
+            return; // Prevent further execution if no line items
+          }
+      
+          console.log("Line items:", lineItems.data); // Ensure correct structure
+      
+          await createOrderByHook(user_id, lineItems, shippingAddress, totalCost);
+          await updateStock(lineItems); // Pass the correctly populated lineItems
+
         } catch (error) {
           console.error("Error creating order: ", error);
         }
-      })();
+      })();      
     }
   }
 );
@@ -258,6 +271,9 @@ const __dirnameFull = dirname(__filename);
 
 // Serve static files from the uploads directory
 app.use("/uploads", express.static(path.join(__dirnameFull, "uploads")));
+
+// Routes for productSizes / stock_quantity for each size
+app.get("/update-stock", showStockQuantity); // Get all productSizes
 
 // Routes for Products
 app.get("/products", showProducts); // Get all products

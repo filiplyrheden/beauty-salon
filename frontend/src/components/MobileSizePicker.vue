@@ -62,13 +62,20 @@ export default {
     },
     selectSize(variant) {
       this.selectedSize = variant;
+      console.log(this.selectedSize);
       this.showSizeOptions = false;
     },
     addToCart() {
       if (this.selectedSize) {
+        console.log({
+          product: this.product,
+          size: this.selectedSize,
+          availableStock: this.selectedSize.stock_quantity,
+        });
         this.$emit("add-to-cart", {
           product: this.product,
           size: this.selectedSize,
+          availableStock: this.selectedSize.stock_quantity,
         });
       }
     },
