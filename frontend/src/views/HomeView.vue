@@ -615,7 +615,6 @@ button {
   transition: 0.3s;
   padding: 16px 24px;
   border: 1px 0px 0px 0px;
-  opacity: 0px;
 }
 
 button:hover {
