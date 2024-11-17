@@ -38,6 +38,9 @@ export default {
                 console.error("Error fetching events:", error); // Log error for debugging
             }
         },
+        getImageUrl(imageName) {
+        return `${process.env.VUE_APP_API_BASE_URL}${imageName}`;
+        },
         handleEventDelete(eventId) {
             // Remove the deleted event from the eventItems array
             this.eventItems = this.eventItems.filter(event => event.event_id !== eventId);
