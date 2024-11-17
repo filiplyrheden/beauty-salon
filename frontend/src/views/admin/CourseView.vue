@@ -170,6 +170,26 @@ export default {
   created() {
     this.fetchCourses();
   },
+  mounted() {
+    // Initialize the date picker
+    if (!this.form.schedule) {
+      const now = new Date();
+      // Format the date to 'YYYY-MM-DDTHH:mm' using local time
+      const localISOTime =
+        now.getFullYear() +
+        "-" +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(now.getDate()).padStart(2, "0") +
+        "T" +
+        String(now.getHours()).padStart(2, "0") +
+        ":" +
+        String(now.getMinutes()).padStart(2, "0");
+
+      this.form.schedule = localISOTime;
+    }
+  },
+
   methods: {
     /**
      * Fetch all courses from the backend.
@@ -603,10 +623,6 @@ th {
   font-weight: bold;
 }
 
-#schedule {
-  flex: 0;
-}
-
 .course-image {
   width: 100px;
   height: auto;
@@ -709,9 +725,6 @@ tr:nth-child(2n) {
   .form-group input,
   .form-group textarea {
     width: 100%;
-  }
-  #schedule {
-    width: fit-content;
   }
   .form-group label {
     width: 100%;

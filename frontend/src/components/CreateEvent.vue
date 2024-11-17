@@ -243,7 +243,9 @@ p.error {
   top: 10px;
   left: 5%;
 }
-
+#schedule {
+  width: 100%;
+}
 .back:hover {
   color: white;
   background-color: #202020;
