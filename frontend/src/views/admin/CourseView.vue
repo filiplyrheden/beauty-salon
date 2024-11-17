@@ -562,7 +562,11 @@ h2 {
   display: flex;
   justify-content: flex-start;
 }
-
+#schedule {
+  background: white !important;
+  /* border: red; */
+  color: black !important;
+}
 .button-group button {
   margin-right: 10px;
   padding: 8px 16px;
