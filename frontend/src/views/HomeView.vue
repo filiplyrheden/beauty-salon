@@ -300,7 +300,7 @@ export default {
   padding-bottom: 80px;
 }
 .treatments-container {
-  background-color: #f3f3f3;
+  background-color: var(--light-beige-background);
   width: 100%;
   position: relative;
 }
@@ -351,7 +351,7 @@ export default {
 
 .events-container {
   width: 100%;
-  background-color: #dddddd;
+  background-color: var(--light-beige-background);
 }
 .events {
   padding-top: 32px;
@@ -393,7 +393,7 @@ export default {
 .about-me-container {
   width: 100%;
   height: 90vh;
-  background-color: #cacaca;
+  background-color: var(--dark-beige-background);
 }
 
 .about-me-image {

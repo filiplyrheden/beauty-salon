@@ -157,6 +157,7 @@ export default {
   flex-wrap: wrap;
 }
 .course-item-container {
+  border: 1px solid black;
   width: calc(50% - 8px);
   min-height: 350px;
   padding: 8px;
