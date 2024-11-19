@@ -74,7 +74,7 @@ const routes = [
     component: SuccessPage,
     meta: { requiresAuth: false },
     beforeEnter: (to, from, next) => {
-      store.commit("clearCart"); // Clear the cart in Vuex and localStorage
+      store.commit("clearCart");
       next();
     },
   },
@@ -181,7 +181,6 @@ const routes = [
     name: "Reset Password Page",
     component: ResetPassword,
   },
-  // Additional routes can be added here
 ];
 
 const router = createRouter({

@@ -100,7 +100,7 @@ export default {
   data() {
     return {
       products: [],
-      showSizeOptions: {}, // Object to track size option visibility
+      showSizeOptions: {},
     };
   },
   mounted() {
@@ -110,7 +110,6 @@ export default {
     async fetchProducts() {
       try {
         const response = await axiosInstance.get(`/featuredproducts`);
-        // Initialize selectedSize for each product
         this.products = response.data.map((product) => {
           const defaultSizeId = product.variants
             ? product.variants[0].size_id
@@ -118,7 +117,7 @@ export default {
 
           return {
             ...product,
-            selectedSize: defaultSizeId, // Initialize selectedSize with the default size_id
+            selectedSize: defaultSizeId,
           };
         });
       } catch (error) {
@@ -137,8 +136,8 @@ export default {
     },
     selectSize(productId, sizeId) {
       const product = this.products.find((p) => p.product_id === productId);
-      product.selectedSize = sizeId; // Set selectedSize for the specific product
-      this.showSizeOptions[productId] = false; // Hide size options after selection
+      product.selectedSize = sizeId;
+      this.showSizeOptions[productId] = false;
     },
     truncateText(text, maxLength) {
     if (text.length > maxLength) {
@@ -147,12 +146,9 @@ export default {
     return text;
     },
     addItemToCart(product) {
-      // Add product to the cart with the selected size_id
       if (product.selectedSize === null) {
-        // Show the size options for the current product if no size is selected
         this.showSizeOptions[product.product_id] = true;
       } else {
-        // Find the selected variant based on the size_id
         const selectedVariant = product.variants.find(
           (variant) => variant.size_id === product.selectedSize
         );
@@ -161,14 +157,9 @@ export default {
           console.error("Selected variant not found!");
           return;
         }
-
         const availableStock = selectedVariant.stock_quantity;
-
         console.log("Adding to cart:", product.selectedSize);
         console.log("Available stock for selected variant:", availableStock);
-
-        // Proceed to commit the mutation with available stock
-
         this.$store.commit("addToCart", {
           product,
           size_id: product.selectedSize,

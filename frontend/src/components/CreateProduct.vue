@@ -19,7 +19,6 @@
         @submit.prevent="saveProduct"
         enctype="multipart/form-data"
       >
-        <!-- Existing Fields -->
         <div class="form-group">
           <label for="productName">Produktnamn</label>
           <input
@@ -74,7 +73,6 @@
           </div>
         </div>
 
-        <!-- Sizes Section -->
         <div class="form-group-sizes">
           <div class="size-header">
             <label for="sizes">Storlekar och Priser</label>
@@ -114,7 +112,6 @@
           </div>
         </div>
 
-        <!-- Usage Products Section -->
         <div class="form-group">
           <label for="usageProducts">Användarinstruktioner</label>
           <textarea
@@ -124,7 +121,6 @@
           ></textarea>
         </div>
 
-        <!-- Ingredients Section -->
         <div class="form-group">
           <label for="ingredients">Ingredienser</label>
           <textarea
@@ -135,7 +131,6 @@
           ></textarea>
         </div>
 
-        <!-- Image Fields and Submit Button -->
         <div class="form-group">
           <label for="primaryImage">Första Bilden:</label>
           <input
@@ -166,7 +161,6 @@
           />
         </div>
 
-        <!-- Properties Section -->
         <div class="form-group-properties">
           <label for="property">Egenskaper</label>
           <div class="selectPropertyWrapper">
@@ -331,17 +325,14 @@ export default {
     },
     addProperty() {
       if (this.selectedProperty) {
-        // Check if the property is already in the properties array
         const propertyExists = this.properties.some(
           (property) => property.property_id === this.selectedProperty
         );
 
         if (propertyExists) {
-          // Show an error message using SweetAlert
           Swal.fire("Fel", "Egenskapen har redan lagts till.", "error");
-          return; // Exit the function if the property already exists
+          return;
         }
-        // Find the selected property object from propertiesOnLoad
         const selectedPropertyObject = this.propertiesOnLoad.find(
           (property) => property.property_id === this.selectedProperty
         );
@@ -351,7 +342,7 @@ export default {
             name: selectedPropertyObject.name,
             property_id: selectedPropertyObject.property_id,
           });
-          this.selectedProperty = ""; // Reset selected property after adding
+          this.selectedProperty = "";
         }
       }
     },
@@ -433,7 +424,7 @@ export default {
       this.sizes = [{ size: "", price: 0, stock_quantity: 0 }];
       this.usageProducts = "";
       this.ingredients = "";
-      this.properties = []; // Reset properties to an empty array
+      this.properties = [];
       this.featured = false;
       this.primaryImageFile = null;
       this.secondaryImageFile = null;
@@ -555,10 +546,10 @@ button:hover {
 .custom-select-wrapper select {
   width: 100%;
   height: 100%;
-  appearance: none; /* Removes the default dropdown arrow */
-  -webkit-appearance: none; /* For Safari */
-  -moz-appearance: none; /* For Firefox */
-  padding-right: 2rem; /* Space for the chevron */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2rem;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -569,7 +560,7 @@ button:hover {
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  pointer-events: none; /* Allows clicks to pass through */
+  pointer-events: none;
   color: #999;
 }
 .property-button {
@@ -703,13 +694,11 @@ input[type="number"] {
   border: 1px solid #f5c6cb;
 }
 
-/* Optional loading state for button */
 .submit-btn:disabled {
   background-color: #95a5a6;
   cursor: not-allowed;
 }
 
-/* Hide default radio button */
 .custom-radio {
   padding: 0px;
   margin-left: 15px;
@@ -727,9 +716,8 @@ input[type="number"] {
   cursor: pointer;
 }
 
-/* Style when radio button is checked */
 .custom-radio:checked {
-  background-color: #000000; /* Change to your preferred color */
+  background-color: #000000;
   border-color: #ffffff;
 }
 
@@ -749,7 +737,6 @@ input {
   color: black;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   input,
   select,

@@ -98,7 +98,6 @@ import {
   updateStock,
 } from "./controllers/stock-quantity.js";
 
-
 import { sendContactForm } from "./controllers/sendContactForm.js";
 
 dotenv.config();
@@ -156,31 +155,34 @@ app.post(
           const shippingAddress = session.customer_details.address;
           const totalCost = session.amount_total / 100;
           const items = await getCheckoutSession(session.id);
-          const lineItems = await stripe.checkout.sessions.listLineItems(
-            session.id,
-            {
+          const lineItems = await stripe.checkout.sessions
+            .listLineItems(session.id, {
               expand: ["data.price.product"],
-            }
-          ).catch(error => {
-            console.error("Error fetching line items: ", error);
-            return []; // Return empty array if there's an error
-          });
+            })
+            .catch((error) => {
+              console.error("Error fetching line items: ", error);
+              return []; // Return empty array if there's an error
+            });
           const user_id = session.metadata.user_id;
-      
+
           if (!lineItems || lineItems.data.length === 0) {
             console.error("No line items found.");
             return; // Prevent further execution if no line items
           }
-      
-          console.log("Line items:", lineItems.data); // Ensure correct structure
-      
-          await createOrderByHook(user_id, lineItems, shippingAddress, totalCost);
-          await updateStock(lineItems); // Pass the correctly populated lineItems
 
+          console.log("Line items:", lineItems.data); // Ensure correct structure
+
+          await createOrderByHook(
+            user_id,
+            lineItems,
+            shippingAddress,
+            totalCost
+          );
+          await updateStock(lineItems); // Pass the correctly populated lineItems
         } catch (error) {
           console.error("Error creating order: ", error);
         }
-      })();      
+      })();
     }
   }
 );
@@ -210,28 +212,50 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
       shipping_options: [
         {
           shipping_rate_data: {
-            display_name: "Standard Frakt",
             type: "fixed_amount",
             fixed_amount: {
-              amount: 4500, // 45 SEK in the smallest currency unit (öre)
-              currency: "SEK",
+              amount: 4500,
+              currency: "sek",
             },
+            display_name: "Standard Frakt",
             delivery_estimate: {
               minimum: {
                 unit: "business_day",
-                value: 3,
+                value: 1,
               },
               maximum: {
                 unit: "business_day",
+                value: 1,
+              },
+            },
+          },
+        },
+
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: {
+              amount: 0,
+              currency: "sek",
+            },
+            display_name: "Hämta i butik (Gratis)",
+            delivery_estimate: {
+              minimum: {
+                unit: "business_day",
                 value: 5,
+              },
+              maximum: {
+                unit: "business_day",
+                value: 7,
               },
             },
           },
         },
       ],
+
       locale: "sv",
       success_url: `${YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${YOUR_DOMAIN}/cancel`,
+      cancel_url: `${YOUR_DOMAIN}`,
     });
     // Set CORS header and respond with the session URL
     res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);

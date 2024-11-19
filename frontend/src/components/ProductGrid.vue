@@ -72,7 +72,7 @@ export default {
   data() {
     return {
       productItems: [],
-      showSizeOptions: {}, // Object to track size option visibility
+      showSizeOptions: {},
       showSizesMobile: false,
       selectedProduct: null,
       properties: [],
@@ -87,7 +87,6 @@ export default {
     async fetchProducts() {
       try {
         const response = await axiosInstance.get(`/featuredproducts`);
-        // Only take the first 4 products
         this.productItems = response.data.slice(0, 4).map((product) => {
           const defaultSizeId = product.variants
             ? product.variants[0].size_id
@@ -95,7 +94,7 @@ export default {
 
           return {
             ...product,
-            selectedSize: defaultSizeId, // Initialize selectedSize with the default size_id
+            selectedSize: defaultSizeId,
           };
         });
       } catch (error) {
@@ -107,14 +106,17 @@ export default {
       this.showSizesMobile = true;
     },
     addItemToCart({ product, size }) {
-
       const selectedVariant = product.variants.find(
         (variant) => variant.size_id === product.selectedSize
       );
 
       const availableStock = selectedVariant.stock_quantity;
 
-      this.$store.commit("addToCart", { product, size_id: size.size_id, availableStock, });
+      this.$store.commit("addToCart", {
+        product,
+        size_id: size.size_id,
+        availableStock,
+      });
       this.showSizesMobile = false;
     },
   },
@@ -316,4 +318,3 @@ a:hover {
   }
 }
 </style>
-e

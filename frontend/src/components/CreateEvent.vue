@@ -102,10 +102,8 @@ export default {
     };
   },
   mounted() {
-    // Initialize the date picker
     if (!this.schedule) {
       const now = new Date();
-      // Format the date to 'YYYY-MM-DDTHH:mm' using local time
       const localISOTime =
         now.getFullYear() +
         "-" +
@@ -153,16 +151,17 @@ export default {
           "Error adding category:",
           error.response || error.message
         );
+
         // Get all error messages from the response
         const errorMessages =
           error.response?.data?.errors?.map((e) => e.msg).join("<br>") ||
           "Okänt fel uppstod. <br> Kolla så att du bara sätter in (jpeg, jpg, png, gif) som bilder.";
 
-          Swal.fire(
-            "Error",
-            `Produkten kunde inte sparas. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-            "error"
-          );
+        Swal.fire(
+          "Error",
+          `Event kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          "error"
+        );
         this.isLoading = false;
       }
     },
@@ -179,7 +178,6 @@ export default {
 </script>
 
 <style scoped>
-/* General form layout */
 form {
   max-width: 100%;
   width: 90%;
@@ -190,7 +188,6 @@ form {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Headings */
 h2 {
   text-align: center;
   font-size: 1.5em;
@@ -198,7 +195,6 @@ h2 {
   margin-bottom: 20px;
 }
 
-/* Input fields and labels */
 div {
   margin-bottom: 15px;
 }
@@ -255,25 +251,21 @@ textarea {
 #schedule,
 #image {
   background: white !important;
-  /* border: red; */
   color: black !important;
   width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
-/* Textarea styling */
 textarea {
   height: 100px;
   resize: vertical;
 }
 
-/* File input */
 input[type="file"] {
   padding: 5px;
 }
 
-/* Buttons */
 button[type="submit"] {
   background-color: #202020;
   color: white;
@@ -293,7 +285,6 @@ button[type="submit"]:hover {
   border: 1px solid #202020;
 }
 
-/* Success or error messages */
 p {
   text-align: center;
   font-size: 1.1rem;

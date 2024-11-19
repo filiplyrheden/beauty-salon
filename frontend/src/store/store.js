@@ -71,27 +71,28 @@ export const store = new Vuex.Store({
       state.userId = userId;
     },
     setCart(state, cartItems) {
-      state.cart = cartItems; // Assume the cart is already in simplified form
+      state.cart = cartItems;
     },
-    addToCart(state, { product, size_id, quantityFromProductPage, availableStock }) {
-      console.log(availableStock);
+    addToCart(
+      state,
+      { product, size_id, quantityFromProductPage, availableStock }
+    ) {
       const item = state.cart.find(
         (i) => i.product_id === product.product_id && i.size_id === size_id
       );
-    
+
       const requestedQuantity = quantityFromProductPage || 1;
       const currentQuantity = item ? item.quantity : 0;
       const newQuantity = currentQuantity + requestedQuantity;
-    
       // Check stock availability
       if (newQuantity > availableStock) {
         Swal.fire(
           "OBS",
-          `Förlåt, endast ${availableStock} enheter finns tillgängliga för ${product.product_name} (Storlek: ${size_id}).`,
-        )
+          `Förlåt, endast ${availableStock} enheter finns tillgängliga för ${product.product_name} (Storlek: ${size_id}).`
+        );
         return; // Exit if requested quantity exceeds stock
       }
-    
+
       if (item) {
         item.quantity = newQuantity; // Update quantity
         state.lastAddedItem = item;
@@ -106,12 +107,12 @@ export const store = new Vuex.Store({
           quantity: requestedQuantity,
           image_url: product.image_url_primary,
         };
-    
+
         state.cart.push(newItem);
         state.lastAddedItem = newItem;
         state.cartPopupVisible = true;
       }
-    
+
       // Start a 5-second timer to close the popup
       setTimeout(() => {
         state.cartPopupVisible = false;
@@ -142,7 +143,7 @@ export const store = new Vuex.Store({
     },
     clearCart(state) {
       state.cart = [];
-      localStorage.removeItem("cart"); // Remove cart from localStorage
+      localStorage.removeItem("cart");
     },
   },
   getters: {

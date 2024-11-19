@@ -1,7 +1,6 @@
 <template>
   <div class="reviews-container">
     <div class="reviews">
-      <!-- Conditionally render static blocks or carousel based on screen size -->
       <Carousel v-if="isMobile" :items-to-show="1" :items-to-scroll="1">
         <Slide v-for="review in displayedReviews" :key="review.review_id">
           <div class="review-item">
@@ -12,7 +11,6 @@
             </div>
 
             <div class="stars">
-              <!-- Render stars based on review rating -->
               <span v-for="n in getStars(review.rating)" :key="n" class="star"
                 >★</span
               >
@@ -24,7 +22,6 @@
         </template>
       </Carousel>
 
-      <!-- Render static blocks for desktop view -->
       <div v-else class="static-reviews">
         <div
           v-for="(review, index) in displayedReviews"
@@ -37,7 +34,6 @@
             <img src="../assets/quotation.svg" alt="" class="bottom-quote" />
           </div>
           <div class="stars">
-            <!-- Render stars based on review rating -->
             <span v-for="n in getStars(review.rating)" :key="n" class="star"
               >★</span
             >
@@ -61,7 +57,7 @@ export default {
   data() {
     return {
       reviews: [],
-      windowWidth: window.innerWidth, // Track initial window width
+      windowWidth: window.innerWidth,
     };
   },
   mounted() {
@@ -94,7 +90,6 @@ export default {
     isMobile() {
       return this.windowWidth < 768;
     },
-    // Display only the first 3 reviews
     displayedReviews() {
       return this.reviews.slice(0, 3);
     },
@@ -126,7 +121,6 @@ export default {
   width: 33%;
   height: 240px;
   color: white;
-  /* Add more styling as needed */
 }
 .review-text {
   font-size: 18px;
@@ -151,7 +145,6 @@ export default {
   opacity: 0.5;
 }
 
-/* Responsive styling */
 @media (max-width: 1200px) and (min-width: 768px) {
   .review-item1 {
     display: none;
@@ -167,11 +160,11 @@ export default {
 
 @media (max-width: 768px) {
   .static-reviews {
-    display: none; /* hide static reviews on smaller screens */
+    display: none;
   }
   .review-item {
     height: 200px;
-    width: 100%; /* full width for single-column display */
+    width: 100%;
     margin: 0 6px;
   }
   .reviews {

@@ -101,11 +101,11 @@ import { mapMutations } from "vuex";
 export default {
   name: "AdminDashboard",
   methods: {
-    ...mapMutations(["logout"]), // Map the logout mutation
+    ...mapMutations(["logout"]),
 
     handleLogout() {
       this.logout();
-      this.$router.push("/"); // Redirect to home
+      this.$router.push("/");
     },
   },
 };
@@ -225,8 +225,6 @@ export default {
     gap: 15px;
   }
 }
-
-/* Add some subtle animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -248,8 +246,6 @@ export default {
   animation-delay: calc(var(--animation-order) * 0.1s);
   opacity: 0;
 }
-
-/* Add a subtle texture overlay to the background */
 .admin-dashboard::before {
   content: "";
   position: fixed;

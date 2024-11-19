@@ -90,7 +90,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: rgb(0 0 0 / 20%); /* Dimmed overlay for background */
+  background: rgb(0 0 0 / 20%);
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -104,12 +104,12 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: transparent; /* Allows closing popup when clicked */
+  background: transparent;
 }
 
 .sizesMobilePopupWrapper {
   width: 100%;
-  max-width: 500px; /* Optional: restricts width on larger screens */
+  max-width: 500px;
   margin: 0 auto;
   padding: 20px;
   display: flex;

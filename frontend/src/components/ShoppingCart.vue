@@ -35,7 +35,7 @@
               <div class="buttons">
                 <button
                   class="incrementDecrement"
-                  @click="
+                  @click.stop="
                     handleDecrementOrRemove(item.product_id, item.size_id)
                   "
                 >
@@ -99,11 +99,12 @@ export default {
       hideCart: "hideCart",
     }),
     closeCart() {
+      this.disableOutsideClick();
       this.hideCart();
     },
     handleOutsideClick(event) {
       const cartElement = this.$refs.cart;
-      if (cartElement && !cartElement.contains(event.target)) {
+      if (!cartElement || !cartElement.contains(event.target)) {
         this.hideCart();
       }
     },
@@ -133,6 +134,7 @@ export default {
         this.decrementItem(productId, sizeId);
       }
     },
+
     async handleCheckout() {
       if (!this.$store.state.isLoggedIn) {
         this.hideCart();
@@ -143,13 +145,11 @@ export default {
       this.disableOutsideClick();
 
       try {
-
         // Fetch stock quantities
-        const { data: stockResponse } = await axiosInstance.get("/update-stock");
+        const { data: stockResponse } = await axiosInstance.get(
+          "/update-stock"
+        );
         const stockQuantities = stockResponse.items;
-
-        console.log("Fetched stock quantities:", stockQuantities);
-
         // Validate cart items against stock
         const cart = this.$store.state.cart;
         const insufficientStock = cart.filter((cartItem) => {
@@ -168,7 +168,7 @@ export default {
             Swal.fire(
               "OBS",
               `Otillräcklig lagerstatus för produkt: ${item.product_name}, storlek: ${item.size}.`,
-              "error",
+              "error"
             );
           });
           return;
