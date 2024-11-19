@@ -6,7 +6,6 @@
     <h2 class="event-list-title">Event Lista</h2>
     <ul class="event-list">
       <li v-for="event in items" :key="event.event_id" class="event-item">
-        <!-- Event Header -->
         <div class="event-header">
           <h3 class="event-name">{{ event.name }}</h3>
           <div class="event-actions">
@@ -21,8 +20,6 @@
             </button>
           </div>
         </div>
-
-        <!-- Event Content -->
         <div class="event-content">
           <div class="event-details">
             <div class="detail-group">
@@ -63,8 +60,6 @@
             />
           </div>
         </div>
-
-        <!-- Edit Form -->
         <div
           v-if="editingEvent && editingEvent.event_id === event.event_id"
           class="edit-form"
@@ -215,10 +210,8 @@ export default {
     convertToCET(utcTime) {
       if (!utcTime || typeof utcTime !== "string") {
         console.error("Invalid input:", utcTime);
-        return "Invalid date"; // Return a fallback message if input is invalid
+        return "Invalid date";
       }
-
-      // Ensure the UTC string ends with 'Z' for proper parsing
       if (!utcTime.endsWith("Z")) {
         utcTime += "Z";
       }
@@ -226,7 +219,7 @@ export default {
       const date = new Date(utcTime);
       if (isNaN(date.getTime())) {
         console.error("Invalid date:", utcTime);
-        return "Invalid date"; // Handle invalid date
+        return "Invalid date";
       }
 
       const cetTime = new Intl.DateTimeFormat("sv-SE", {
@@ -273,11 +266,12 @@ export default {
         })
         .catch((error) => {
           console.error("Error saving event:", error);
+
+
           // Get all error messages from the response
           const errorMessages =
           error.response?.data?.errors?.map((e) => e.msg).join("<br>") ||
           "Okänt fel uppstod. <br> Kolla så att du bara sätter in (jpeg, jpg, png, gif) som bilder.";
-
           Swal.fire(
             "Error",
             `Produkten kunde inte sparas. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
@@ -446,8 +440,6 @@ export default {
 .booking-link:hover {
   text-decoration: underline;
 }
-
-/* Edit Form Styles */
 .edit-form {
   margin-top: 1rem;
   padding: 1rem;
@@ -512,15 +504,11 @@ export default {
   background-color: #95a5a6;
   color: white;
 }
-
-/* Hover states */
 .action-btn:hover,
 .save-btn:hover,
 .cancel-btn:hover {
   opacity: 0.9;
 }
-
-/* Responsive Design */
 @media (max-width: 768px) {
   input,
   select,

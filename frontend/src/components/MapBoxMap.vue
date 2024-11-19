@@ -9,8 +9,6 @@
 <script>
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-
-// Importing the image
 import shahadPin from "../assets/shahadpin.png";
 
 export default {
@@ -35,18 +33,13 @@ export default {
   mounted() {
     mapboxgl.accessToken = this.accessToken;
 
-    // Initialize the Mapbox map
     this.map = new mapboxgl.Map({
       container: this.$refs.mapContainer,
-      style: "mapbox://styles/fannykarlsson/cm1rvfrdn00zo01r25vu59qvw", // Style URL
-      center: this.center, // Initial map center
-      zoom: 15, // Initial zoom level
+      style: "mapbox://styles/fannykarlsson/cm1rvfrdn00zo01r25vu59qvw",
+      center: this.center,
+      zoom: 15,
     });
-
-    // Add zoom and rotation controls to the map.
     this.map.addControl(new mapboxgl.NavigationControl());
-
-    // Add a custom marker
     const markerElement = document.createElement("div");
     markerElement.className = "custom-marker";
     markerElement.innerHTML = `

@@ -21,8 +21,6 @@
       </div>
       <button @click="closePopup">Close</button>
     </div>
-
-    <!-- Enlarged Image Modal -->
     <div
       v-if="enlargedImage"
       class="enlarged-image-overlay"
@@ -127,7 +125,6 @@ button:hover {
   border: 2px solid black;
 }
 
-/* Enlarged Image Overlay */
 .enlarged-image-overlay {
   position: fixed;
   top: 0;

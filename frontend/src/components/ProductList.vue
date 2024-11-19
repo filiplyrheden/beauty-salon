@@ -304,7 +304,7 @@ export default {
     return {
       editingProduct: null,
       selectedProperty: "",
-      propertiesOnLoad: [], // Load properties as needed
+      propertiesOnLoad: [],
       brandsOnLoad: "",
       categoriesOnLoad: "",
       isLoading: false,
@@ -382,23 +382,15 @@ export default {
         confirmButtonText: "Ja, ta bort den!",
         cancelButtonText: "Avbryt",
       });
-
       if (!result.isConfirmed) return;
-
       try {
-        // Attempt to delete the product
         this.isLoading = true;
         await axiosInstance.delete(`admin/products/${productId}`);
-
-        // Emit event to parent component to notify that the product was deleted
         this.$emit("product-deleted", productId);
-
         this.isLoading = false;
         await Swal.fire("Borttagen!", "Produkt borttagen", "success");
       } catch (error) {
         console.error("Error deleting product:", error);
-
-        // Show error alert if deletion fails
         await Swal.fire(
           "Fel",
           "Kunde inte ta bort produkten. Försök igen senare.",
@@ -428,12 +420,10 @@ export default {
     },
     addProperty() {
       if (this.selectedProperty) {
-        // Check if properties is an array; if not, initialize it as an array
         if (Array.isArray(this.editingProduct.properties)) {
           const property = this.propertiesOnLoad.find(
             (p) => p.property_id === this.selectedProperty
           );
-          // Check if the property is already in the array
           if (
             !this.editingProduct.properties.find(
               (p) => p.property_id === property.property_id
@@ -444,14 +434,12 @@ export default {
             Swal.fire("Property already added");
           }
         } else {
-          // Initialize properties as an array and add the selected property
           this.editingProduct.properties = [];
           const property = this.propertiesOnLoad.find(
             (p) => p.property_id === this.selectedProperty
           );
           this.editingProduct.properties.push(property);
         }
-        // Reset selectedProperty after adding
         this.selectedProperty = "";
       }
     },
@@ -485,9 +473,9 @@ export default {
       formData.append("description", this.editingProduct.description);
       formData.append("category_id", this.editingProduct.category.category_id);
       formData.append("product_id", this.editingProduct.product_id);
-      formData.append("featured", this.editingProduct.featured); // Ensure 'featured' is part of editingProduct
-      formData.append("usage_products", this.editingProduct.usage_products); // Usage instructions
-      formData.append("ingredients", this.editingProduct.ingredients); // Ensure 'ingredients' is part of editingProduct
+      formData.append("featured", this.editingProduct.featured);
+      formData.append("usage_products", this.editingProduct.usage_products);
+      formData.append("ingredients", this.editingProduct.ingredients);
       formData.append("brand_id", this.editingProduct.brand.brand_id);
       if (this.editingProduct.primaryImageFile)
         formData.append("primaryImage", this.editingProduct.primaryImageFile);
@@ -527,7 +515,7 @@ export default {
       axiosInstance
         .put(`admin/products/${this.editingProduct.product_id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
-        }) // Corrected syntax here
+        })
         .then(() => {
           Swal.fire(
             "Produkt sparad!",
@@ -616,10 +604,10 @@ fieldset {
   display: flex;
   justify-content: center;
   margin: 10px 0;
-  box-shadow: 4px 8px 12px rgba(0, 0, 0, 0.2); /* Add drop shadow */
-  border-radius: 8px; /* Optional: round the corners */
-  padding: 10px; /* Optional: add some padding for better spacing */
-  background-color: #fff; /* Optional: ensure background is white for contrast */
+  box-shadow: 4px 8px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff;
 }
 
 .size-variant {
@@ -698,8 +686,8 @@ fieldset {
 
 .fieldset {
   margin: 20px 0;
-  border: none; /* Remove border from fieldset */
-  padding: 0; /* Optional: remove padding */
+  border: none;
+  padding: 0;
 }
 
 .editingImage {
@@ -725,11 +713,11 @@ textarea,
 select {
   width: 100%;
   padding: 8px;
-  border: none; /* Remove border from input fields */
+  border: none;
   border-radius: 5px;
   margin-top: 5px;
   color: black;
-  background-color: #dddddd; /* Optional: background color for inputs */
+  background-color: #dddddd;
 }
 
 .editingImageWrapper {

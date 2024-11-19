@@ -77,6 +77,13 @@ export default {
   padding: 0;
   font-family: "Outfit", sans-serif;
 }
+
+:root {
+  --dark-beige-background: #e2d7cc;
+  --light-beige-background: #efeae5;
+  --white: #fdfdfd;
+  --dark: #202020;
+}
 textarea,
 input.text,
 input[type="text"],

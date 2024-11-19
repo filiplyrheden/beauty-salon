@@ -49,7 +49,7 @@
               <div class="event-item">
                 <img
                   v-if="event.image_url"
-                  :src=getImageUrl(event.image_url)
+                  :src="event.image_url"
                   alt="event bild"
                   class="event-image"
                 />
@@ -110,9 +110,6 @@ export default {
         );
       }
     },
-    getImageUrl(imageName) {
-    return `${process.env.VUE_APP_API_BASE_URL}${imageName}`;
-    },
     formatDate(datetime) {
       if (!datetime) return "N/A";
       const options = {
@@ -169,6 +166,7 @@ export default {
   flex-wrap: wrap;
 }
 .event-item-container {
+  border: 1px solid black;
   gap: 16px;
   width: calc(50% - 8px);
   min-height: 350px;
