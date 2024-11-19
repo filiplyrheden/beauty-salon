@@ -37,11 +37,15 @@
         <router-link to="/forgot-password">Klicka här</router-link>
       </div>
     </div>
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 import { mapMutations } from "vuex";
 
 export default {
@@ -51,6 +55,7 @@ export default {
       password: "",
       message: "",
       isError: false,
+      isLoading: false,
     };
   },
   methods: {
@@ -63,12 +68,11 @@ export default {
       };
 
       try {
+        this.isLoading = true;
         const response = await axios.post(
           `${process.env.VUE_APP_API_BASE_URL}/login`,
           loginData
         );
-        this.message = "Login successful!";
-        this.isError = false;
 
         // Store token in localStorage
         localStorage.setItem("token", response.data.token);
@@ -91,10 +95,15 @@ export default {
         } else {
           this.$router.push(redirectTo); // Redirect to the intended route or home page
         }
+        this.isLoading = false;
       } catch (error) {
-        console.error("Error logging in:", error);
-        this.message = "Error logging in. Please try again.";
-        this.isError = true;
+        this.isLoading = false;
+        Swal.fire(
+          "Error",
+          `Du kunde inte loggas in, snälla kolla dina uppgifter och försök igen senare eller kontakta oss.`,
+          "error"
+        );
+        this.isLoading = false;
       }
     },
   },
@@ -194,6 +203,37 @@ h1 {
   margin-top: 16px;
   text-align: center;
   font-size: 14px; /* Smaller font for mobile */
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #007bff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error {

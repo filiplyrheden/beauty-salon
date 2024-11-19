@@ -136,6 +136,7 @@
       </div>
     </div>
     <HomepageReviews></HomepageReviews>
+    <SignUp></SignUp>
   </div>
 </template>
 
@@ -151,6 +152,7 @@ import ansiktsbehandling1 from "../assets/ansiktsbehandling1.jpg";
 import ansiktsbehandling2 from "../assets/ansiktsbehandling2.jpg";
 import massage1 from "../assets/massage1.jpg";
 import massage2 from "../assets/massage2.jpg";
+import SignUp from "@/components/SignUp.vue";
 
 export default {
   data() {
@@ -191,6 +193,7 @@ export default {
     ProductCarousel,
     ProductGrid,
     HomepageReviews,
+    SignUp
   },
   name: "HomeView",
 };

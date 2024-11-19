@@ -6,47 +6,61 @@
       <form class="formWrapper" @submit.prevent="sendCode">
         <label for="email">Email</label>
         <input class="passwordInput" name="email" v-model="email" type="email" placeholder="Enter your email" required>
-        <button type="submit">Skicka Kod</button>
+        <button type="submit" :disabled="isLoading">Skicka Kod</button>
       </form>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
     </div>
   </div>
 </template>
 
 <script>
 import axiosInstance from '@/services/axiosConfig';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'ResetPassword',
   data() {
     return {
       email: '',
-      code: '',
+      isLoading: false,
     };
   },
   methods: {
     async sendCode() {
+      this.isLoading = true;
       try {
-        const response = await axiosInstance.post('/forgot-password', {
+        await axiosInstance.post('/forgot-password', {
           email: this.email
         });
-
-        if (response.data.success) {
-          this.codesent = true;
-        } else {
-          alert(response.data.message || 'Error sending code');
-        }
+          Swal.fire(
+            "Success",
+            "Du kommer nu få ett email med en länk där du kan byta lösenord!",
+            "success"
+          );
       } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to send code.');
+        const errorMessages =
+          error.response?.data?.errors?.map((e) => e.msg).join("<br>") ||
+          "Okänt fel uppstod. Försök igen senare.";
+        
+        Swal.fire(
+          "Error",
+          `Email kunde inte skickas, snälla försök igen senare eller kontakta oss. <br> ${errorMessages}`,
+          "error"
+        );
+      } finally {
+        this.isLoading = false;
       }
     },
-  }
+  },
 };
 </script>
 
 <style scoped>
-
-.pageWrapper{
+.pageWrapper {
   display: flex;
   width: 100%;
   height: 80vh;
@@ -67,8 +81,40 @@ export default {
   border: 1px solid #000000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-h2{
-  font-family:"Playfair Display", serif;
+
+h2 {
+  font-family: "Playfair Display", serif;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #007bff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .formWrapper {
@@ -89,9 +135,9 @@ h2{
 }
 
 .passwordInput:focus {
-    border-color: #000000;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
-  }
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+}
 
 button {
   width: 100%;

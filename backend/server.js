@@ -98,8 +98,9 @@ import {
   updateStock,
 } from "./controllers/stock-quantity.js";
 
-
+import { sendOrderEmails, sendUpdateEmail } from "./controllers/sendOrderEmails.js";
 import { sendContactForm } from "./controllers/sendContactForm.js";
+import { addToNewsletter } from "./controllers/sendOrderEmails.js";
 
 dotenv.config();
 const app = express();
@@ -154,6 +155,7 @@ app.post(
       (async () => {
         try {
           const shippingAddress = session.customer_details.address;
+          const email = session.customer_details.email;
           const totalCost = session.amount_total / 100;
           const items = await getCheckoutSession(session.id);
           const lineItems = await stripe.checkout.sessions.listLineItems(
@@ -172,11 +174,18 @@ app.post(
             return; // Prevent further execution if no line items
           }
       
-          console.log("Line items:", lineItems.data); // Ensure correct structure
-      
-          await createOrderByHook(user_id, lineItems, shippingAddress, totalCost);
+          // Capture the order details, including order_id
+          const { order_id } = await createOrderByHook(
+                user_id,
+                lineItems,
+                shippingAddress, 
+                totalCost
+          );
+    
+              // Pass order_id to sendOrderEmails
           await updateStock(lineItems); // Pass the correctly populated lineItems
-
+          await sendOrderEmails(order_id, email);
+          await sendUpdateEmail();
         } catch (error) {
           console.error("Error creating order: ", error);
         }
@@ -324,6 +333,9 @@ app.delete(
   adminMiddleware,
   deleteCategoriesById
 ); // Delete
+
+// Route for newsletter
+app.post("/newsletter", addToNewsletter);
 
 // Routes for Courses
 app.get("/courses", showCourses); // Get all courses

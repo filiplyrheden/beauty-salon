@@ -9,6 +9,10 @@
       <p v-if="message">{{ message }}</p>
     </div>
   </div>
+  <div v-if="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+    
   </template>
   
   <script>
@@ -18,7 +22,8 @@
     data() {
       return {
         newPassword: '',
-        message: ''
+        message: '',
+        isLoading: false,
       };
     },
     methods: {
