@@ -1,5 +1,8 @@
 <template>
   <div class="event-list-container">
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
     <h2 class="event-list-title">Event Lista</h2>
     <ul class="event-list">
       <li v-for="event in items" :key="event.event_id" class="event-item">
@@ -135,6 +138,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       editingEvent: null,
       selectedFile: null,
     };
@@ -155,6 +159,7 @@ export default {
 
       if (result.isConfirmed) {
         try {
+          this.isLoading = true;
           const response = await axiosInstance.delete(
             `/admin/events/${eventId}`
           );
@@ -165,6 +170,7 @@ export default {
             `Eventet med ID nr: ${eventId} har blivit borttaget.`,
             "success"
           );
+          this.isLoading = false;
         } catch (error) {
           console.error("Error deleting event:", error);
           Swal.fire(
@@ -172,6 +178,7 @@ export default {
             `Eventet kunde inte tas bort. Försök igen senare eller ladda om sidan.`,
             "error"
           );
+          this.isLoading = false;
         }
       }
     },
@@ -239,7 +246,8 @@ export default {
       if (this.selectedFile) {
         formData.append("eventImage", this.selectedFile);
       }
-
+      
+      this.isLoading = true;
       axiosInstance
         .put(`/admin/events/${event.event_id}`, formData, {
           headers: {
@@ -254,17 +262,22 @@ export default {
           );
           this.selectedFile = null;
           this.editingEvent = null;
+          this.isLoading = false;
         })
         .catch((error) => {
           console.error("Error saving event:", error);
-          const errorMessages = error.response.data.errors
-            .map((error) => error.msg)
-            .join("<br>");
+
+
+          // Get all error messages from the response
+          const errorMessages =
+          error.response?.data?.errors?.map((e) => e.msg).join("<br>") ||
+          "Okänt fel uppstod. <br> Kolla så att du bara sätter in (jpeg, jpg, png, gif) som bilder.";
           Swal.fire(
             "Error",
-            `Event kunde inte ändras. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+            `Produkten kunde inte sparas. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
             "error"
           );
+          this.isLoading = false;
         });
     },
     cancelEdit() {
@@ -311,6 +324,37 @@ export default {
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #eee;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #007bff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .event-name {

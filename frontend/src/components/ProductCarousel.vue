@@ -5,7 +5,7 @@
         <div class="product-item">
           <div class="product-image-section">
             <img
-              src="../assets/noImage.png"
+              :src="product.image_url_primary ? product.image_url_primary : require('@/assets/noImage.png')"
               :alt="product.name"
               class="product-image"
             />
@@ -76,7 +76,7 @@
               </span>
               <span v-else> {{ product.variants[0]?.price || "0" }} kr </span>
             </div>
-            <div class="product-description">{{ product.description }}</div>
+            <div class="product-description">{{ truncateText(product.description, 40) }}</div>
           </div>
         </div>
       </Slide>
@@ -128,6 +128,9 @@ export default {
     toggleSizeMenu(productId) {
       this.showSizeOptions[productId] = !this.showSizeOptions[productId];
     },
+    getImageUrl(imageName) {
+    return `${process.env.VUE_APP_API_BASE_URL}${imageName}`;
+    },
     hideSizeOptions(productId) {
       this.showSizeOptions[productId] = false;
     },
@@ -135,6 +138,12 @@ export default {
       const product = this.products.find((p) => p.product_id === productId);
       product.selectedSize = sizeId;
       this.showSizeOptions[productId] = false;
+    },
+    truncateText(text, maxLength) {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
     },
     addItemToCart(product) {
       if (product.selectedSize === null) {

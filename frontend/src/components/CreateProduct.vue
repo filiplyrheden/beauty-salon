@@ -1,5 +1,10 @@
 <template>
   <div>
+
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+
     <div class="header">
       <button>
         <router-link to="/admin" class="back"
@@ -243,6 +248,7 @@ export default {
       selectedProperty: "",
       brandsOnLoad: "",
       categoriesOnLoad: "",
+      isLoading: false,
     };
   },
   created() {
@@ -379,6 +385,7 @@ export default {
       });
 
       try {
+        this.isLoading = true;
         const response = await axiosInstance.post(`admin/products`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -389,6 +396,7 @@ export default {
         );
         this.$emit("product-created", response.data.product);
         this.resetForm();
+        this.isLoading = false;
       } catch (error) {
         console.error("Error adding product:", error);
         this.message =
@@ -396,16 +404,19 @@ export default {
           error.message ||
           "Internal Server Error";
 
-        const errorMessages = error.response.data.errors
-          .map((error) => error.msg)
-          .join("<br>");
+        // Get all error messages from the response
+        const errorMessages =
+          error.response?.data?.errors?.map((e) => e.msg).join("<br>") ||
+          "Okänt fel uppstod. <br> Kolla så att du bara sätter in (jpeg, jpg, png, gif) som bilder.";
 
-        Swal.fire(
-          "Error",
-          `Märke kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
-          "error"
-        );
+          Swal.fire(
+            "Error",
+            `Produkten kunde inte sparas. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+            "error"
+          );
+        this.isLoading = false;
       }
+      this.isLoading = false;
     },
     resetForm() {
       this.productName = "";
@@ -613,6 +624,38 @@ input[type="number"] {
 
 .submit-btn:hover {
   background-color: #27ae60;
+}
+
+/* Loading Indicator Styles */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #007bff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .submit-btn:active {

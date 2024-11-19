@@ -383,7 +383,6 @@ export default {
 .events-button {
   padding: 16px 24px;
   gap: 0px;
-  opacity: 0px;
   font-size: 16px;
   font-weight: 600;
   line-height: 17.6px;
@@ -615,7 +614,6 @@ button {
   transition: 0.3s;
   padding: 16px 24px;
   border: 1px 0px 0px 0px;
-  opacity: 0px;
 }
 
 button:hover {
