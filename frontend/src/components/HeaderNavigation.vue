@@ -1,6 +1,5 @@
 <template>
   <header :class="['header-nav', 'sticky', { hidden: isTopBarHidden }]">
-    <!-- Top bar section -->
     <div :class="['top-bar']">
       <nav>
         <ul>
@@ -37,9 +36,7 @@
       </nav>
     </div>
 
-    <!-- Main navigation with logo centered -->
     <nav class="main-nav">
-      <!-- Burger icon for mobile -->
       <div
         class="burger-menu"
         @click="toggleMobileMenu"
@@ -61,8 +58,6 @@
           </router-link>
         </li>
       </ul>
-
-      <!-- Centered Logo -->
       <router-link to="/" class="logo">
         <img src="@/assets/snbeautylogo.svg" alt="SN Beauty Logo" />
       </router-link>
@@ -82,7 +77,6 @@
 
         <li class="li-styles">
           <button class="noBorder" @click="openCart">
-            <!-- if cart is already showing if you click it again it disappears -->
             <img src="../assets/Shopping_Bag.svg" alt="" />
           </button>
           <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
@@ -94,7 +88,6 @@
           <button class="cartExitButton" @click="hideCartPopup()">
             <img src="../assets/exit.svg" alt="" />
           </button>
-          <!-- Close button -->
         </div>
         <div class="item-content">
           <div class="title">Tillagd i varukorgen!</div>
@@ -117,7 +110,6 @@
       </div>
     </nav>
     <transition name="slide">
-      <!-- Bind the visibility of the mobile menu to Vuex state -->
       <div v-if="isMobileMenuVisible" class="mobile-menu">
         <ul class="mobile-links">
           <li v-for="(link, index) in navLinksLeft" :key="index">
@@ -164,7 +156,7 @@ export default {
       currentTopBarLinkIndex: 0,
       lastScrollPosition: 0,
       isTopBarHidden: false,
-      throttledScrollHandler: null, // Store throttled function reference
+      throttledScrollHandler: null,
     };
   },
   watch: {
@@ -228,7 +220,7 @@ export default {
       this.showCart();
     },
     toggleMobileMenu() {
-      this.toggleMobileMenuVisibility(); // Dispatch the Vuex mutation
+      this.toggleMobileMenuVisibility();
     },
     checkAuthentication() {
       this.$store.dispatch("checkAuth");
@@ -247,7 +239,6 @@ export default {
 </script>
 
 <style scoped>
-/* Top bar styling */
 .top-bar {
   background-color: #000;
   color: #fff;
@@ -277,17 +268,15 @@ export default {
 .top-bar li a:hover {
   text-decoration: underline;
 }
-
-/* Main navigation styling */
 .main-nav {
   max-width: 1280px;
   background-color: #fff;
   display: flex;
-  justify-content: center; /* Center all content */
+  justify-content: center;
   align-items: center;
   padding: 24px 72px;
   margin: 0 auto;
-  position: relative; /* Allow absolute positioning of left and right sections */
+  position: relative;
 }
 
 .left-links,
@@ -298,13 +287,13 @@ export default {
 }
 .left-links {
   position: absolute;
-  left: 72px; /* Align with the padding */
+  left: 72px;
   display: flex;
   gap: 20px;
 }
 .right-links {
   position: absolute;
-  right: 72px; /* Align with the padding */
+  right: 72px;
   display: flex;
   gap: 20px;
 }
@@ -347,8 +336,7 @@ export default {
 .active {
   font-weight: bold;
 }
-/* Responsive styling for top-bar */
-/* Desktop styling (all links visible) */
+
 .top-bar ul {
   display: flex;
   justify-content: space-between;
@@ -370,7 +358,7 @@ export default {
   width: 363px;
   position: absolute;
   top: 90%;
-  right: 67px; /* ändra sen? */
+  right: 67px;
 }
 
 .item-content {
@@ -574,7 +562,6 @@ export default {
   height: calc(100vh - 112px);
   opacity: 1;
 }
-/* Mobile styling (only one link visible at a time) */
 @media (min-width: 992px) and (max-width: 1200px) {
   .right-links {
     right: 32px;
@@ -590,7 +577,6 @@ export default {
   .burger-menu {
     display: flex;
     position: absolute;
-    /* Align with the padding */
     left: 32px;
     width: 24px;
     height: 24px;
@@ -621,7 +607,7 @@ export default {
 }
 @media (max-width: 450px) {
   .cartPopupWrapper {
-    right: 50%; /* ändra sen? */
+    right: 50%;
     transform: translate(50%, 0);
     width: 90%;
   }
