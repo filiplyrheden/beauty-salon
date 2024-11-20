@@ -57,9 +57,11 @@
             <td>{{ property.name }}</td>
 
             <td>
-              <button @click="editProperty(property)">Edit</button>
+              <button @click="editProperty(property)">
+                <font-awesome-icon :icon="['fas', 'edit']" />
+              </button>
               <button @click="deleteProperty(property.property_id)">
-                Delete
+                <font-awesome-icon :icon="['fas', 'trash']" />
               </button>
             </td>
           </tr>

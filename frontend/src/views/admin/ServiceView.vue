@@ -61,13 +61,14 @@
 
         <!-- Before Image Upload -->
         <div class="form-group">
-          <label for="before_image_upload">Ladda upp före bild:</label>
+          <label for="before_image_upload"
+            >Ladda upp före bild (valfritt):</label
+          >
           <input
             type="file"
             id="before_image_upload"
             @change="handleImageUpload('before', $event)"
             accept="image/*"
-            :required="!isEditing || selectedBeforeImage"
           />
           <!-- Image Preview -->
           <div v-if="imageBeforePreview">
@@ -82,13 +83,14 @@
 
         <!-- After Image Upload -->
         <div class="form-group">
-          <label for="after_image_upload">Ladda upp efter bild:</label>
+          <label for="after_image_upload"
+            >Ladda upp efter bild (valfritt):</label
+          >
           <input
             type="file"
             id="after_image_upload"
             @change="handleImageUpload('after', $event)"
             accept="image/*"
-            :required="!isEditing || selectedAfterImage"
           />
           <!-- Image Preview -->
           <div v-if="imageAfterPreview">
@@ -138,7 +140,7 @@
         <!-- Buttons -->
         <div class="button-group">
           <button type="submit">
-            {{ isEditing ? "Updatera" : "Lägg till" }} Kurs
+            {{ isEditing ? "Updatera" : "Lägg till" }} Behandling
           </button>
           <button type="button" v-if="isEditing" @click="cancelEdit">
             Avbryt
@@ -172,18 +174,23 @@
             <td>{{ service.time }}</td>
             <td>
               <img
+                v-if="service.before_image_url"
                 :src="service.before_image_url"
                 alt="Service Before Image"
                 class="service-before-image"
               />
+              <span v-else>Ingen bild</span>
             </td>
             <td>
               <img
+                v-if="service.after_image_url"
                 :src="service.after_image_url"
                 alt="Service After Image"
                 class="service-after-image"
               />
+              <span v-else>Ingen bild</span>
             </td>
+
             <td>
               {{ getCategoryName(service.category_id) }}
             </td>
@@ -192,9 +199,11 @@
             </td>
 
             <td>
-              <button @click="editService(service)">Ändra</button>
+              <button @click="editService(service)">
+                <font-awesome-icon :icon="['fas', 'edit']" />
+              </button>
               <button @click="deleteService(service.service_id)">
-                Ta bort
+                <font-awesome-icon :icon="['fas', 'trash']" />
               </button>
             </td>
           </tr>
@@ -333,21 +342,17 @@ export default {
      * Add a new service with image upload.
      */
     async addService() {
-      // Validate that both images have been selected
-      if (!this.selectedBeforeImage || !this.selectedAfterImage) {
-        Swal.fire(
-          "Fel",
-          "Vänligen välj både bild före och efter för att ladda upp.",
-          "error"
-        );
-
-        return;
-      }
-
       // Create FormData object
       const formData = new FormData();
-      formData.append("beforeImage", this.selectedBeforeImage);
-      formData.append("afterImage", this.selectedAfterImage);
+
+      // Append images only if they are selected
+      if (this.selectedBeforeImage) {
+        formData.append("beforeImage", this.selectedBeforeImage);
+      }
+      if (this.selectedAfterImage) {
+        formData.append("afterImage", this.selectedAfterImage);
+      }
+
       formData.append("name", this.form.name);
       formData.append("description", this.form.description);
       formData.append("price", this.form.price);
@@ -360,7 +365,7 @@ export default {
 
       try {
         this.isLoading = true;
-        const response = await axiosInstance.post(`/services`, formData, {
+        const response = await axiosInstance.post("/services", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -374,7 +379,7 @@ export default {
         this.resetForm();
         Swal.fire(
           "Framgång",
-          "Tjänsten har lagts till framgångsrikt!",
+          "Behandlingen har lagts till framgångsrikt!",
           "success"
         );
       } catch (error) {
@@ -382,10 +387,9 @@ export default {
           .map((error) => error.msg)
           .join("<br>");
 
-        // Display all error messages in the alert
         Swal.fire(
           "Error",
-          `Behandling kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          `Behandlingen kunde inte läggas till. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
           "error"
         );
       } finally {
@@ -417,21 +421,26 @@ export default {
     /**
      * Update an existing service with optional image upload.
      */
+    /**
+     * Update an existing service with optional image upload.
+     */
     async updateService() {
       const formData = new FormData();
 
+      // Append new images if selected; otherwise, use the existing URLs
       if (this.selectedBeforeImage) {
         formData.append("beforeImage", this.selectedBeforeImage);
-      } else {
+      } else if (this.imageBeforePreview) {
         formData.append("before_image_url", this.imageBeforePreview);
       }
 
       if (this.selectedAfterImage) {
         formData.append("afterImage", this.selectedAfterImage);
-      } else {
+      } else if (this.imageAfterPreview) {
         formData.append("after_image_url", this.imageAfterPreview);
       }
 
+      // Add other form data
       formData.append("name", this.form.name);
       formData.append("description", this.form.description);
       formData.append("price", this.form.price);
@@ -441,6 +450,8 @@ export default {
 
       try {
         this.isLoading = true;
+
+        // Send the update request
         const response = await axiosInstance.put(
           `/services/${this.form.service_id}`,
           formData,
@@ -456,30 +467,31 @@ export default {
           price: Number(response.data.price), // Ensure 'price' is a number
         };
 
-        // Update services array with the new data
+        // Update the local services array with the new data
         const index = this.services.findIndex(
-          (c) => c.service_id === this.form.service_id
+          (service) => service.service_id === this.form.service_id
         );
         if (index !== -1) {
           this.services.splice(index, 1, updatedServiceData);
         }
 
+        // Reset form and exit editing mode
         this.resetForm();
         this.isEditing = false;
+
         Swal.fire(
           "Framgång",
-          "Tjänsten har uppdaterats framgångsrikt!",
+          "Behandlingen har uppdaterats framgångsrikt!",
           "success"
         );
       } catch (error) {
-        const errorMessages = error.response.data.errors
-          .map((error) => error.msg)
-          .join("<br>");
+        const errorMessages = error.response?.data?.errors
+          ? error.response.data.errors.map((err) => err.msg).join("<br>")
+          : "Ett fel inträffade. Försök igen.";
 
-        // Display all error messages in the alert
         Swal.fire(
-          "Error",
-          `Behandlingen kunde inte uppdateras. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
+          "Fel",
+          `Behandlingen kunde inte uppdateras. ${errorMessages}`,
           "error"
         );
       } finally {
@@ -512,13 +524,13 @@ export default {
         );
         Swal.fire(
           "Raderad!",
-          "Tjänsten har raderats framgångsrikt!",
+          "Behandlingen har raderats framgångsrikt!",
           "success"
         );
       } catch (error) {
         Swal.fire(
           "Fel",
-          "Det gick inte att ta bort tjänsten. Vänligen försök igen senare.",
+          "Det gick inte att ta bort behandling. Vänligen försök igen senare.",
           "error"
         );
       } finally {
@@ -584,7 +596,7 @@ export default {
       const category = this.categories.find(
         (c) => c.category_id === categoryId
       );
-      return category ? category.category_name : "Unknown";
+      return category ? category.category_name : "Okänd";
     },
   },
 };

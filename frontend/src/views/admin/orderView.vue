@@ -103,8 +103,12 @@
             <td>{{ order.total_amount }}</td>
             <td>{{ formatDate(order.order_date) }}</td>
             <td>
-              <button @click="editOrder(order)">Ändra</button>
-              <button @click="deleteOrder(order.order_id)">Ta bort</button>
+              <button @click="editOrder(order)">
+                <font-awesome-icon :icon="['fas', 'edit']" />
+              </button>
+              <button @click="deleteOrder(order.order_id)">
+                <font-awesome-icon :icon="['fas', 'trash']" />
+              </button>
             </td>
           </tr>
         </tbody>

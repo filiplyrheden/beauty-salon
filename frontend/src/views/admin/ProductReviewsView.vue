@@ -74,8 +74,12 @@
             <td>{{ review.product_id }}</td>
             <td>{{ review.user_id }}</td>
             <td>
-              <button @click="editReview(review)">Ändra</button>
-              <button @click="deleteReview(review.id)">Ta bort</button>
+              <button @click="editReview(review)">
+                <font-awesome-icon :icon="['fas', 'edit']" />
+              </button>
+              <button @click="deleteReview(review.id)">
+                <font-awesome-icon :icon="['fas', 'trash']" />
+              </button>
             </td>
           </tr>
         </tbody>

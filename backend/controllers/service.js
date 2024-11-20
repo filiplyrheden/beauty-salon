@@ -84,25 +84,27 @@ export const createNewService = [
   async (req, res) => {
     try {
       const serviceData = req.body;
-      if (!req.files || !req.files.beforeImage || !req.files.afterImage) {
-        return res
-          .status(400)
-          .json({ error: "Both before and after images are required" });
+
+      // Initialize image paths as null
+      let beforeImageUrl = null;
+      let afterImageUrl = null;
+
+      // Check for uploaded images and construct URLs if present
+      if (req.files && req.files.beforeImage) {
+        const beforeImagePath = req.files.beforeImage[0].filename;
+        beforeImageUrl = `${req.protocol}://${req.get(
+          "host"
+        )}/uploads/${beforeImagePath}`;
       }
 
-      // Get the file paths for the uploaded images
-      const beforeImagePath = req.files.beforeImage[0].filename;
-      const afterImagePath = req.files.afterImage[0].filename;
+      if (req.files && req.files.afterImage) {
+        const afterImagePath = req.files.afterImage[0].filename;
+        afterImageUrl = `${req.protocol}://${req.get(
+          "host"
+        )}/uploads/${afterImagePath}`;
+      }
 
-      // Construct URLs for both images
-      const beforeImageUrl = `${req.protocol}://${req.get(
-        "host"
-      )}/uploads/${beforeImagePath}`;
-      const afterImageUrl = `${req.protocol}://${req.get(
-        "host"
-      )}/uploads/${afterImagePath}`;
-
-      // Add image URLs to service data
+      // Add image URLs (if any) to service data
       const newServiceData = {
         ...serviceData,
         before_image_url: beforeImageUrl,
@@ -166,16 +168,34 @@ export const updateServiceById = [
       // Get existing service
       const existingService = await getServiceById(id);
       if (!existingService) {
-        // If the service doesn't exist and a new image was uploaded, remove the new image
-        if (req.file) {
-          fs.unlink(path.join("uploads", req.file.filename), (unlinkErr) => {
-            if (unlinkErr) {
-              console.error(
-                "Error deleting uploaded image after service not found:",
-                unlinkErr
-              );
-            }
-          });
+        // If the service doesn't exist, remove any uploaded images to prevent orphaned files
+        if (req.files) {
+          if (req.files.beforeImage) {
+            fs.unlink(
+              path.join("uploads", req.files.beforeImage[0].filename),
+              (unlinkErr) => {
+                if (unlinkErr) {
+                  console.error(
+                    "Error deleting uploaded before image after service not found:",
+                    unlinkErr
+                  );
+                }
+              }
+            );
+          }
+          if (req.files.afterImage) {
+            fs.unlink(
+              path.join("uploads", req.files.afterImage[0].filename),
+              (unlinkErr) => {
+                if (unlinkErr) {
+                  console.error(
+                    "Error deleting uploaded after image after service not found:",
+                    unlinkErr
+                  );
+                }
+              }
+            );
+          }
         }
         return res.status(404).json({ error: "Service not found" });
       }
@@ -231,7 +251,7 @@ export const updateServiceById = [
       const updatedService = await updateService(id, serviceData);
 
       if (!updatedService) {
-        // If updating failed and new images were uploaded, remove the new images to prevent orphaned files
+        // If updating failed, remove any newly uploaded images to prevent orphaned files
         if (req.files) {
           if (req.files.beforeImage) {
             fs.unlink(
@@ -267,7 +287,7 @@ export const updateServiceById = [
     } catch (err) {
       console.error("Error in updateServiceById:", err);
 
-      // If there was an error and new images were uploaded, remove the new images to prevent orphaned files
+      // Handle errors by cleaning up any uploaded files
       if (req.files) {
         if (req.files.beforeImage) {
           fs.unlink(

@@ -142,8 +142,12 @@
             </td>
 
             <td>
-              <button @click="editCourse(course)">Ändra</button>
-              <button @click="deleteCourse(course.course_id)">Ta bort</button>
+              <button @click="editCourse(course)">
+                <font-awesome-icon :icon="['fas', 'edit']" />
+              </button>
+              <button @click="deleteCourse(course.course_id)">
+                <font-awesome-icon :icon="['fas', 'trash']" />
+              </button>
             </td>
           </tr>
         </tbody>
