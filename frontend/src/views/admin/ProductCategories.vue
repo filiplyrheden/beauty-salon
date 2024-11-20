@@ -90,9 +90,11 @@
             </td>
 
             <td>
-              <button @click="editCategory(category)">Ändra</button>
+              <button @click="editCategory(category)">
+                <font-awesome-icon :icon="['fas', 'edit']" />
+              </button>
               <button @click="deleteCategory(category.category_id)">
-                Ta Bort
+                <font-awesome-icon :icon="['fas', 'trash']" />
               </button>
             </td>
           </tr>

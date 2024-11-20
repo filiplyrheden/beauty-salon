@@ -55,9 +55,11 @@
           <tr v-for="category in categories" :key="category.category_id">
             <td>{{ category.category_name }}</td>
             <td>
-              <button @click="editCategory(category)">Edit</button>
+              <button @click="editCategory(category)">
+                <font-awesome-icon :icon="['fas', 'edit']" />
+              </button>
               <button @click="deleteCategory(category.category_id)">
-                Delete
+                <font-awesome-icon :icon="['fas', 'trash']" />
               </button>
             </td>
           </tr>

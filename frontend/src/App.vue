@@ -79,7 +79,7 @@ export default {
 }
 
 :root {
-  --dark-beige-background: #e2d7cc;
+  --dark-beige-background: #d5cac0;
   --light-beige-background: #efeae5;
   --white: #fdfdfd;
   --dark: #202020;

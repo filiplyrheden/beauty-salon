@@ -56,8 +56,12 @@
             <td>{{ brand.brand_name }}</td>
 
             <td>
-              <button @click="editBrand(brand)">Ändra</button>
-              <button @click="deleteBrand(brand)">Ta Bort</button>
+              <button @click="editBrand(brand)">
+                <font-awesome-icon :icon="['fas', 'edit']" />
+              </button>
+              <button @click="deleteBrand(brand)">
+                <font-awesome-icon :icon="['fas', 'trash']" />
+              </button>
             </td>
           </tr>
         </tbody>

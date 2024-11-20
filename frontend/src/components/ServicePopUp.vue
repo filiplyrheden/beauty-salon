@@ -3,15 +3,15 @@
     <div class="popup">
       <h2>{{ service.name }}</h2>
       <p><strong>Description:</strong> {{ service.description }}</p>
-      <div v-if="service.before_image_url" class="images">
-        <div class="before">
+      <div class="images">
+        <div v-if="service.before_image_url" class="before">
           <img
             :src="service.before_image_url"
             alt="Before"
             @click="openImage(service.before_image_url)"
           />
         </div>
-        <div class="after">
+        <div v-if="service.after_image_url" class="after">
           <img
             :src="service.after_image_url"
             alt="After"
@@ -19,7 +19,7 @@
           />
         </div>
       </div>
-      <button @click="closePopup">Close</button>
+      <button @click="closePopup">STÄNG</button>
     </div>
     <div
       v-if="enlargedImage"
@@ -91,10 +91,13 @@ p {
   margin-bottom: 16px;
 }
 button {
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 4%;
+  font-weight: 600;
   width: 100%;
   background-color: black;
   color: white;
-  border: 1px solid black;
+  border: 1px solid black !important;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
@@ -103,6 +106,7 @@ button {
 button:hover {
   background-color: white;
   color: black;
+  border: 1px solid black !important;
 }
 .images {
   display: flex;
