@@ -107,6 +107,7 @@
             Totala belopp: {{ cartTotalPrice.toFixed(2) }} kr
           </p>
         </div>
+        <button class="cart-button" @click="openCart">ÖPPNA VARUKORG</button>
       </div>
     </nav>
     <transition name="slide">
@@ -264,7 +265,24 @@ export default {
   text-decoration: none;
   font-family: "Playfair Display", serif !important;
 }
+.cart-button {
+  width: 100%;
+  padding: 8px 16px;
+  font-family: "Playfair Display", serif !important;
+  letter-spacing: 5%;
+  font-weight: 600;
+  background: black;
+  color: white;
+  border: 1px solid black;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 16px;
+}
 
+.cart-button:hover {
+  background: white;
+  color: black;
+}
 .top-bar li a:hover {
   text-decoration: underline;
 }

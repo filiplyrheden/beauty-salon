@@ -127,7 +127,6 @@
                   <br />
                   Total: {{ product.unit_price * product.quantity }}kr
                 </div>
-                <div class="delivery">Fraktkostnad 45kr</div>
               </div>
             </td>
             <td>{{ order.total_amount.toFixed(2) }}kr</td>
