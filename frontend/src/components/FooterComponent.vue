@@ -13,7 +13,7 @@
               href="https://www.google.com/maps/place/Vasaplatsen+7B,+411+26+G%C3%B6teborg/@57.6993155,11.9686789,473"
               target="_blank"
               rel="noopener noreferrer"
-              >VASAGATAN 2b, Göteborg</a
+              >VASAGATAN 7B, Göteborg</a
             >
           </div>
 

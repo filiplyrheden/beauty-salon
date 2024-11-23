@@ -23,7 +23,7 @@
             skönhetssalong – vi är en plats där du kan koppla av och njuta av en
             lyxig stund för dig själv. Följ oss för mer inspiration och boka din
             tid idag! Varmt välkommen till SN Beauty – där din skönhet är vår
-            prioritet! ??
+            prioritet!
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@
             <div class="address-info">
               <a
                 href="https://www.google.com/maps/place/Vasaplatsen+7B,+411+26+G%C3%B6teborg/@57.6993155,11.9686789,473"
-                >VASAGATAN 2b, Göteborg</a
+                >VASAGATAN 7B, Göteborg</a
               >
             </div>
           </div>

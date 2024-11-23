@@ -5,7 +5,7 @@
     </div>
     <div class="newsletter">
       <div class="letter">
-        <h2>Nyhetsbrev</h2>
+        <h2>NYHETSBREV</h2>
         <p>
           Skriv upp dig för de senaste nyheterna kring våra event, kurser &
           erbjudanden
