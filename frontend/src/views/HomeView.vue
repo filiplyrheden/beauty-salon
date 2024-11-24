@@ -12,10 +12,10 @@
         <div class="overlay">
           <h1 class="title">SN BEAUTY</h1>
           <div class="content">
-            <h3 class="content-title">Där du hittar avslappning i vardagen.</h3>
+            <h3 class="content-title">Din avslappning i vardagen.</h3>
             <p class="content-text">
               Unna dig massage, ansiktsbehandlingar och sminkning i en lugn och
-              omsorgsfull miljö. Vi tar hand om dig!
+              harmonisk miljö. Vi tar hand om dig!
             </p>
             <router-link to="/behandlingar">
               <button>BOKA BEHANDLING</button>
@@ -47,11 +47,11 @@
                 <p class="carousel__content__description">
                   {{ slide.description }}
                 </p>
-                <router-link to="/behandlingar">
+                <a href="https://www.bokadirekt.se/places/sn-beauty-56396">
                   <button class="carousel__content__button">
                     TILL BOKNING
                   </button>
-                </router-link>
+                </a>
               </div>
             </div>
           </Slide>
@@ -71,10 +71,11 @@
           <h2>SHAHAD NASIR</h2>
           <div class="about-me-content-text">
             <p>
-              Shahad Nazir är en passionerad brudsminkös och auktoriserad
-              hudterapeut med gedigen utbildning inom skönhet och hudvård.Genom
-              skräddarsydda behandlingar och rådgivning hjälper hon sina kunder
-              att känna sig både vackra och välmående.
+              Shahad Nasir är inte bara grundaren till SN Beauty utan också en
+              passionerad make-up artist och auktoriserad hudterapeut med
+              gedigen utbildning och passion for skönhet och hudvard. Med
+              skräddarsydda behandlingar och en bred erfarenhet får hon dig inte
+              bara att känna dig vacker på utsidan men också på insidan.
             </p>
             <router-link to="/om-mig"> <button>MER OM MIG</button></router-link>
           </div>
@@ -96,7 +97,7 @@
     </div>
     <div class="courses-container">
       <div class="courses">
-        <h2 class="courses-title">Kurser & Utbildningar</h2>
+        <h2 class="courses-title">KURSER & UTBILDNINGAR</h2>
         <div class="courses-content">
           <img class="courses-image" src="../assets/courses.png" alt="" />
           <div class="courses-text-content">
@@ -120,7 +121,7 @@
     </div>
     <div class="events-container">
       <div class="events">
-        <h2 class="events-title">Boka Event</h2>
+        <h2 class="events-title">BOKA EVENT</h2>
         <p class="events-content">
           Oavsett om det är möhippa, födelsedag eller sminkworkshop erbjuder
           Shahad skräddarsydda skönhetsupplevelser som gör ditt event
@@ -193,7 +194,7 @@ export default {
     ProductCarousel,
     ProductGrid,
     HomepageReviews,
-    SignUp
+    SignUp,
   },
   name: "HomeView",
 };

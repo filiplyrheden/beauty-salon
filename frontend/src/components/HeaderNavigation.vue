@@ -5,7 +5,7 @@
         <ul>
           <li class="desktop-top-bar">
             <router-link to="/behandlingar"
-              >Boka behandling och Kurs</router-link
+              >Boka behandling och kurs</router-link
             >
           </li>
           <li class="desktop-top-bar">
@@ -147,7 +147,7 @@ export default {
         { name: "Salongen", path: "/om-mig" },
       ],
       topBarLinks: [
-        { name: "Boka behandling och Kurs", path: "/behandlingar" },
+        { name: "Boka behandling och kurs", path: "/behandlingar" },
         { name: "Köp hudvård online", path: "/shop" },
         {
           name: "Vasaplatsen - Göteborg",

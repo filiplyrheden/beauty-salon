@@ -4,7 +4,7 @@
       <div class="footer-top">
         <div class="contact">
           <div class="title">KONTAKTA MIG</div>
-          <a href="tel:0761457735">0761457735</a>
+          <a href="tel:07007699901">07007699901</a>
           <div class="email">
             <a href="mailto:info@snbeauty.se">info@snbeauty.se</a>
           </div>
@@ -13,7 +13,7 @@
               href="https://www.google.com/maps/place/Vasaplatsen+7B,+411+26+G%C3%B6teborg/@57.6993155,11.9686789,473"
               target="_blank"
               rel="noopener noreferrer"
-              >VASAGATAN 2b, Göteborg</a
+              >VASAGATAN 7B, Göteborg</a
             >
           </div>
 
