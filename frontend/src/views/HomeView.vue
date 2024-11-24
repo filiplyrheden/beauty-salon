@@ -71,7 +71,7 @@
           <h2>SHAHAD NASIR</h2>
           <div class="about-me-content-text">
             <p>
-              Shahad Nazir är inte bara grundaren till SN Beauty utan också en
+              Shahad Nasir är inte bara grundaren till SN Beauty utan också en
               passionerad make-up artist och auktoriserad hudterapeut med
               gedigen utbildning och passion for skönhet och hudvard. Med
               skräddarsydda behandlingar och en bred erfarenhet får hon dig inte

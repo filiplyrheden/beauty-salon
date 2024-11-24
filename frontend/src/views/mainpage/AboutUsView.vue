@@ -37,7 +37,7 @@
           </div>
           <div class="phone">
             <div class="phone-header">TELEFONNUMMER</div>
-            <div class="phone-number">0761457735</div>
+            <div class="phone-number">07007699901</div>
           </div>
           <div class="email">
             <div class="email-header">EMAIL</div>

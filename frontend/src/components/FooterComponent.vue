@@ -4,7 +4,7 @@
       <div class="footer-top">
         <div class="contact">
           <div class="title">KONTAKTA MIG</div>
-          <a href="tel:0761457735">0761457735</a>
+          <a href="tel:07007699901">07007699901</a>
           <div class="email">
             <a href="mailto:info@snbeauty.se">info@snbeauty.se</a>
           </div>
