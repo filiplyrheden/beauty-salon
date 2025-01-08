@@ -162,7 +162,10 @@ export const deleteEvent = async (req, res) => {
     // Delete the image file if it exists
     const imageUrl = event.image_url;
     if (imageUrl) {
-      const imagePath = path.join(__dirname, "..", imageUrl);
+      // Extract the relative path from the full URL
+      const relativePath = imageUrl.replace(/^https?:\/\/[^/]+\//, ""); // Removes the domain and protocol
+      const imagePath = path.join(__dirname, "..", relativePath);
+
       fs.unlink(imagePath, (err) => {
         if (err) {
           console.error("Error deleting image:", err);
