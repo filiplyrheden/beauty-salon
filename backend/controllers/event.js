@@ -1,7 +1,13 @@
-import { getEvents, insertEvent, editEvent, trashEvent, getEventById } from "../models/EventModel.js";
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import {
+  getEvents,
+  insertEvent,
+  editEvent,
+  trashEvent,
+  getEventById,
+} from "../models/EventModel.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { handleValidationErrors } from "../verificationMiddleware/validator.js";
 import { check } from "express-validator";
 
@@ -28,25 +34,35 @@ export const showEvents = async (req, res) => {
 
 const validationRules = [
   check("name")
-    .notEmpty().withMessage("Eventnamn är obligatoriskt")
-    .isLength({ min: 3 }).withMessage("Eventnamnet måste vara minst 3 tecken långt"),
-  
+    .notEmpty()
+    .withMessage("Eventnamn är obligatoriskt")
+    .isLength({ min: 3 })
+    .withMessage("Eventnamnet måste vara minst 3 tecken långt"),
+
   check("description")
-    .notEmpty().withMessage("Beskrivning är obligatorisk")
-    .isLength({ min: 10 }).withMessage("Beskrivningen måste vara minst 10 tecken lång"),
+    .notEmpty()
+    .withMessage("Beskrivning är obligatorisk")
+    .isLength({ min: 10 })
+    .withMessage("Beskrivningen måste vara minst 10 tecken lång"),
 
   check("price")
-    .notEmpty().withMessage("Pris är obligatoriskt")
-    .isNumeric().withMessage("Pris måste vara ett numeriskt värde")
-    .isFloat({ gt: 0 }).withMessage("Pris måste vara ett positivt tal"),
+    .notEmpty()
+    .withMessage("Pris är obligatoriskt")
+    .isNumeric()
+    .withMessage("Pris måste vara ett numeriskt värde")
+    .isFloat({ gt: 0 })
+    .withMessage("Pris måste vara ett positivt tal"),
 
   check("booking_link")
     .optional()
-    .isURL().withMessage("Bokningslänk måste vara en giltig URL"),
+    .isURL()
+    .withMessage("Bokningslänk måste vara en giltig URL"),
 
   check("schedule")
-    .notEmpty().withMessage("Schema är obligatoriskt")
-    .isISO8601().withMessage("Schema måste vara i ett giltigt datum/tid-format (ISO 8601)"),
+    .notEmpty()
+    .withMessage("Schema är obligatoriskt")
+    .isISO8601()
+    .withMessage("Schema måste vara i ett giltigt datum/tid-format (ISO 8601)"),
 ];
 
 // Create event handler
@@ -56,7 +72,9 @@ export const createEvent = [
 
   async (req, res) => {
     const event = req.body;
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const imageUrl = req.file
+      ? `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+      : null;
 
     const newEvent = {
       ...event,
@@ -68,13 +86,16 @@ export const createEvent = [
       const eventWithInsertId = {
         ...newEvent,
         event_id: result.insertId,
-      }
-      res.status(201).json({ message: "Eventet skapades framgångsrikt", event: eventWithInsertId });
+      };
+      res.status(201).json({
+        message: "Eventet skapades framgångsrikt",
+        event: eventWithInsertId,
+      });
     } catch (err) {
       console.error("Fel i createEvent:", err);
       res.status(500).json({ error: "Internt serverfel" });
     }
-  }
+  },
 ];
 
 // dirname in ES Modulees
@@ -89,7 +110,9 @@ export const updateEvent = [
   async (req, res) => {
     const eventId = req.params.id;
     const eventData = req.body;
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const imageUrl = req.file
+      ? `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+      : null;
 
     try {
       const [oldEvent] = await getEventById(eventId);
@@ -100,7 +123,7 @@ export const updateEvent = [
       if (imageUrl) {
         const oldPicture = oldEvent.image_url;
         if (oldPicture) {
-          const oldPicturePath = path.join(__dirname, '..', oldPicture);
+          const oldPicturePath = path.join(__dirname, "..", oldPicture);
           fs.unlink(oldPicturePath, (err) => {
             if (err) console.error("Error deleting old image:", err);
           });
@@ -115,14 +138,15 @@ export const updateEvent = [
         return res.status(404).json({ error: "Event not found" });
       }
 
-      res.status(200).json({ message: "Event updated successfully", event: eventData });
+      res
+        .status(200)
+        .json({ message: "Event updated successfully", event: eventData });
     } catch (err) {
       console.error("Error in updateEvent:", err);
       res.status(500).json({ error: "Internal Server Error" });
     }
-  }
+  },
 ];
-
 
 /* Handler to delete an event from the database. */
 export const deleteEvent = async (req, res) => {
