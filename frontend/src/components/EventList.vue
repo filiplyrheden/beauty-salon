@@ -53,11 +53,7 @@
             </div>
           </div>
           <div class="event-image-container">
-            <img
-              :src="getImageUrl(event.image_url)"
-              :alt="event.name"
-              class="event-image"
-            />
+            <img :src="event.image_url" :alt="event.name" class="event-image" />
           </div>
         </div>
         <div
@@ -144,9 +140,6 @@ export default {
     };
   },
   methods: {
-    getImageUrl(imageName) {
-      return `${process.env.VUE_APP_API_BASE_URL}${imageName}`;
-    },
     async deleteEvent(eventId) {
       const result = await Swal.fire({
         title: "Är du säker?",
@@ -246,7 +239,7 @@ export default {
       if (this.selectedFile) {
         formData.append("eventImage", this.selectedFile);
       }
-      
+
       this.isLoading = true;
       axiosInstance
         .put(`/admin/events/${event.event_id}`, formData, {
@@ -267,11 +260,10 @@ export default {
         .catch((error) => {
           console.error("Error saving event:", error);
 
-
           // Get all error messages from the response
           const errorMessages =
-          error.response?.data?.errors?.map((e) => e.msg).join("<br>") ||
-          "Okänt fel uppstod. <br> Kolla så att du bara sätter in (jpeg, jpg, png, gif) som bilder.";
+            error.response?.data?.errors?.map((e) => e.msg).join("<br>") ||
+            "Okänt fel uppstod. <br> Kolla så att du bara sätter in (jpeg, jpg, png, gif) som bilder.";
           Swal.fire(
             "Error",
             `Produkten kunde inte sparas. Kolla vad du har skrivit in och försök igen! <br> ${errorMessages}`,
