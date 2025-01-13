@@ -98,8 +98,10 @@ import {
   updateStock,
 } from "./controllers/stock-quantity.js";
 
-
-import { sendOrderEmails, sendUpdateEmail } from "./controllers/sendOrderEmails.js";
+import {
+  sendOrderEmails,
+  sendUpdateEmail,
+} from "./controllers/sendOrderEmails.js";
 import { sendContactForm } from "./controllers/sendContactForm.js";
 import { addToNewsletter } from "./controllers/sendOrderEmails.js";
 
@@ -175,17 +177,16 @@ app.post(
           }
           // Capture the order details, including order_id
           const { order_id } = await createOrderByHook(
-                user_id,
-                lineItems,
-                shippingAddress, 
-                totalCost
+            user_id,
+            lineItems,
+            shippingAddress,
+            totalCost
           );
-    
-              // Pass order_id to sendOrderEmails
+
+          // Pass order_id to sendOrderEmails
           await updateStock(lineItems); // Pass the correctly populated lineItems
           await sendOrderEmails(order_id, email);
           await sendUpdateEmail();
-
         } catch (error) {
           console.error("Error creating order: ", error);
         }
@@ -205,6 +206,10 @@ app.post("/create-checkout-session", cors(), async (req, res) => {
     if (!Array.isArray(dummyItems) || line_items.length === 0) {
       return res.status(400).send("Invalid or missing line items");
     }
+    console.log("user_id", user_id);
+    console.log("dummyItems", dummyItems);
+    console.log("line_items", line_items);
+
     // Create a checkout session with all the line items
     const session = await stripe.checkout.sessions.create({
       line_items, // Pass the entire line_items array
