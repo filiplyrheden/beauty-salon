@@ -49,7 +49,11 @@ export default {
     const savedCart = JSON.parse(localStorage.getItem("cart"));
     if (savedCart) {
       this.$store.commit("setCart", savedCart); // Commit the saved cart to Vuex store
+      this.$store.commit("cleanExpiredCartItems"); // Remove expired items after loading
     }
+    
+    // Start periodic cart cleanup
+    this.$store.dispatch("startCartExpirationCheck");
   },
 
   // Watch the Vuex cart state and sync with localStorage

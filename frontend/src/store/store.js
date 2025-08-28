@@ -95,6 +95,7 @@ export const store = new Vuex.Store({
 
       if (item) {
         item.quantity = newQuantity; // Update quantity
+        item.addedAt = Date.now(); // Refresh timestamp when adding more of existing item
         state.lastAddedItem = item;
         state.cartPopupVisible = true;
       } else {
@@ -106,6 +107,7 @@ export const store = new Vuex.Store({
           size_id: size_id,
           quantity: requestedQuantity,
           image_url: product.image_url_primary,
+          addedAt: Date.now(), // Add timestamp when item is added to cart
         };
 
         state.cart.push(newItem);
@@ -125,6 +127,8 @@ export const store = new Vuex.Store({
       );
       if (item) {
         item.quantity++;
+        // Update timestamp when quantity is modified
+        item.addedAt = Date.now();
       }
     },
     decrementItemInCart(state, { productId, sizeId }) {
@@ -144,6 +148,44 @@ export const store = new Vuex.Store({
     clearCart(state) {
       state.cart = [];
       localStorage.removeItem("cart");
+    },
+    cleanExpiredCartItems(state) {
+      // Don't clean if cart is empty
+      if (state.cart.length === 0) {
+        return;
+      }
+      
+      const now = Date.now();
+      const twelveHoursInMs = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+      
+      const validItems = state.cart.filter(item => {
+        // If item doesn't have addedAt timestamp (legacy items), keep them but add timestamp
+        if (!item.addedAt) {
+          item.addedAt = now; // Add current timestamp to legacy items
+          return true;
+        }
+        // Remove items older than 12 hours
+        return (now - item.addedAt) < twelveHoursInMs;
+      });
+      
+      const removedCount = state.cart.length - validItems.length;
+      state.cart = validItems;
+      
+      // Show notification only if items were actually removed and not during initial load
+      if (removedCount > 0) {
+        // Add a small delay to ensure page is fully loaded before showing notification
+        setTimeout(() => {
+          Swal.fire({
+            title: "Varukorg uppdaterad",
+            text: `${removedCount} vara${removedCount > 1 ? 'r' : ''} har tagits bort från din varukorg eftersom ${removedCount > 1 ? 'de' : 'den'} var äldre än 12 timmar.`,
+            icon: "info",
+            timer: 5000,
+            showConfirmButton: false,
+            position: "top-end",
+            toast: true
+          });
+        }, 1000);
+      }
     },
   },
   getters: {
@@ -198,6 +240,20 @@ export const store = new Vuex.Store({
 
     stopTokenExpirationCheck({ commit }) {
       commit("clearExpirationInterval");
+    },
+
+    startCartExpirationCheck({ commit }) {
+      // Initial cleanup
+      commit("cleanExpiredCartItems");
+      
+      // Set up periodic cleanup every 30 minutes
+      const intervalId = setInterval(() => {
+        commit("cleanExpiredCartItems");
+      }, 30 * 60 * 1000); // 30 minutes
+      
+      // Store the interval ID (we can reuse the existing expirationInterval)
+      // or add it to the cleanup when user leaves
+      return intervalId;
     },
 
     checkAuth({ commit, dispatch }) {
