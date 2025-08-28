@@ -1,17 +1,21 @@
 import mysql from "mysql2/promise";
+import dotenv from "dotenv";
 
 // Kör node.js createdb flr att sätta upp databasen.
 
-// Replace these with your actual MySQL credentials
+// Load environment variables
+dotenv.config({ path: '../.env' });
+
+// Use environment variables for database configuration
 const dbConfig = {
-  host: "localhost",
-  user: "root", // MySQL username
-  password: "123", // MySQL password
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
   // database will be specified later
 };
 
 // Name of the database to create
-const databaseName = "beautytestdb"; //(OOPS!!) IF YOU TAKE beauty.db as name or the same name as you already have it will reset it with new tables and info.
+const databaseName = process.env.DB_DATABASE || "beautytestdb"; //(OOPS!!) IF YOU TAKE beauty.db as name or the same name as you already have it will reset it with new tables and info.
 
 // SQL Statements for Table Creation
 const tableCreationQueries = [
@@ -188,7 +192,7 @@ const insertDataQueries = [
   VALUES
   ('admin', 'Emily', 'Blossom', 'emily.blossom@beautywellness.com', 'hashed_password1', "123-456-7890"),
   ('customer', 'Sophia', 'Grace', 'sophia.grace@example.com', 'hashed_password2', "123-456-7890"),
-  ('admin', 'Lucas', 'A', 'lucas@1.se', '$2b$10$18wHqr3Wqp91iaAbUIIxPuuMFZxku4.IYuWU0z06K9TjGMthMbvh2', "123-456-7890"),
+  ('admin', 'Lucas', 'A', 'lucas@1.se', '$2y$10$cJR/pIHPF84.21iyMxzF5.QLBwwzya/BR/K6qN6u/hRMiC9qK6i8a', "123-456-7890"),
   ('customer', 'Liam', 'Johnson', 'liam.johnson@example.com', 'hashed_password3', "123-456-7890");`,
 
   // Insert into Categories
