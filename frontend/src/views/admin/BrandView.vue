@@ -232,7 +232,7 @@ export default {
         );
         Swal.fire(
           "Error",
-          "Kategori kunde inte tas bort. Snälla försök igen senare.",
+          "Kategori kunde inte tas bort. Försök igen senare.",
           "error"
         );
       } finally {

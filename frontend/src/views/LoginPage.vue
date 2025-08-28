@@ -100,7 +100,7 @@ export default {
         this.isLoading = false;
         Swal.fire(
           "Error",
-          `Du kunde inte loggas in, snälla kolla dina uppgifter och försök igen senare eller kontakta oss.`,
+          `Du kunde inte loggas in, kolla dina uppgifter och försök igen senare eller kontakta oss.`,
           "error"
         );
         this.isLoading = false;

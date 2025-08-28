@@ -48,7 +48,7 @@ export default {
         
         Swal.fire(
           "Error",
-          `Email kunde inte skickas, snälla försök igen senare eller kontakta oss. <br> ${errorMessages}`,
+          `Email kunde inte skickas, försök igen senare eller kontakta oss. <br> ${errorMessages}`,
           "error"
         );
       } finally {
