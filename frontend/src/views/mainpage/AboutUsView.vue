@@ -57,10 +57,7 @@
         </div>
 
         <div class="map">
-          <MapBoxMap
-            :accessToken="apiKey"
-            :center="[11.96867975823242, 57.69932077009476]"
-          />
+    
         </div>
       </div>
       <ContactForm></ContactForm>
@@ -69,12 +66,11 @@
 </template>
 
 <script>
-import MapBoxMap from "../../components/MapBoxMap.vue";
 import ContactForm from "../../components/ContactForm.vue";
 export default {
   name: "AboutUsPage",
   components: {
-    MapBoxMap,
+
     ContactForm,
   },
   setup() {
